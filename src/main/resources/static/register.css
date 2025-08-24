@@ -14,7 +14,7 @@ body {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 600px; /* Wider for table */
+    max-width: 600px;
     text-align: center;
 }
 
@@ -75,6 +75,17 @@ button:hover {
     background-color: #c82333;
 }
 
+.logout-button {
+    background-color: #6c757d; /* Gray for logout */
+    margin-top: 10px;
+    width: auto;
+    padding: 5px 10px;
+}
+
+.logout-button:hover {
+    background-color: #5a6268; /* Darker gray on hover */
+}
+
 .error {
     color: red;
     margin-bottom: 15px;
@@ -94,7 +105,6 @@ a:hover {
     text-decoration: underline;
 }
 
-/* New: Table styles */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -120,7 +130,6 @@ tr:hover {
     background-color: #e9ecef;
 }
 
-/* New: Navigation links */
 .nav-links {
     margin-top: 20px;
 }
