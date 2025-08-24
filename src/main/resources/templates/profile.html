@@ -30,7 +30,9 @@
     <form th:action="@{/delete-account}" method="post" aria-label="Delete account form" onsubmit="return confirm('Are you sure you want to delete your account? This cannot be undone.');">
         <button type="submit" class="delete-button">Delete Account</button>
     </form>
-    <p><a th:href="@{/logout}" href="/logout">Logout</a></p>
+    <form th:action="@{/logout}" method="post" aria-label="Logout form">
+        <button type="submit" class="logout-button">Logout</button>
+    </form>
 </div>
 </body>
 </html>
