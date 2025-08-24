@@ -45,7 +45,9 @@
   <div class="nav-links">
     <p><a href="#" onclick="alert('Product Management - Coming Soon!')">Manage Products</a></p>
     <p><a href="#" onclick="alert('Order Management - Coming Soon!')">Manage Orders</a></p>
-    <p><a th:href="@{/logout}" href="/logout">Logout</a></p>
+    <form th:action="@{/logout}" method="post" aria-label="Logout form">
+      <button type="submit" class="logout-button">Logout</button>
+    </form>
   </div>
 </div>
 </body>
