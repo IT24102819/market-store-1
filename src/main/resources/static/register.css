@@ -14,7 +14,7 @@ body {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 400px;
+    max-width: 600px; /* Wider for table */
     text-align: center;
 }
 
@@ -45,14 +45,14 @@ input[type="text"], input[type="password"], input[type="email"] {
 
 input:focus {
     outline: none;
-    border-color: #28a745; /* Green to differentiate from login’s blue */
+    border-color: #28a745;
     box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
 }
 
 button {
     width: 100%;
     padding: 10px;
-    background-color: #28a745; /* Green button for register */
+    background-color: #28a745;
     color: white;
     border: none;
     border-radius: 4px;
@@ -61,7 +61,18 @@ button {
 }
 
 button:hover {
-    background-color: #218838; /* Darker green on hover */
+    background-color: #218838;
+}
+
+.delete-button {
+    background-color: #dc3545;
+    margin-top: 10px;
+    width: auto;
+    padding: 5px 10px;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
 }
 
 .error {
@@ -75,10 +86,45 @@ button:hover {
 }
 
 a {
-    color: #28a745; /* Match green theme */
+    color: #28a745;
     text-decoration: none;
 }
 
 a:hover {
     text-decoration: underline;
+}
+
+/* New: Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #e9ecef;
+}
+
+/* New: Navigation links */
+.nav-links {
+    margin-top: 20px;
+}
+
+.nav-links p {
+    margin: 10px 0;
 }
