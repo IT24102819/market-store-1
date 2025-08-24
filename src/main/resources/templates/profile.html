@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Profile - Lanka Fresh Mart</title>
+</head>
+<body>
+<div class="container">
+    <h1>Your Profile</h1>
+    <!-- Success or error messages -->
+    <div th:if="${param.success}" class="success" th:text="${param.success}"></div>
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+    <!-- Profile update form -->
+    <form th:action="@{/profile}" th:object="${user}" method="post" aria-label="Profile update form">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" th:field="*{username}" id="username" placeholder="Enter new username" aria-required="true"/>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" th:field="*{email}" id="email" placeholder="Enter new email" aria-required="true"/>
+        </div>
+        <div class="form-group">
+            <label for="password">New Password (optional)</label>
+            <input type="password" th:field="*{password}" id="password" placeholder="Enter new password"/>
+        </div>
+        <button type="submit">Update Profile</button>
+    </form>
+    <!-- Delete account form -->
+    <form th:action="@{/delete-account}" method="post" aria-label="Delete account form" onsubmit="return confirm('Are you sure you want to delete your account? This cannot be undone.');">
+        <button type="submit" class="delete-button">Delete Account</button>
+    </form>
+    <p><a th:href="@{/logout}" href="/logout">Logout</a></p>
+</div>
+</body>
+</html>
