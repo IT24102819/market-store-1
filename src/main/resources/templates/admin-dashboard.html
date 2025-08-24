@@ -3,15 +3,18 @@
 <head>
   <title>Admin Dashboard - Lanka Fresh Mart</title>
   <link rel="stylesheet" href="register.css">
+  <script>
+    function confirmDelete(username) {
+      return confirm('Are you sure you want to delete user ' + username + '?');
+    }
+  </script>
 </head>
 <body>
 <div class="container">
   <h1>Admin Dashboard</h1>
-
   <!-- Success or error messages -->
   <div th:if="${param.success}" class="success" th:text="${param.success}"></div>
   <div th:if="${error}" class="error" th:text="${error}"></div>
-
   <!-- User table -->
   <table role="grid" aria-label="User management table">
     <thead>
@@ -28,9 +31,9 @@
       <td th:text="${user.email}"></td>
       <td th:text="${user.role}"></td>
       <td>
-        <!-- Correct way: pass username as literal string to JS -->
         <form th:action="@{/admin/delete-user}" method="post"
-              th:onsubmit="|return confirm('Are you sure you want to delete user ' + '${user.username}' + '?');|">
+              th:attr="data-username=${user.username}"
+              onsubmit="return confirmDelete(this.getAttribute('data-username'));">
           <input type="hidden" name="username" th:value="${user.username}"/>
           <button type="submit" class="delete-button">Delete</button>
         </form>
@@ -38,12 +41,11 @@
     </tr>
     </tbody>
   </table>
-
-  <!-- Navigation links -->
+  <!-- Navigation links (placeholders for other modules) -->
   <div class="nav-links">
     <p><a href="#" onclick="alert('Product Management - Coming Soon!')">Manage Products</a></p>
     <p><a href="#" onclick="alert('Order Management - Coming Soon!')">Manage Orders</a></p>
-    <p><a th:href="@{/logout}">Logout</a></p>
+    <p><a th:href="@{/logout}" href="/logout">Logout</a></p>
   </div>
 </div>
 </body>
