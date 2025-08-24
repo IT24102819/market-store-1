@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UserController {
@@ -63,4 +64,21 @@ public class UserController {
         return "redirect:/logout"; // Log out after deletion
     }
 
+    @GetMapping("/admin/dashboard")
+    public String showAdminDashboard(Model model) {
+        model.addAttribute("users", userService.getAllUsers());
+        return "admin-dashboard";
+    }
+
+    @PostMapping("/admin/delete-user")
+    public String deleteUser(@RequestParam("username") String username, Model model) {
+        try {
+            userService.deleteAccount(username);
+            return "redirect:/admin/dashboard?success=User deleted successfully";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("users", userService.getAllUsers());
+            return "admin-dashboard";
+        }
+    }
 }
