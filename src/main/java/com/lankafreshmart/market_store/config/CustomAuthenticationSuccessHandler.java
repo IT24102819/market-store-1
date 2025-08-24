@@ -15,7 +15,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         var authorities = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
 
         // Redirect based on role
-        if (authorities.contains("ROLE_ADMIN")) {
+        if (authorities.contains("ADMIN")) {
             response.sendRedirect("/admin/dashboard");
         } else {
             response.sendRedirect("/profile");
