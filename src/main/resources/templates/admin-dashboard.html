@@ -1,10 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <title>Admin Dashboard - Lanka Fresh Mart</title>
+  <link rel="stylesheet" href="register.css">
 </head>
 <body>
+<div class="container">
+  <h1>Admin Dashboard</h1>
 
+  <!-- Success or error messages -->
+  <div th:if="${param.success}" class="success" th:text="${param.success}"></div>
+  <div th:if="${error}" class="error" th:text="${error}"></div>
+
+  <!-- User table -->
+  <table role="grid" aria-label="User management table">
+    <thead>
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+      <td th:text="${user.username}"></td>
+      <td th:text="${user.email}"></td>
+      <td th:text="${user.role}"></td>
+      <td>
+        <!-- Correct way: pass username as literal string to JS -->
+        <form th:action="@{/admin/delete-user}" method="post"
+              th:onsubmit="|return confirm('Are you sure you want to delete user ' + '${user.username}' + '?');|">
+          <input type="hidden" name="username" th:value="${user.username}"/>
+          <button type="submit" class="delete-button">Delete</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Navigation links -->
+  <div class="nav-links">
+    <p><a href="#" onclick="alert('Product Management - Coming Soon!')">Manage Products</a></p>
+    <p><a href="#" onclick="alert('Order Management - Coming Soon!')">Manage Orders</a></p>
+    <p><a th:href="@{/logout}">Logout</a></p>
+  </div>
+</div>
 </body>
 </html>
