@@ -2,6 +2,7 @@ package com.lankafreshmart.market_store.controller;
 
 import com.lankafreshmart.market_store.model.User;
 import com.lankafreshmart.market_store.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,4 +33,34 @@ public class UserController {
     public String showLoginForm() {
         return "login";
     }
+
+    @GetMapping("/profile")
+    public String showProfile(Model model) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(username) // Add this method to UserService if needed
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        model.addAttribute("user", user);
+        return "profile";
+    }
+
+    @PostMapping("/profile")
+    public String updateProfile(@ModelAttribute User updatedUser, Model model) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        try {
+            userService.updateProfile(username, updatedUser);
+            return "redirect:/profile?success=Profile updated successfully";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("user", updatedUser);
+            return "profile";
+        }
+    }
+
+    @PostMapping("/delete-account")
+    public String deleteAccount() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        userService.deleteAccount(username);
+        return "redirect:/logout"; // Log out after deletion
+    }
+
 }
