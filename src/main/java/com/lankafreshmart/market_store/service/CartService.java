@@ -1,7 +1,6 @@
 package com.lankafreshmart.market_store.service;
 
 
-
 import com.lankafreshmart.market_store.model.CartItem;
 import com.lankafreshmart.market_store.model.Product;
 import com.lankafreshmart.market_store.model.User;
@@ -11,6 +10,7 @@ import com.lankafreshmart.market_store.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -30,6 +30,14 @@ public class CartService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         return cartItemRepository.findByUser(user);
+    }
+
+    // New: Calculate total price of cart items
+    public BigDecimal getCartTotal() {
+        List<CartItem> cartItems = getCartItems();
+        return cartItems.stream()
+                .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public void addToCart(Long productId, int quantity) {
