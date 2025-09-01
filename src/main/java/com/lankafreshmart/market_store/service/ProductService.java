@@ -10,18 +10,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import jakarta.mail.MessagingException;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final EmailService emailService;
 
     @Value("${app.low-stock-threshold}")
     private int lowStockThreshold;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, EmailService emailService) {
         this.productRepository = productRepository;
+        this.emailService = emailService;
     }
 
     public Page<Product> getAllProducts(int page, int size) {
@@ -51,6 +54,15 @@ public class ProductService {
             throw new IllegalArgumentException("Stock quantity cannot be negative");
         }
         productRepository.save(product);
+        // New: Check for low stock after creation
+        if (product.getStockQuantity() <= lowStockThreshold) {
+            try {
+                emailService.sendLowStockEmail(product);
+            } catch (MessagingException e) {
+                // Log error but don't fail the operation
+                System.err.println("Failed to send low stock email for product " + product.getName() + ": " + e.getMessage());
+            }
+        }
     }
 
     public void updateProduct(Long id, Product product) {
@@ -80,6 +92,14 @@ public class ProductService {
             throw new IllegalArgumentException("Stock quantity cannot be negative");
         }
         productRepository.save(existing);
+        // New: Check for low stock after update
+        if (existing.getStockQuantity() <= lowStockThreshold) {
+            try {
+                emailService.sendLowStockEmail(existing);
+            } catch (MessagingException e) {
+                System.err.println("Failed to send low stock email for product " + existing.getName() + ": " + e.getMessage());
+            }
+        }
     }
 
     public void deleteProduct(Long id) {
