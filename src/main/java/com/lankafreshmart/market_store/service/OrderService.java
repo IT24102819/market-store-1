@@ -29,8 +29,8 @@ public class OrderService {
     }
 
     @Transactional
-    public Order createOrder(User user, List<CartItem> cartItems) throws IllegalStateException {
-        BigDecimal totalAmount = BigDecimal.ZERO; // Use BigDecimal instead of double
+    public Order createOrder(User user, List<CartItem> cartItems, String paymentMethod) throws IllegalStateException {
+        BigDecimal totalAmount = BigDecimal.ZERO;
         List<OrderItem> orderItems = new ArrayList<>();
 
         // Validate stock and calculate total
@@ -43,13 +43,15 @@ public class OrderService {
             BigDecimal itemTotal = product.getPrice().multiply(BigDecimal.valueOf(requestedQuantity));
             totalAmount = totalAmount.add(itemTotal);
             orderItems.add(new OrderItem(product, requestedQuantity, product.getPrice().doubleValue()));
-            // Update stock
             product.setStockQuantity(product.getStockQuantity() - requestedQuantity);
             productRepository.save(product);
         }
 
-        // Create and save order
-        Order order = new Order(user, totalAmount.doubleValue(), orderItems); // Convert to double for Order constructor
+        // Create and save order with payment details
+        Order order = new Order(user, totalAmount.doubleValue(), orderItems);
+        order.setStatus("PENDING");
+        order.setPaymentMethod(paymentMethod);
+        order.setPaymentStatus("PENDING");
         order = orderRepository.save(order);
 
         // Send confirmation email
