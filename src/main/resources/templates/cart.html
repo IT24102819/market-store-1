@@ -64,6 +64,7 @@
     </select>
     <button type="submit" class="btn btn-success">Proceed to Checkout</button>
   </form>
+  <a th:href="@{/order/history}" class="btn btn-secondary">View Order History</a>
   <div class="nav-links">
     <p><a th:href="@{/profile}" href="/profile">View Profile</a></p>
     <form th:action="@{/logout}" method="post" aria-label="Logout form">
