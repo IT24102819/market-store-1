@@ -10,6 +10,7 @@
   <h1>Your Cart</h1>
   <div th:if="${param.success}" class="success" th:text="${param.success}"></div>
   <div th:if="${error}" class="error" th:text="${error}"></div>
+  <div th:if="${lowStockWarning}" style="color: red;">Warning: Some items have low stock!</div>
   <table class="table table-bordered" role="grid" aria-label="Shopping cart table">
     <thead>
     <tr>
