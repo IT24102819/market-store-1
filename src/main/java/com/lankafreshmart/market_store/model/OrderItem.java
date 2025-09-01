@@ -35,6 +35,10 @@ public class OrderItem {
         this.price = price;
     }
 
+    public OrderItem() {
+
+    }
+
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
