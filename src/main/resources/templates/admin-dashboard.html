@@ -43,7 +43,7 @@
   </table>
   <!-- Navigation links (placeholders for other modules) -->
   <div class="nav-links">
-    <p><a href="#" onclick="alert('Product Management - Coming Soon!')">Manage Products</a></p>
+    <p><a th:href="@{/admin/products}" href="/admin/products">Manage Products</a></p>
     <p><a href="#" onclick="alert('Order Management - Coming Soon!')">Manage Orders</a></p>
     <form th:action="@{/logout}" method="post" aria-label="Logout form">
       <button type="submit" class="logout-button">Logout</button>
