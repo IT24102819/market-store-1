@@ -32,7 +32,6 @@ public class CartService {
         return cartItemRepository.findByUser(user);
     }
 
-    // New: Calculate total price of cart items
     public BigDecimal getCartTotal() {
         List<CartItem> cartItems = getCartItems();
         return cartItems.stream()
@@ -49,10 +48,18 @@ public class CartService {
         if (quantity <= 0) {
             throw new IllegalArgumentException("Quantity must be positive");
         }
+        // New: Check stock availability
+        if (quantity > product.getStockQuantity()) {
+            throw new IllegalArgumentException("Requested quantity (" + quantity + ") exceeds available stock (" + product.getStockQuantity() + ")");
+        }
 
         CartItem existingItem = cartItemRepository.findByUserAndProductId(user, productId);
         if (existingItem != null) {
-            existingItem.setQuantity(existingItem.getQuantity() + quantity);
+            int newQuantity = existingItem.getQuantity() + quantity;
+            if (newQuantity > product.getStockQuantity()) {
+                throw new IllegalArgumentException("Total quantity (" + newQuantity + ") exceeds available stock (" + product.getStockQuantity() + ")");
+            }
+            existingItem.setQuantity(newQuantity);
             cartItemRepository.save(existingItem);
         } else {
             CartItem cartItem = new CartItem();
@@ -72,6 +79,10 @@ public class CartService {
         }
         if (quantity <= 0) {
             throw new IllegalArgumentException("Quantity must be positive");
+        }
+        // New: Check stock availability
+        if (quantity > cartItem.getProduct().getStockQuantity()) {
+            throw new IllegalArgumentException("Requested quantity (" + quantity + ") exceeds available stock (" + cartItem.getProduct().getStockQuantity() + ")");
         }
         cartItem.setQuantity(quantity);
         cartItemRepository.save(cartItem);
