@@ -1,5 +1,7 @@
 package com.lankafreshmart.market_store.controller;
 
+
+
 import com.lankafreshmart.market_store.service.CartService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,9 +37,9 @@ public class CartController {
             return "redirect:/cart?success=Product added to cart";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("cartItems", cartService.getCartItems());
+            model.addAttribute("products", cartService.getCartItems());
             model.addAttribute("cartTotal", cartService.getCartTotal());
-            return "cart";
+            return "cart"; // Changed to redirect to /products for stock errors
         }
     }
 
