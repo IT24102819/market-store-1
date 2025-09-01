@@ -19,13 +19,17 @@
                     <p class="card-text" th:text="'$' + ${product.price}"></p>
                     <p class="card-text" th:text="${product.description}"></p>
                     <p class="card-text" th:text="'Category: ' + ${product.category}"></p>
+                    <p class="card-text" th:text="'In Stock: ' + ${product.stockQuantity}"></p>
                     <form th:action="@{/cart/add}" method="post" aria-label="Add to cart form">
                         <input type="hidden" name="productId" th:value="${product.id}"/>
                         <div class="form-group">
                             <label for="quantity-${product.id}">Quantity</label>
-                            <input type="number" name="quantity" id="quantity-${product.id}" value="1" min="1" aria-label="Quantity"/>
+                            <input type="number" name="quantity" id="quantity-${product.id}" value="1" min="1"
+                                   th:max="${product.stockQuantity}" aria-label="Quantity"/>
                         </div>
-                        <button type="submit" class="btn btn-primary">Add to Cart</button>
+                        <button type="submit" class="btn btn-primary" th:disabled="${product.stockQuantity == 0}">
+                            <span th:text="${product.stockQuantity == 0} ? 'Out of Stock' : 'Add to Cart'"></span>
+                        </button>
                     </form>
                 </div>
             </div>
