@@ -1,7 +1,6 @@
 package com.lankafreshmart.market_store.service;
 
 
-
 import com.lankafreshmart.market_store.model.Product;
 import com.lankafreshmart.market_store.repository.ProductRepository;
 import org.springframework.data.domain.Page;
@@ -20,7 +19,6 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    // Updated: Get products with pagination and sorting (e.g., by name)
     public Page<Product> getAllProducts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
         return productRepository.findAll(pageable);
@@ -36,6 +34,12 @@ public class ProductService {
         }
         if (product.getPrice() == null || product.getPrice().signum() <= 0) {
             throw new IllegalArgumentException("Price must be positive");
+        }
+        if (product.getImageUrl() != null && product.getImageUrl().length() > 500) {
+            throw new IllegalArgumentException("Image URL must be 500 characters or less");
+        }
+        if (product.getStockQuantity() < 0) {
+            throw new IllegalArgumentException("Stock quantity cannot be negative");
         }
         productRepository.save(product);
     }
@@ -56,7 +60,15 @@ public class ProductService {
             existing.setCategory(product.getCategory());
         }
         if (product.getImageUrl() != null) {
+            if (product.getImageUrl().length() > 500) {
+                throw new IllegalArgumentException("Image URL must be 500 characters or less");
+            }
             existing.setImageUrl(product.getImageUrl());
+        }
+        if (product.getStockQuantity() >= 0) {
+            existing.setStockQuantity(product.getStockQuantity());
+        } else {
+            throw new IllegalArgumentException("Stock quantity cannot be negative");
         }
         productRepository.save(existing);
     }
