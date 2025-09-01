@@ -13,6 +13,7 @@
   <table class="table table-bordered" role="grid" aria-label="Shopping cart table">
     <thead>
     <tr>
+      <th>Image</th>
       <th>Product</th>
       <th>Price</th>
       <th>Quantity</th>
@@ -22,6 +23,9 @@
     </thead>
     <tbody>
     <tr th:each="item : ${cartItems}">
+      <td>
+        <img th:src="${item.product.imageUrl}" th:alt="${item.product.name}" style="width: 100px; height: 100px; object-fit: cover;">
+      </td>
       <td th:text="${item.product.name}"></td>
       <td th:text="'$' + ${item.product.price}"></td>
       <td>
@@ -40,7 +44,12 @@
       </td>
     </tr>
     <tr th:if="${#lists.isEmpty(cartItems)}">
-      <td colspan="5">Your cart is empty.</td>
+      <td colspan="6">Your cart is empty.</td>
+    </tr>
+    <tr th:if="${!#lists.isEmpty(cartItems)}">
+      <td colspan="4" class="text-right"><strong>Total:</strong></td>
+      <td th:text="'$' + ${cartTotal}"></td>
+      <td></td>
     </tr>
     </tbody>
   </table>
