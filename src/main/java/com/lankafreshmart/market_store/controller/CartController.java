@@ -1,9 +1,11 @@
 package com.lankafreshmart.market_store.controller;
 
 import com.lankafreshmart.market_store.model.CartItem;
+import com.lankafreshmart.market_store.model.Order;
 import com.lankafreshmart.market_store.model.Product;
 import com.lankafreshmart.market_store.model.User;
 import com.lankafreshmart.market_store.service.CartService;
+import com.lankafreshmart.market_store.service.OrderService;
 import com.lankafreshmart.market_store.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,15 +13,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 public class CartController {
     private final ProductService productService;
     private final CartService cartService;
 
     @Autowired
-    public CartController(ProductService productService, CartService cartService) {
+    public CartController(ProductService productService, CartService cartService, OrderService orderService) {
         this.productService = productService;
         this.cartService = cartService;
+        this.orderService = orderService;
     }
 
     @GetMapping("/cart")
@@ -66,13 +71,23 @@ public class CartController {
     }
 
     @PostMapping("/cart/checkout")
-    public String checkout(@AuthenticationPrincipal User user, Model model) {
+    public String checkout(@AuthenticationPrincipal User user, Model model, @RequestParam String paymentMethod) {
         try {
-            // Assuming OrderService is autowired and implemented
-            // orderService.createOrder(user, cartService.getCartItems()); // Uncomment and implement
-            cartService.getCartItems().forEach(cartItem -> cartService.removeFromCart(cartItem.getId())); // Clear cart
+            List<CartItem> cartItems = cartService.getCartItems();
+            if (cartItems == null || cartItems.isEmpty()) {
+                model.addAttribute("error", "Your cart is empty.");
+                return "cart";
+            }
+
+            // Create order
+            Order order = orderService.createOrder(user, cartItems, paymentMethod);
+
+            // Clear cart
+            cartItems.forEach(item -> cartService.removeFromCart(item.getId()));
+
             model.addAttribute("success", "Order placed successfully! Check your email for confirmation.");
-            return "redirect:/cart";
+            model.addAttribute("orderId", order.getId());
+            return "order-success"; // New template
         } catch (IllegalStateException e) {
             model.addAttribute("error", e.getMessage());
             return "cart";
