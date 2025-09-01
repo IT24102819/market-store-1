@@ -28,7 +28,7 @@
         <img th:src="${item.product.imageUrl}" th:alt="${item.product.name}" style="width: 100px; height: 100px; object-fit: cover;">
       </td>
       <td th:text="${item.product.name}"></td>
-      <td th:text="'$' + ${item.product.price}"></td>
+      <td th:text=" ${item.product.price} + ' LKR' "></td>
       <td>
         <form th:action="@{/cart/update}" method="post" aria-label="Update cart item quantity">
           <input type="hidden" name="cartItemId" th:value="${item.id}"/>
@@ -36,7 +36,7 @@
           <button type="submit" class="btn btn-sm btn-primary">Update</button>
         </form>
       </td>
-      <td th:text="'$' + ${item.quantity * item.product.price}"></td>
+      <td th:text="${item.quantity * item.product.price} + ' LKR' "></td>
       <td>
         <form th:action="@{/cart/remove}" method="post" aria-label="Remove from cart">
           <input type="hidden" name="cartItemId" th:value="${item.id}"/>
@@ -49,7 +49,7 @@
     </tr>
     <tr th:if="${!#lists.isEmpty(cartItems)}">
       <td colspan="4" class="text-right"><strong>Total:</strong></td>
-      <td th:text="'$' + ${cartTotal}"></td>
+      <td th:text="${cartTotal} + ' LKR' "></td>
       <td></td>
     </tr>
     </tbody>
