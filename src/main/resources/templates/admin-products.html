@@ -18,6 +18,14 @@
   <h1>Manage Products</h1>
   <div th:if="${param.success}" class="success" th:text="${param.success}"></div>
   <div th:if="${error}" class="error" th:text="${error}"></div>
+  <!-- Low-stock alert -->
+  <div th:if="${!#lists.isEmpty(lowStockProducts)}" class="alert alert-warning" role="alert">
+    <strong>Low Stock Alert!</strong> The following products are low on stock:
+    <ul>
+      <li th:each="product : ${lowStockProducts}"
+          th:text="${product.name} + ' (' + ${product.stockQuantity} + ' left)'"></li>
+    </ul>
+  </div>
   <!-- Create product form -->
   <form th:action="@{/admin/products/create}" th:object="${product}" method="post" aria-label="Create product form">
     <div class="form-group">
@@ -57,10 +65,14 @@
   <!-- Product cards -->
   <div class="row mt-4">
     <div th:each="product : ${products}" class="col-md-4 mb-4">
-      <div class="card" role="article" aria-labelledby="product-title-${product.id}">
+      <div class="card" th:classappend="${product.stockQuantity <= 10} ? 'border-warning' : ''"
+           role="article" aria-labelledby="product-title-${product.id}">
         <img th:src="${product.imageUrl}" th:alt="${product.name}" class="card-img-top" style="height: 200px; object-fit: cover;">
         <div class="card-body">
           <h5 class="card-title" th:id="'product-title-' + ${product.id}" th:text="${product.name}"></h5>
+          <p th:if="${product.stockQuantity <= 10}" class="text-warning font-weight-bold">
+            Low Stock: <span th:text="${product.stockQuantity} + ' left'"></span>
+          </p>
           <form th:action="@{/admin/products/update}" method="post" th:attr="data-name=${product.name}"
                 onsubmit="return confirmUpdate(this.getAttribute('data-name'));">
             <input type="hidden" name="id" th:value="${product.id}"/>
