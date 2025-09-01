@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><title>Order Confirmation</title></head>
+<body>
+    <h1>Thank You for Your Order!</h1>
+    <p th:if="${success}" th:text="${success}"></p>
+    <p>Your Order ID: <span th:text="${orderId}"></span></p>
+    <p>Check your email for details.</p>
+    <a th:href="@{/cart}">Back to Cart</a>
+    <a th:href="@{/products}">Continue Shopping</a>
+</body>
+</html>

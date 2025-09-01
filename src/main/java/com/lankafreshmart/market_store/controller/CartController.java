@@ -19,6 +19,7 @@ import java.util.List;
 public class CartController {
     private final ProductService productService;
     private final CartService cartService;
+    private final OrderService orderService;
 
     @Autowired
     public CartController(ProductService productService, CartService cartService, OrderService orderService) {
@@ -29,8 +30,20 @@ public class CartController {
 
     @GetMapping("/cart")
     public String viewCart(@AuthenticationPrincipal User user, Model model) {
-        model.addAttribute("cartItems", cartService.getCartItems());
+        List<CartItem> cartItems = cartService.getCartItems();
+        model.addAttribute("cartItems", cartItems);
         model.addAttribute("total", cartService.getCartTotal());
+
+        // Enhance with product stock status using productService
+        if (!cartItems.isEmpty()) {
+            for (CartItem item : cartItems) {
+                Product product = productService.getProductById(item.getProduct().getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+                item.getProduct().setStockQuantity(product.getStockQuantity()); // Update with latest stock
+            }
+            model.addAttribute("lowStockWarning", cartItems.stream()
+                    .anyMatch(item -> item.getProduct().getStockQuantity() <= 5)); // Example threshold
+        }
         return "cart";
     }
 
@@ -87,7 +100,7 @@ public class CartController {
 
             model.addAttribute("success", "Order placed successfully! Check your email for confirmation.");
             model.addAttribute("orderId", order.getId());
-            return "order-success"; // New template
+            return "order-success";
         } catch (IllegalStateException e) {
             model.addAttribute("error", e.getMessage());
             return "cart";
