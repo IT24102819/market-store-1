@@ -1,7 +1,6 @@
 package com.lankafreshmart.market_store.service;
 
 
-
 import com.lankafreshmart.market_store.model.*;
 import com.lankafreshmart.market_store.repository.OrderRepository;
 import com.lankafreshmart.market_store.repository.ProductRepository;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(User user, List<CartItem> cartItems) throws IllegalStateException {
-        double totalAmount = 0.0;
+        BigDecimal totalAmount = BigDecimal.ZERO; // Use BigDecimal instead of double
         List<OrderItem> orderItems = new ArrayList<>();
 
         // Validate stock and calculate total
@@ -40,15 +40,16 @@ public class OrderService {
             if (product.getStockQuantity() < requestedQuantity) {
                 throw new IllegalStateException("Insufficient stock for " + product.getName());
             }
-            totalAmount += product.getPrice() * requestedQuantity;
-            orderItems.add(new OrderItem(product, requestedQuantity, product.getPrice()));
+            BigDecimal itemTotal = product.getPrice().multiply(BigDecimal.valueOf(requestedQuantity));
+            totalAmount = totalAmount.add(itemTotal);
+            orderItems.add(new OrderItem(product, requestedQuantity, product.getPrice().doubleValue()));
             // Update stock
             product.setStockQuantity(product.getStockQuantity() - requestedQuantity);
             productRepository.save(product);
         }
 
         // Create and save order
-        Order order = new Order(user, totalAmount, orderItems);
+        Order order = new Order(user, totalAmount.doubleValue(), orderItems); // Convert to double for Order constructor
         order = orderRepository.save(order);
 
         // Send confirmation email

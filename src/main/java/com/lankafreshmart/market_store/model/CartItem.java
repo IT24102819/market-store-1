@@ -1,6 +1,5 @@
 package com.lankafreshmart.market_store.model;
 
-
 import jakarta.persistence.*;
 
 @Entity
@@ -20,6 +19,15 @@ public class CartItem {
 
     @Column(nullable = false)
     private int quantity;
+
+    public CartItem(Product product, int quantity) {
+        this.product = product;
+        this.quantity = quantity;
+        // User will be set by CartService based on the authenticated user
+    }
+
+    public CartItem() {
+    }
 
     // Getters and Setters
     public Long getId() { return id; }

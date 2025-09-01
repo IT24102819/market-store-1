@@ -1,9 +1,6 @@
 package com.lankafreshmart.market_store.service;
 
-
-import com.lankafreshmart.market_store.model.CartItem;
-import com.lankafreshmart.market_store.model.Product;
-import com.lankafreshmart.market_store.model.User;
+import com.lankafreshmart.market_store.model.*;
 import com.lankafreshmart.market_store.repository.CartItemRepository;
 import com.lankafreshmart.market_store.repository.ProductRepository;
 import com.lankafreshmart.market_store.repository.UserRepository;
@@ -70,13 +67,13 @@ public class CartService {
             cartItemRepository.save(existingItem);
         } else {
             CartItem cartItem = new CartItem();
-            cartItem.setUser(user);
             cartItem.setProduct(product);
             cartItem.setQuantity(quantity);
+            cartItem.setUser(user); // Set the user here
             cartItemRepository.save(cartItem);
         }
-        // New: Check for low stock after adding to cart
-        if (product.getStockQuantity() <= lowStockThreshold) {
+        // Check for low stock after adding to cart
+        if (product.getStockQuantity() - quantity <= lowStockThreshold) {
             try {
                 emailService.sendLowStockEmail(product);
             } catch (MessagingException e) {
@@ -100,7 +97,7 @@ public class CartService {
         }
         cartItem.setQuantity(quantity);
         cartItemRepository.save(cartItem);
-        // New: Check for low stock after updating cart
+        // Check for low stock after updating cart
         if (cartItem.getProduct().getStockQuantity() <= lowStockThreshold) {
             try {
                 emailService.sendLowStockEmail(cartItem.getProduct());
