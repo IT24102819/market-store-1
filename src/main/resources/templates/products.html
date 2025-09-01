@@ -3,11 +3,13 @@
 <head>
     <title>Products - Lanka Fresh Mart</title>
     <link rel="stylesheet" href="/css/register.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> <!-- Bootstrap CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container">
     <h1>Our Products</h1>
+    <div th:if="${param.success}" class="success" th:text="${param.success}"></div>
+    <div th:if="${error}" class="error" th:text="${error}"></div>
     <div class="row">
         <div th:each="product : ${products}" class="col-md-4 mb-4">
             <div class="card" role="article" aria-labelledby="product-title-${product.id}">
@@ -17,27 +19,34 @@
                     <p class="card-text" th:text="'$' + ${product.price}"></p>
                     <p class="card-text" th:text="${product.description}"></p>
                     <p class="card-text" th:text="'Category: ' + ${product.category}"></p>
-                    <a href="#" class="btn btn-primary">Add to Cart</a>
-                    </div>
+                    <form th:action="@{/cart/add}" method="post" aria-label="Add to cart form">
+                        <input type="hidden" name="productId" th:value="${product.id}"/>
+                        <div class="form-group">
+                            <label for="quantity-${product.id}">Quantity</label>
+                            <input type="number" name="quantity" id="quantity-${product.id}" value="1" min="1" aria-label="Quantity"/>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add to Cart</button>
+                    </form>
                 </div>
             </div>
         </div>
-
-                    <ul class="pagination justify-content-center">
-                        <li th:class="${currentPage == 0 ? 'page-item disabled' : 'page-item'}">
-                            <a th:href="@{/products(page=${currentPage - 1}, size=10)}" class="page-link">Previous</a>
-                        </li>
-                        <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:class="${currentPage == i ? 'page-item active' : 'page-item'}">
-                            <a th:href="@{/products(page=${i}, size=10)}" class="page-link" th:text="${i + 1}"></a>
-                        </li>
-                        <li th:class="${currentPage == totalPages - 1 ? 'page-item disabled' : 'page-item'}">
-                            <a th:href="@{/products(page=${currentPage + 1}, size=10)}" class="page-link">Next</a>
-                        </li>
-                    </ul>
-                    <div class="nav-links">
-                        <p><a th:href="@{/login}" href="/login">Login</a></p>
-                        <p><a th:href="@{/register}" href="/register">Register</a></p>
-                    </div>
-                </div>
+    </div>
+    <ul class="pagination justify-content-center">
+        <li th:class="${currentPage == 0 ? 'page-item disabled' : 'page-item'}">
+            <a th:href="@{/products(page=${currentPage - 1}, size=10)}" class="page-link">Previous</a>
+        </li>
+        <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:class="${currentPage == i ? 'page-item active' : 'page-item'}">
+            <a th:href="@{/products(page=${i}, size=10)}" class="page-link" th:text="${i + 1}"></a>
+        </li>
+        <li th:class="${currentPage == totalPages - 1 ? 'page-item disabled' : 'page-item'}">
+            <a th:href="@{/products(page=${currentPage + 1}, size=10)}" class="page-link">Next</a>
+        </li>
+    </ul>
+    <div class="nav-links">
+        <p><a th:href="@{/login}" href="/login">Login</a></p>
+        <p><a th:href="@{/register}" href="/register">Register</a></p>
+        <p><a th:href="@{/cart}" href="/cart">View Cart</a></p>
+    </div>
+</div>
 </body>
 </html>
