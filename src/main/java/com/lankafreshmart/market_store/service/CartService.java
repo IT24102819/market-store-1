@@ -7,9 +7,11 @@ import com.lankafreshmart.market_store.model.User;
 import com.lankafreshmart.market_store.repository.CartItemRepository;
 import com.lankafreshmart.market_store.repository.ProductRepository;
 import com.lankafreshmart.market_store.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import jakarta.mail.MessagingException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -18,11 +20,17 @@ public class CartService {
     private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final EmailService emailService;
 
-    public CartService(CartItemRepository cartItemRepository, UserRepository userRepository, ProductRepository productRepository) {
+    @Value("${app.low-stock-threshold}")
+    private int lowStockThreshold;
+
+    public CartService(CartItemRepository cartItemRepository, UserRepository userRepository,
+                       ProductRepository productRepository, EmailService emailService) {
         this.cartItemRepository = cartItemRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.emailService = emailService;
     }
 
     public List<CartItem> getCartItems() {
@@ -48,7 +56,6 @@ public class CartService {
         if (quantity <= 0) {
             throw new IllegalArgumentException("Quantity must be positive");
         }
-        // New: Check stock availability
         if (quantity > product.getStockQuantity()) {
             throw new IllegalArgumentException("Requested quantity (" + quantity + ") exceeds available stock (" + product.getStockQuantity() + ")");
         }
@@ -68,6 +75,14 @@ public class CartService {
             cartItem.setQuantity(quantity);
             cartItemRepository.save(cartItem);
         }
+        // New: Check for low stock after adding to cart
+        if (product.getStockQuantity() <= lowStockThreshold) {
+            try {
+                emailService.sendLowStockEmail(product);
+            } catch (MessagingException e) {
+                System.err.println("Failed to send low stock email for product " + product.getName() + ": " + e.getMessage());
+            }
+        }
     }
 
     public void updateCartItem(Long cartItemId, int quantity) {
@@ -80,12 +95,19 @@ public class CartService {
         if (quantity <= 0) {
             throw new IllegalArgumentException("Quantity must be positive");
         }
-        // New: Check stock availability
         if (quantity > cartItem.getProduct().getStockQuantity()) {
             throw new IllegalArgumentException("Requested quantity (" + quantity + ") exceeds available stock (" + cartItem.getProduct().getStockQuantity() + ")");
         }
         cartItem.setQuantity(quantity);
         cartItemRepository.save(cartItem);
+        // New: Check for low stock after updating cart
+        if (cartItem.getProduct().getStockQuantity() <= lowStockThreshold) {
+            try {
+                emailService.sendLowStockEmail(cartItem.getProduct());
+            } catch (MessagingException e) {
+                System.err.println("Failed to send low stock email for product " + cartItem.getProduct().getName() + ": " + e.getMessage());
+            }
+        }
     }
 
     public void removeFromCart(Long cartItemId) {
