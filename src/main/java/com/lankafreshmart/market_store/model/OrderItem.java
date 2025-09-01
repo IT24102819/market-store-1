@@ -3,6 +3,8 @@ package com.lankafreshmart.market_store.model;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "order_items")
 public class OrderItem {
@@ -25,7 +27,7 @@ public class OrderItem {
     private double price;
 
     // Constructors
-    public OrderItem() {}
+    public OrderItem(Product product, int requestedQuantity, BigDecimal price) {}
 
     public OrderItem(Product product, int quantity, double price) {
         this.product = product;

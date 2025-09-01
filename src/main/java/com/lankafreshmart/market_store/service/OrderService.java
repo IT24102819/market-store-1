@@ -2,10 +2,7 @@ package com.lankafreshmart.market_store.service;
 
 
 
-import com.lankafreshmart.market_store.model.Order;
-import com.lankafreshmart.market_store.model.OrderItem;
-import com.lankafreshmart.market_store.model.Product;
-import com.lankafreshmart.market_store.model.User;
+import com.lankafreshmart.market_store.model.*;
 import com.lankafreshmart.market_store.repository.OrderRepository;
 import com.lankafreshmart.market_store.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
