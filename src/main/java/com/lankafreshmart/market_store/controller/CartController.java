@@ -19,6 +19,7 @@ public class CartController {
     public String showCart(Model model) {
         try {
             model.addAttribute("cartItems", cartService.getCartItems());
+            model.addAttribute("cartTotal", cartService.getCartTotal());
             return "cart";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
@@ -34,7 +35,8 @@ public class CartController {
             return "redirect:/cart?success=Product added to cart";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("products", cartService.getCartItems());
+            model.addAttribute("cartItems", cartService.getCartItems());
+            model.addAttribute("cartTotal", cartService.getCartTotal());
             return "cart";
         }
     }
@@ -48,6 +50,7 @@ public class CartController {
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("cartItems", cartService.getCartItems());
+            model.addAttribute("cartTotal", cartService.getCartTotal());
             return "cart";
         }
     }
@@ -60,6 +63,7 @@ public class CartController {
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("cartItems", cartService.getCartItems());
+            model.addAttribute("cartTotal", cartService.getCartTotal());
             return "cart";
         }
     }
