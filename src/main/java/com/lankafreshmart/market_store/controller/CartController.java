@@ -4,6 +4,7 @@ import com.lankafreshmart.market_store.model.CartItem;
 import com.lankafreshmart.market_store.model.Order;
 import com.lankafreshmart.market_store.model.Product;
 import com.lankafreshmart.market_store.model.User;
+import com.lankafreshmart.market_store.repository.OrderRepository;
 import com.lankafreshmart.market_store.service.CartService;
 import com.lankafreshmart.market_store.service.OrderService;
 import com.lankafreshmart.market_store.service.ProductService;
@@ -20,12 +21,14 @@ public class CartController {
     private final ProductService productService;
     private final CartService cartService;
     private final OrderService orderService;
+    private final OrderRepository orderRepository;
 
     @Autowired
-    public CartController(ProductService productService, CartService cartService, OrderService orderService) {
+    public CartController(ProductService productService, CartService cartService, OrderService orderService, OrderRepository orderRepository) {
         this.productService = productService;
         this.cartService = cartService;
         this.orderService = orderService;
+        this.orderRepository = orderRepository;
     }
 
     @GetMapping("/cart")
@@ -108,5 +111,12 @@ public class CartController {
             model.addAttribute("error", "Failed to process order: " + e.getMessage());
             return "cart";
         }
+    }
+
+    @GetMapping("/order/history")
+    public String orderHistory(@AuthenticationPrincipal User user, Model model) {
+        List<Order> orders = orderRepository.findByUser(user); // Assume OrderRepository is autowired
+        model.addAttribute("orders", orders);
+        return "order-history";
     }
 }
