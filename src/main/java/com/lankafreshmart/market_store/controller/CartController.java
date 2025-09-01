@@ -1,72 +1,71 @@
 package com.lankafreshmart.market_store.controller;
 
 
-
-import com.lankafreshmart.market_store.service.CartService;
+import com.lankafreshmart.market_store.model.CartItem;
+import com.lankafreshmart.market_store.model.User;
+import com.lankafreshmart.market_store.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 public class CartController {
-    private final CartService cartService;
+    private final OrderService orderService;
 
-    public CartController(CartService cartService) {
-        this.cartService = cartService;
+    @Autowired
+    public CartController(OrderService orderService) {
+        this.orderService = orderService;
     }
 
     @GetMapping("/cart")
-    public String showCart(Model model) {
+    public String viewCart(@AuthenticationPrincipal User user, Model model) {
+        // Assuming cart items are stored in session or database
+        List<CartItem> cartItems = getCartItemsFromSession(user); // Implement this method
+        model.addAttribute("cartItems", cartItems);
+        model.addAttribute("total", calculateTotal(cartItems)); // Implement this method
+        return "cart";
+    }
+
+    @PostMapping("/cart/checkout")
+    public String checkout(@AuthenticationPrincipal User user, Model model) {
         try {
-            model.addAttribute("cartItems", cartService.getCartItems());
-            model.addAttribute("cartTotal", cartService.getCartTotal());
+            // Assuming cart items are retrieved from session or database
+            List<CartItem> cartItems = getCartItemsFromSession(user); // Implement this method
+            if (cartItems == null || cartItems.isEmpty()) {
+                model.addAttribute("error", "Your cart is empty.");
+                return "cart";
+            }
+
+            orderService.createOrder(user, cartItems);
+            // Clear cart after successful checkout (implement clearCart method)
+            clearCartFromSession(user); // Implement this method
+            model.addAttribute("success", "Order placed successfully! Check your email for confirmation.");
+            return "redirect:/cart";
+        } catch (IllegalStateException e) {
+            model.addAttribute("error", e.getMessage());
             return "cart";
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
-            return "error";
-        }
-    }
-
-    @PostMapping("/cart/add")
-    public String addToCart(@RequestParam("productId") Long productId,
-                            @RequestParam("quantity") int quantity, Model model) {
-        try {
-            cartService.addToCart(productId, quantity);
-            return "redirect:/cart?success=Product added to cart";
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("products", cartService.getCartItems());
-            model.addAttribute("cartTotal", cartService.getCartTotal());
-            return "cart"; // Changed to redirect to /products for stock errors
-        }
-    }
-
-    @PostMapping("/cart/update")
-    public String updateCart(@RequestParam("cartItemId") Long cartItemId,
-                             @RequestParam("quantity") int quantity, Model model) {
-        try {
-            cartService.updateCartItem(cartItemId, quantity);
-            return "redirect:/cart?success=Cart updated successfully";
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("cartItems", cartService.getCartItems());
-            model.addAttribute("cartTotal", cartService.getCartTotal());
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to process order: " + e.getMessage());
             return "cart";
         }
     }
 
-    @PostMapping("/cart/remove")
-    public String removeFromCart(@RequestParam("cartItemId") Long cartItemId, Model model) {
-        try {
-            cartService.removeFromCart(cartItemId);
-            return "redirect:/cart?success=Product removed from cart";
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("cartItems", cartService.getCartItems());
-            model.addAttribute("cartTotal", cartService.getCartTotal());
-            return "cart";
-        }
+    // Placeholder methods - implement based on your cart storage (e.g., session or database)
+    private List<CartItem> getCartItemsFromSession(User user) {
+        // Implement to retrieve cart items (e.g., from HttpSession or a Cart entity)
+        return null; // Replace with actual logic
+    }
+
+    private double calculateTotal(List<CartItem> cartItems) {
+        // Implement to calculate total price
+        return 0.0; // Replace with actual logic
+    }
+
+    private void clearCartFromSession(User user) {
+        // Implement to clear cart after checkout
     }
 }
