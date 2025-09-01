@@ -3,17 +3,22 @@ package com.lankafreshmart.market_store.service;
 
 import com.lankafreshmart.market_store.model.Product;
 import com.lankafreshmart.market_store.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+
+    @Value("${app.low-stock-threshold}")
+    private int lowStockThreshold;
 
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -26,6 +31,10 @@ public class ProductService {
 
     public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
+    }
+
+    public List<Product> getLowStockProducts() {
+        return productRepository.findByStockQuantityLessThanEqual(lowStockThreshold);
     }
 
     public void createProduct(Product product) {
