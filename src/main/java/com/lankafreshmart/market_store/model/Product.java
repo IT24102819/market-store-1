@@ -20,10 +20,13 @@ public class Product {
     private String description;
 
     @Column
-    private String category; // e.g., "Fruit", "Vegetable"
+    private String category;
 
     @Column
-    private String imageUrl; // e.g., "/images/apple.jpg"
+    private String imageUrl;
+
+    @Column(nullable = false)
+    private int stockQuantity; // New: Tracks available stock
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -38,4 +41,6 @@ public class Product {
     public void setCategory(String category) { this.category = category; }
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public int getStockQuantity() { return stockQuantity; }
+    public void setStockQuantity(int stockQuantity) { this.stockQuantity = stockQuantity; }
 }
