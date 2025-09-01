@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Admin Products - Lanka Fresh Mart</title>
+  <link rel="stylesheet" href="/css/admin-dashboard.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> <!-- Bootstrap CDN -->
+  <script>
+    function confirmDelete(name) {
+      return confirm('Are you sure you want to delete product ' + name + '?');
+    }
+    function confirmUpdate(name) {
+      return confirm('Are you sure you want to update product ' + name + '?');
+    }
+  </script>
+</head>
+<body>
+<div class="container">
+  <h1>Manage Products</h1>
+  <!-- Success or error messages -->
+  <div th:if="${param.success}" class="success" th:text="${param.success}"></div>
+  <div th:if="${error}" class="error" th:text="${error}"></div>
+  <!-- Create product form -->
+  <form th:action="@{/admin/products/create}" th:object="${product}" method="post" aria-label="Create product form">
+    <div class="form-group">
+      <label for="name">Product Name</label>
+      <input type="text" th:field="*{name}" id="name" required placeholder="Enter product name" aria-required="true"/>
+    </div>
+    <div class="form-group">
+      <label for="price">Price</label>
+      <input type="number" step="0.01" th:field="*{price}" id="price" required placeholder="Enter price" aria-required="true"/>
+    </div>
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select th:field="*{category}" id="category" aria-label="Select product category">
+        <option value="">Select Category</option>
+        <option value="Fruit">Fruit</option>
+        <option value="Vegetable">Vegetable</option>
+        <option value="Dairy">Dairy</option>
+        <option value="Bakery">Bakery</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="imageUrl">Image URL</label>
+      <input type="text" th:field="*{imageUrl}" id="imageUrl" placeholder="Enter image URL (e.g., /images/product.jpg)" aria-label="Image URL"/>
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea th:field="*{description}" id="description" placeholder="Enter description"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Product</button>
+  </form>
+  <!-- Product cards -->
+  <div class="row mt-4">
+    <div th:each="product : ${products}" class="col-md-4 mb-4">
+      <div class="card" role="article" aria-labelledby="product-title-${product.id}">
+        <img th:src="${product.imageUrl}" th:alt="${product.name}" class="card-img-top" style="height: 200px; object-fit: cover;">
+        <div class="card-body">
+          <h5 class="card-title" th:id="'product-title-' + ${product.id}" th:text="${product.name}"></h5>
+          <form th:action="@{/admin/products/update}" method="post" th:attr="data-name=${product.name}" onsubmit="return confirmUpdate(this.getAttribute('data-name'));">
+            <input type="hidden" name="id" th:value="${product.id}"/>
+            <div class="form-group">
+              <label for="name-${product.id}">Name</label>
+              <input type="text" name="name" th:value="${product.name}" id="name-${product.id}" aria-label="Product name"/>
+            </div>
+            <div class="form-group">
+              <label for="price-${product.id}">Price</label>
+              <input type="number" step="0.01" name="price" th:value="${product.price}" id="price-${product.id}" aria-label="Product price"/>
+            </div>
+            <div class="form-group">
+              <label for="category-${product.id}">Category</label>
+              <select name="category" id="category-${product.id}" aria-label="Select product category">
+                <option value="" th:selected="${product.category == null}">Select Category</option>
+                <option value="Fruit" th:selected="${product.category == 'Fruit'}">Fruit</option>
+                <option value="Vegetable" th:selected="${product.category == 'Vegetable'}">Vegetable</option>
+                <option value="Dairy" th:selected="${product.category == 'Dairy'}">Dairy</option>
+                <option value="Bakery" th:selected="${product.category == 'Bakery'}">Bakery</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="imageUrl-${product.id}">Image URL</label>
+              <input type="text" name="imageUrl" th:value="${product.imageUrl}" id="imageUrl-${product.id}" aria-label="Image URL"/>
+            </div>
+            <div class="form-group">
+              <label for="description-${product.id}">Description</label>
+              <textarea name="description" id="description-${product.id}" th:text="${product.description}" aria-label="Product description"></textarea>
+            </div>
+            <button type="submit" class="update-button">Update</button>
+          </form>
+          <form th:action="@{/admin/products/delete}" method="post" th:attr="data-name=${product.name}" onsubmit="return confirmDelete(this.getAttribute('data-name'));">
+            <input type="hidden" name="id" th:value="${product.id}"/>
+            <button type="submit" class="delete-button mt-2">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Pagination -->
+  <ul class="pagination justify-content-center">
+    <li th:class="${currentPage == 0 ? 'page-item disabled' : 'page-item'}">
+      <a th:href="@{/admin/products(page=${currentPage - 1}, size=10)}" class="page-link">Previous</a>
+    </li>
+    <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:class="${currentPage == i ? 'page-item active' : 'page-item'}">
+      <a th:href="@{/admin/products(page=${i}, size=10)}" class="page-link" th:text="${i + 1}"></a>
+    </li>
+    <li th:class="${currentPage == totalPages - 1 ? 'page-item disabled' : 'page-item'}">
+      <a th:href="@{/admin/products(page=${currentPage + 1}, size=10)}" class="page-link">Next</a>
+    </li>
+  </ul>
+  <!-- Navigation links -->
+  <div class="nav-links">
+    <p><a th:href="@{/admin/dashboard}" href="/admin/dashboard">Manage Users</a></p>
+    <p><a href="#" onclick="alert('Order Management - Coming Soon!')">Manage Orders</a></p>
+    <form th:action="@{/logout}" method="post" aria-label="Logout form">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+      <button type="submit" class="logout-button">Logout</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>
