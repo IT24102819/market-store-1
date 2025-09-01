@@ -22,6 +22,15 @@ public class Order {
     @Column(nullable = false)
     private double totalAmount;
 
+    @Column(nullable = false)
+    private String status = "PENDING"; // e.g., "PENDING", "PAID", "SHIPPED"
+
+    @Column(nullable = true)
+    private String paymentMethod; // e.g., "CASH_ON_DELIVERY", "CARD"
+
+    @Column(nullable = true)
+    private String paymentStatus; // e.g., "PENDING", "PAID", "FAILED"
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
 
@@ -55,5 +64,29 @@ public class Order {
         for (OrderItem item : orderItems) {
             item.setOrder(this);
         }
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 }
