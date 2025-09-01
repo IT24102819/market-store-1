@@ -47,7 +47,10 @@
         </li>
     </ul>
     <div class="nav-links">
-        <p><a th:href="@{/login}" href="/login">Login</a></p>
+        <form th:action="@{/logout}" method="post" aria-label="Logout form">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit" class="logout-button">Logout</button>
+        </form>
         <p><a th:href="@{/register}" href="/register">Register</a></p>
         <p><a th:href="@{/cart}" href="/cart">View Cart</a></p>
         <a th:href="@{/order/history}" class="btn btn-secondary">View Order History</a>
