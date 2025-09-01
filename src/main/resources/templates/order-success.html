@@ -1,12 +1,26 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head><title>Order Confirmation</title></head>
+<head>
+    <title>Order Confirmation - Lanka Fresh Mart</title>
+    <link rel="stylesheet" href="/css/register.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
 <body>
+<div class="container">
     <h1>Thank You for Your Order!</h1>
-    <p th:if="${success}" th:text="${success}"></p>
-    <p>Your Order ID: <span th:text="${orderId}"></span></p>
-    <p>Check your email for details.</p>
-    <a th:href="@{/cart}">Back to Cart</a>
-    <a th:href="@{/products}">Continue Shopping</a>
+    <div th:if="${success}" class="alert alert-success" th:text="${success}" role="alert"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}" role="alert"></div>
+    <p>Your Order ID: <span th:text="${orderId}" class="font-weight-bold"></span></p>
+    <p>Please check your email for order details and confirmation.</p>
+    <div class="nav-links">
+        <p><a th:href="@{/cart}" class="btn btn-primary">Back to Cart</a></p>
+        <p><a th:href="@{/products}" class="btn btn-secondary">Continue Shopping</a></p>
+        <p><a th:href="@{/profile}" class="btn btn-info">View Profile</a></p>
+        <form th:action="@{/logout}" method="post" aria-label="Logout form">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+    </div>
+</div>
 </body>
 </html>
