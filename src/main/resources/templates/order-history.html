@@ -20,7 +20,7 @@
     <tbody>
     <tr th:each="order : ${orders}">
       <td th:text="${order.id}"></td>
-      <td th:text="${#numbers.formatDecimal(order.totalAmount, 2, 2)}"></td>
+      <td th:text="${#numbers.formatDecimal(order.totalAmount, 2, 2) + ' LKR'}"></td>
       <td th:text="${order.status}"></td>
       <td><a th:href="@{/order/details(orderId=${order.id})}" class="btn btn-info btn-sm">View Details</a></td>
     </tr>
