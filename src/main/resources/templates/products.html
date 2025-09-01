@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-        
+
                     <ul class="pagination justify-content-center">
                         <li th:class="${currentPage == 0 ? 'page-item disabled' : 'page-item'}">
                             <a th:href="@{/products(page=${currentPage - 1}, size=10)}" class="page-link">Previous</a>
