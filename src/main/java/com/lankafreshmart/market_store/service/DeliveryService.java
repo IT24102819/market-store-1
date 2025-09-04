@@ -29,14 +29,16 @@ public class DeliveryService {
 
     @Transactional
     public void updateDeliveryStatus(Long deliveryId, String newStatus) throws IllegalStateException {
+        System.out.println("Updating delivery ID: " + deliveryId + " to status: " + newStatus);
         Delivery delivery = deliveryRepository.findById(deliveryId)
-                .orElseThrow(() -> new IllegalArgumentException("Delivery not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Delivery not found with ID: " + deliveryId));
         delivery.setStatus(newStatus);
         deliveryRepository.save(delivery);
 
         // Send email notification
         try {
             emailService.sendDeliveryUpdateEmail(delivery.getOrder().getUser().getEmail(), delivery);
+            System.out.println("Email sent for delivery update ID: " + deliveryId);
         } catch (MessagingException e) {
             System.err.println("Failed to send delivery update email: " + e.getMessage());
         }
