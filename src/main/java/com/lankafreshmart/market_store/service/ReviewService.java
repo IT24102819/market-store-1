@@ -3,6 +3,7 @@ package com.lankafreshmart.market_store.service;
 import com.lankafreshmart.market_store.model.Order;
 import com.lankafreshmart.market_store.model.Product;
 import com.lankafreshmart.market_store.model.Review;
+import com.lankafreshmart.market_store.model.User;
 import com.lankafreshmart.market_store.repository.ReviewRepository;
 import com.lankafreshmart.market_store.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReviewService {
@@ -77,5 +79,11 @@ public class ReviewService {
 
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();
+    }
+
+    public List<Review> getReviewsByUser(User user) {
+        return reviewRepository.findAll().stream()
+                .filter(review -> review.getOrder().getUser().equals(user))
+                .collect(Collectors.toList());
     }
 }
