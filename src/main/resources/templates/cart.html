@@ -49,7 +49,7 @@
     </tr>
     <tr th:if="${!#lists.isEmpty(cartItems)}">
       <td colspan="4" class="text-right"><strong>Total:</strong></td>
-      <td th:text="${cartTotal} + ' LKR' "></td>
+      <td th:text="${#numbers.formatDecimal(total, 2, 2) + ' LKR'}"></td>
       <td></td>
     </tr>
     </tbody>
