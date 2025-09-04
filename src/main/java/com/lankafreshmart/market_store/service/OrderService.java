@@ -51,8 +51,8 @@ public class OrderService {
         Order order = new Order(user, totalAmount.doubleValue(), orderItems);
         order.setStatus("PENDING");
         order.setPaymentMethod(paymentMethod);
-        order.setPaymentStatus("PENDING");
-        order.setDeliveryMethod(deliveryMethod); // Add this
+        order.setPaymentStatus("PENDING".equals(paymentMethod) ? "PENDING" : "PROCESSING"); // Update based on payment method
+        order.setDeliveryMethod(deliveryMethod);
         order = orderRepository.save(order);
 
         // Send confirmation email
