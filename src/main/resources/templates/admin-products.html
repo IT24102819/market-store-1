@@ -134,7 +134,7 @@
   <!-- Navigation links -->
   <div class="nav-links">
     <p><a th:href="@{/admin/dashboard}" href="/admin/dashboard">Manage Users</a></p>
-    <p><a href="#" onclick="alert('Order Management - Coming Soon!')">Manage Orders</a></p>
+    <p><a th:href="@{/admin/orders}" href="/admin/orders">Manage Orders</a></p>
     <form th:action="@{/logout}" method="post" aria-label="Logout form">
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
       <button type="submit" class="logout-button">Logout</button>
