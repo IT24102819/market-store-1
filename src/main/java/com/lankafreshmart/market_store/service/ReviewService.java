@@ -52,4 +52,26 @@ public class ReviewService {
     public List<Review> getReviewsByProduct(Product product) {
         return reviewRepository.findByProduct(product);
     }
+
+    public Review findById(Long reviewId) {
+        return reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("Review not found"));
+    }
+
+    @Transactional
+    public void updateReview(Long reviewId, String comment, int rating) {
+        Review review = findById(reviewId);
+        review.setComment(comment);
+        review.setRating(rating);
+        reviewRepository.save(review);
+        updateProductRating(review.getProduct());
+    }
+
+    @Transactional
+    public void deleteReview(Long reviewId) {
+        Review review = findById(reviewId);
+        Product product = review.getProduct();
+        reviewRepository.delete(review);
+        updateProductRating(product);
+    }
 }
