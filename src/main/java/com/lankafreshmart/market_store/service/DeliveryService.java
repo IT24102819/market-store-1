@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.mail.MessagingException;
 import java.time.LocalDateTime;
+import java.util.Random;
 
 @Service
 public class DeliveryService {
@@ -20,10 +21,22 @@ public class DeliveryService {
         this.deliveryRepository = deliveryRepository;
         this.emailService = emailService;
     }
+    
+    private String generateTrackingNumber() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder trackingNumber = new StringBuilder("TRK");
+        Random random = new Random();
+        for (int i = 0; i < 7; i++) {
+            trackingNumber.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        return trackingNumber.toString();
+    }
 
     @Transactional
     public Delivery createDelivery(Order order) {
         Delivery delivery = new Delivery(order);
+        String trackingNumber = generateTrackingNumber();
+        delivery.setTrackingNumber(trackingNumber);
         return deliveryRepository.save(delivery);
     }
 
@@ -33,6 +46,11 @@ public class DeliveryService {
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new IllegalArgumentException("Delivery not found with ID: " + deliveryId));
         delivery.setStatus(newStatus);
+
+        if ("SHIPPED".equals(newStatus) && delivery.getTrackingNumber() == null) {
+            delivery.setTrackingNumber(generateTrackingNumber());
+        }
+
         deliveryRepository.save(delivery);
 
         // Send email notification
