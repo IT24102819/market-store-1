@@ -1,6 +1,7 @@
 package com.lankafreshmart.market_store.service;
 
 
+import com.lankafreshmart.market_store.model.Delivery;
 import com.lankafreshmart.market_store.model.Order;
 import com.lankafreshmart.market_store.model.Product;
 import org.springframework.beans.factory.annotation.Value;
@@ -91,5 +92,24 @@ public class EmailService {
             System.err.println("Failed to authenticate with SMTP server for order #" + order.getId() + ": " + e.getMessage());
             throw e;
         }
+    }
+
+    public void sendDeliveryUpdateEmail(String to, Delivery delivery) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setTo(to);
+        helper.setSubject("Delivery Update - Lanka Fresh Mart");
+        String statusMessage = switch (delivery.getStatus()) {
+            case "SHIPPED" -> "Your order has been shipped! Tracking number: " + (delivery.getTrackingNumber() != null ? delivery.getTrackingNumber() : "Not available yet") +
+                    ". Estimated delivery: " + delivery.getEstimatedDeliveryDate();
+            case "OUT_FOR_DELIVERY" -> "Your order is out for delivery! Tracking number: " + (delivery.getTrackingNumber() != null ? delivery.getTrackingNumber() : "Not available yet");
+            case "DELIVERED" -> "Your order has been delivered! Thank you for shopping with us!";
+            case "CANCELLED" -> "Your order has been cancelled. Contact support if you have questions.";
+            default -> "Your order is " + delivery.getStatus() + ". Check back for updates.";
+        };
+        helper.setText("<h1>Delivery Update</h1>" +
+                "<p>Order ID: " + delivery.getOrder().getId() + "</p>" +
+                "<p>" + statusMessage + "</p>", true);
+        mailSender.send(message);
     }
 }
