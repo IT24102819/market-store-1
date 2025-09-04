@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Admin - Orders - Lanka Fresh Mart</title>
+  <link rel="stylesheet" href="/css/register.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h1>Manage Orders</h1>
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th>Order ID</th>
+      <th>User</th>
+      <th>Total</th>
+      <th>Status</th>
+      <th>Delivery Status</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}">
+      <td th:text="${order.id}"></td>
+      <td th:text="${order.user.username}"></td>
+      <td th:text="${#numbers.formatDecimal(order.totalAmount, 2, 2)}"></td>
+      <td th:text="${order.status}"></td>
+      <td th:text="${order.delivery != null ? order.delivery.status : 'N/A'}"></td>
+      <td>
+        <form th:action="@{/delivery/update}" method="post" th:if="${order.delivery != null}">
+          <input type="hidden" name="deliveryId" th:value="${order.delivery.id}"/>
+          <select name="newStatus" class="form-control d-inline-block" style="width: auto;">
+            <option value="PENDING">PENDING</option>
+            <option value="SHIPPED">SHIPPED</option>
+            <option value="OUT_FOR_DELIVERY">OUT FOR DELIVERY</option>
+            <option value="DELIVERED">DELIVERED</option>
+            <option value="CANCELLED">CANCELLED</option>
+          </select>
+          <button type="submit" class="btn btn-primary btn-sm">Update</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
