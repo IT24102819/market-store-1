@@ -9,7 +9,7 @@
 <div class="container">
     <h1>Order Details</h1>
     <p><strong>Order ID:</strong> <span th:text="${order.id}"></span></p>
-    <p><strong>Total Amount:</strong> <span th:text="${#numbers.formatDecimal(order.totalAmount, 2, 2)}"></span></p>
+    <p><strong>Total Amount:</strong> <span th:text="${#numbers.formatDecimal(order.totalAmount, 2, 2) + ' LKR'}"></span></p>
     <p><strong>Status:</strong> <span th:text="${order.status}"></span></p>
     <p><strong>Payment Method:</strong> <span th:text="${order.paymentMethod}"></span></p>
     <h3>Items</h3>
@@ -26,8 +26,8 @@
         <tr th:each="item : ${order.orderItems}">
             <td th:text="${item.product.name}"></td>
             <td th:text="${item.quantity}"></td>
-            <td th:text="${#numbers.formatDecimal(item.price, 2, 2)}"></td>
-            <td th:text="${#numbers.formatDecimal(item.price * item.quantity, 2, 2)}"></td>
+            <td th:text="${#numbers.formatDecimal(item.price, 2, 2) + ' LKR'}"></td>
+            <td th:text="${#numbers.formatDecimal(item.price * item.quantity, 2, 2) + ' LKR'}"></td>
         </tr>
         </tbody>
     </table>
