@@ -40,7 +40,7 @@ public class OrderService {
         BigDecimal totalAmount = BigDecimal.ZERO;
         List<OrderItem> orderItems = new ArrayList<>();
 
-        // Validate stock and calculate total
+        // Validate stock and calculate total, update unitsSold
         for (CartItem cartItem : cartItems) {
             Product product = cartItem.getProduct();
             int requestedQuantity = cartItem.getQuantity();
@@ -51,7 +51,8 @@ public class OrderService {
             totalAmount = totalAmount.add(itemTotal);
             orderItems.add(new OrderItem(product, requestedQuantity, product.getPrice().doubleValue()));
             product.setStockQuantity(product.getStockQuantity() - requestedQuantity);
-            productRepository.save(product);
+            product.setUnitsSold(product.getUnitsSold() != null ? product.getUnitsSold() + requestedQuantity : requestedQuantity); // Increment units sold
+            productRepository.save(product); // Save updated stock and units sold
         }
 
         // Create and save order with payment and delivery details
