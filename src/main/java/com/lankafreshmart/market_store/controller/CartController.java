@@ -36,16 +36,14 @@ public class CartController {
         List<CartItem> cartItems = cartService.getCartItems();
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("total", cartService.getCartTotal());
-
-        // Enhance with product stock status using productService
         if (!cartItems.isEmpty()) {
             for (CartItem item : cartItems) {
                 Product product = productService.getProductById(item.getProduct().getId())
                         .orElseThrow(() -> new IllegalArgumentException("Product not found"));
-                item.getProduct().setStockQuantity(product.getStockQuantity()); // Update with latest stock
+                item.getProduct().setStockQuantity(product.getStockQuantity());
             }
             model.addAttribute("lowStockWarning", cartItems.stream()
-                    .anyMatch(item -> item.getProduct().getStockQuantity() <= 5)); // Example threshold
+                    .anyMatch(item -> item.getProduct().getStockQuantity() <= 5));
         }
         return "cart";
     }
@@ -87,18 +85,29 @@ public class CartController {
     }
 
     @PostMapping("/cart/checkout")
-    public String checkout(@AuthenticationPrincipal User user, Model model, @RequestParam String paymentMethod) {
+    public String initiateCheckout(@AuthenticationPrincipal User user, Model model) {
+        List<CartItem> cartItems = cartService.getCartItems();
+        if (cartItems == null || cartItems.isEmpty()) {
+            model.addAttribute("error", "Your cart is empty.");
+            return "cart";
+        }
+        model.addAttribute("cartItems", cartItems);
+        model.addAttribute("total", cartService.getCartTotal());
+        return "checkout";
+    }
+
+    @PostMapping("/order/place")
+    public String placeOrder(@AuthenticationPrincipal User user, Model model,
+                             @RequestParam String deliveryMethod) {
         try {
             List<CartItem> cartItems = cartService.getCartItems();
             if (cartItems == null || cartItems.isEmpty()) {
                 model.addAttribute("error", "Your cart is empty.");
-                return "cart";
+                return "checkout";
             }
 
-            // Create order
-            Order order = orderService.createOrder(user, cartItems, paymentMethod);
-
-            // Clear cart
+            // Create order with delivery method
+            Order order = orderService.createOrder(user, cartItems, "CASH_ON_DELIVERY", deliveryMethod); // Default payment for now
             cartItems.forEach(item -> cartService.removeFromCart(item.getId()));
 
             model.addAttribute("success", "Order placed successfully! Check your email for confirmation.");
@@ -106,10 +115,10 @@ public class CartController {
             return "order-success";
         } catch (IllegalStateException e) {
             model.addAttribute("error", e.getMessage());
-            return "cart";
+            return "checkout";
         } catch (Exception e) {
             model.addAttribute("error", "Failed to process order: " + e.getMessage());
-            return "cart";
+            return "checkout";
         }
     }
 
