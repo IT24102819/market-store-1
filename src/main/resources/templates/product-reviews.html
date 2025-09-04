@@ -16,6 +16,7 @@
             <th>Comment</th>
             <th>Rating</th>
             <th>Order ID</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -23,9 +24,13 @@
             <td th:text="${review.comment}"></td>
             <td th:text="${review.rating} + '/5'"></td>
             <td th:text="${review.order.id}"></td>
+            <td>
+                <a th:href="@{/review/edit(reviewId=${review.id})}" class="btn btn-warning btn-sm" th:if="${#authentication.principal == review.order.user}">Edit</a>
+                <a th:href="@{/review/delete(reviewId=${review.id})}" class="btn btn-danger btn-sm" th:if="${#authentication.principal == review.order.user}" onclick="return confirm('Are you sure?')">Delete</a>
+            </td>
         </tr>
         <tr th:if="${#lists.isEmpty(reviews)}">
-            <td colspan="3" class="text-center">No reviews yet.</td>
+            <td colspan="4" class="text-center">No reviews yet.</td>
         </tr>
         </tbody>
     </table>
