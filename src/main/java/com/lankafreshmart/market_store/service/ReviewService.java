@@ -74,4 +74,8 @@ public class ReviewService {
         reviewRepository.delete(review);
         updateProductRating(product);
     }
+
+    public List<Review> getAllReviews() {
+        return reviewRepository.findAll();
+    }
 }
