@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Product Reviews - Lanka Fresh Mart</title>
+    <link rel="stylesheet" href="/css/register.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1>Reviews for Product</h1>
+    <h3 th:text="'Product: ' + ${product.name}"></h3>
+    <p th:text="'Average Rating: ' + ${averageRating} + '/5'"></p>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Comment</th>
+            <th>Rating</th>
+            <th>Order ID</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="review : ${reviews}">
+            <td th:text="${review.comment}"></td>
+            <td th:text="${review.rating} + '/5'"></td>
+            <td th:text="${review.order.id}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(reviews)}">
+            <td colspan="3" class="text-center">No reviews yet.</td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/order-history}" class="btn btn-secondary">Back to Order History</a>
+</div>
+</body>
+</html>
