@@ -119,4 +119,15 @@ public class CartController {
         model.addAttribute("orders", orders);
         return "order-history";
     }
+
+    @GetMapping("/order/details")
+    public String orderDetails(@RequestParam Long orderId, @AuthenticationPrincipal User user, Model model) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        if (!order.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("Unauthorized access to order");
+        }
+        model.addAttribute("order", order);
+        return "order-details";
+    }
 }
