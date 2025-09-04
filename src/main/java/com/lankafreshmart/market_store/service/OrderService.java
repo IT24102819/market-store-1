@@ -29,7 +29,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order createOrder(User user, List<CartItem> cartItems, String paymentMethod) throws IllegalStateException {
+    public Order createOrder(User user, List<CartItem> cartItems, String paymentMethod, String deliveryMethod) throws IllegalStateException {
         BigDecimal totalAmount = BigDecimal.ZERO;
         List<OrderItem> orderItems = new ArrayList<>();
 
@@ -47,11 +47,12 @@ public class OrderService {
             productRepository.save(product);
         }
 
-        // Create and save order with payment details
+        // Create and save order with payment and delivery details
         Order order = new Order(user, totalAmount.doubleValue(), orderItems);
         order.setStatus("PENDING");
         order.setPaymentMethod(paymentMethod);
         order.setPaymentStatus("PENDING");
+        order.setDeliveryMethod(deliveryMethod); // Add this
         order = orderRepository.save(order);
 
         // Send confirmation email
