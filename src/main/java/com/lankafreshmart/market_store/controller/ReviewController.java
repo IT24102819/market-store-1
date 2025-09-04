@@ -61,8 +61,7 @@ public class ReviewController {
 
     @PostMapping("/review/update")
     public String updateReview(@RequestParam Long reviewId, @RequestParam String comment, @RequestParam int rating, @AuthenticationPrincipal User user, Model model) {
-        Review review = reviewService.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("Review not found"));
+        Review review = reviewService.findById(reviewId); // Should throw IllegalArgumentException if not found
         if (review.getOrder() == null || review.getOrder().getUser() == null) {
             throw new IllegalArgumentException("Invalid review data: Order or user not found");
         }
@@ -83,8 +82,7 @@ public class ReviewController {
 
     @GetMapping("/review/delete")
     public String deleteReview(@RequestParam Long reviewId, @AuthenticationPrincipal User user, Model model) {
-        Review review = reviewService.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("Review not found"));
+        Review review = reviewService.findById(reviewId); // Should throw IllegalArgumentException if not found
         if (review.getOrder() == null || review.getOrder().getUser() == null) {
             throw new IllegalArgumentException("Invalid review data: Order or user not found");
         }
