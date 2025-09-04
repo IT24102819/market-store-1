@@ -37,7 +37,17 @@ public class AdminController {
 
     @PostMapping("/delivery/update")
     public String updateDeliveryStatus(@RequestParam Long deliveryId, @RequestParam String newStatus) {
-        deliveryService.updateDeliveryStatus(deliveryId, newStatus);
+        System.out.println("Attempting to update delivery ID: " + deliveryId + " to status: " + newStatus);
+        try {
+            deliveryService.updateDeliveryStatus(deliveryId, newStatus);
+            System.out.println("Successfully updated delivery status for ID: " + deliveryId);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Failed to update delivery status: " + e.getMessage());
+            return "redirect:/admin/orders?error=Delivery not found";
+        } catch (Exception e) {
+            System.out.println("Unexpected error updating delivery status: " + e.getMessage());
+            return "redirect:/admin/orders?error=Unexpected error";
+        }
         return "redirect:/admin/orders";
     }
 }
