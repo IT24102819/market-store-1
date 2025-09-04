@@ -29,6 +29,7 @@
       <td>
         <form th:action="@{/admin/delivery/update}" method="post" th:if="${order.delivery != null}">
           <input type="hidden" name="deliveryId" th:value="${order.delivery.id}"/>
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
           <select name="newStatus" class="form-control d-inline-block" style="width: auto;">
             <option value="PENDING">PENDING</option>
             <option value="SHIPPED">SHIPPED</option>
