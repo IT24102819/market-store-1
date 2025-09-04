@@ -63,4 +63,21 @@ public class OrderService {
 
         return order;
     }
+
+    @Transactional
+    public void cancelOrder(Long orderId) throws IllegalStateException {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        if (!"PENDING".equals(order.getStatus())) {
+            throw new IllegalStateException("Only PENDING orders can be cancelled");
+        }
+        // Revert stock quantities
+        for (OrderItem item : order.getOrderItems()) {
+            Product product = item.getProduct();
+            product.setStockQuantity(product.getStockQuantity() + item.getQuantity());
+            productRepository.save(product);
+        }
+        order.setStatus("CANCELLED");
+        orderRepository.save(order);
+    }
 }
