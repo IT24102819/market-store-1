@@ -26,7 +26,10 @@ public class Product {
     private String imageUrl;
 
     @Column(nullable = false)
-    private int stockQuantity; // New: Tracks available stock
+    private int stockQuantity;
+
+    @Column(nullable = true)
+    private Double rating;
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -43,4 +46,6 @@ public class Product {
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     public int getStockQuantity() { return stockQuantity; }
     public void setStockQuantity(int stockQuantity) { this.stockQuantity = stockQuantity; }
+    public Double getRating() { return rating; }
+    public void setRating(Double rating) { this.rating = rating; }
 }
