@@ -24,12 +24,12 @@
     <tr th:each="item : ${cartItems}">
       <td th:text="${item.product.name}"></td>
       <td th:text="${item.quantity}"></td>
-      <td th:text="${#numbers.formatDecimal(item.product.price, 2, 2)}"></td>
-      <td th:text="${#numbers.formatDecimal(item.product.price.multiply(BigDecimal.valueOf(item.quantity)), 2, 2)}"></td>
+      <td th:text="${#numbers.formatDecimal(item.product.price, 2, 2) + ' LKR'}"></td>
+      <td th:text="${item.quantity * item.product.price} + ' LKR' "></td>
     </tr>
     <tr>
       <td colspan="3" class="text-right"><strong>Total:</strong></td>
-      <td th:text="${#numbers.formatDecimal(total, 2, 2)}"></td>
+      <td th:text="${#numbers.formatDecimal(total, 2, 2) + ' LKR'}"></td>
     </tr>
     </tbody>
   </table>
