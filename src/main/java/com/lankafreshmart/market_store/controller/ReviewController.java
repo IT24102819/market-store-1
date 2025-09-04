@@ -59,4 +59,32 @@ public class ReviewController {
         model.addAttribute("averageRating", averageRating);
         return "product-reviews";
     }
+
+    @PostMapping("/review/update")
+    public String updateReview(@RequestParam Long reviewId, @RequestParam String comment, @RequestParam int rating, @AuthenticationPrincipal User user, Model model) {
+        Review review = reviewService.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("Review not found"));
+        if (!review.getOrder().getUser().equals(user)) {
+            throw new IllegalArgumentException("You can only update your own review");
+        }
+        try {
+            reviewService.updateReview(reviewId, comment, rating);
+            model.addAttribute("message", "Review updated successfully!");
+        } catch (IllegalStateException e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        return "redirect:/product-reviews?productId=" + review.getProduct().getId();
+    }
+
+    @GetMapping("/review/delete")
+    public String deleteReview(@RequestParam Long reviewId, @AuthenticationPrincipal User user, Model model) {
+        Review review = reviewService.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("Review not found"));
+        if (!review.getOrder().getUser().equals(user)) {
+            throw new IllegalArgumentException("You can only delete your own review");
+        }
+        Long productId = review.getProduct().getId();
+        reviewService.deleteReview(reviewId);
+        return "redirect:/product-reviews?productId=" + productId;
+    }
 }
