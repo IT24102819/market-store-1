@@ -83,7 +83,7 @@ public class ReviewService {
 
     public List<Review> getReviewsByUser(User user) {
         return reviewRepository.findAll().stream()
-                .filter(review -> review.getOrder().getUser().equals(user))
+                .filter(review -> review != null && review.getOrder() != null && review.getOrder().getUser() != null && review.getOrder().getUser().equals(user))
                 .collect(Collectors.toList());
     }
 }
