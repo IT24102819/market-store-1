@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Manage Reviews - Lanka Fresh Mart</title>
+    <link rel="stylesheet" href="/css/register.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1>Manage Reviews</h1>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Comment</th>
+            <th>Rating</th>
+            <th>Order ID</th>
+            <th>Product</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="review : ${reviews}">
+            <td th:text="${review.comment}"></td>
+            <td th:text="${review.rating} + '/5'"></td>
+            <td th:text="${review.order.id}"></td>
+            <td th:text="${review.product.name}"></td>
+            <td>
+                <a th:href="@{/admin/review/delete(reviewId=${review.id})}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(reviews)}">
+            <td colspan="5" class="text-center">No reviews to manage.</td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/admin/products}" class="btn btn-secondary">Back to Admin Dashboard</a>
+</div>
+</body>
+</html>
