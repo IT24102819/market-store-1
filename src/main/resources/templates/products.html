@@ -20,6 +20,8 @@
                     <p class="card-text" th:text="${product.description}"></p>
                     <p class="card-text" th:text="'Category: ' + ${product.category}"></p>
                     <p class="card-text" th:text="'In Stock: ' + ${product.stockQuantity}"></p>
+                    <p class="card-text" th:text="'Rating: ' + ${product.rating} + '/5'"></p>
+                    <p class="card-text" th:text="'Sold: ' + ${product.unitsSold}"></p>
                     <form th:action="@{/cart/add}" method="post" aria-label="Add to cart form">
                         <input type="hidden" name="productId" th:value="${product.id}"/>
                         <div class="form-group">
@@ -31,6 +33,7 @@
                             <span th:text="${product.stockQuantity == 0} ? 'Out of Stock' : 'Add to Cart'"></span>
                         </button>
                     </form>
+                    <a th:href="@{/product-reviews(productId=${product.id})}" class="btn btn-info btn-sm">View Reviews</a>
                 </div>
             </div>
         </div>
