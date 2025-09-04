@@ -80,6 +80,12 @@ public class ProductService {
         if (product.getCategory() != null) {
             existing.setCategory(product.getCategory());
         }
+        if (product.getRating() != null) {
+            existing.setRating(product.getRating());
+        }
+        if (product.getUnitsSold() != null) {
+            existing.setUnitsSold(product.getUnitsSold());
+        }
         if (product.getImageUrl() != null) {
             if (product.getImageUrl().length() > 500) {
                 throw new IllegalArgumentException("Image URL must be 500 characters or less");
