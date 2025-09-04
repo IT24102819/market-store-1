@@ -5,7 +5,6 @@ import com.lankafreshmart.market_store.model.Review;
 import com.lankafreshmart.market_store.model.User;
 import com.lankafreshmart.market_store.service.ProductService;
 import com.lankafreshmart.market_store.service.ReviewService;
-import com.lankafreshmart.market_store.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -64,6 +63,9 @@ public class ReviewController {
     public String updateReview(@RequestParam Long reviewId, @RequestParam String comment, @RequestParam int rating, @AuthenticationPrincipal User user, Model model) {
         Review review = reviewService.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("Review not found"));
+        if (review.getOrder() == null || review.getOrder().getUser() == null) {
+            throw new IllegalArgumentException("Invalid review data: Order or user not found");
+        }
         if (!review.getOrder().getUser().equals(user)) {
             throw new IllegalArgumentException("You can only update your own review");
         }
@@ -73,6 +75,9 @@ public class ReviewController {
         } catch (IllegalStateException e) {
             model.addAttribute("error", e.getMessage());
         }
+        if (review.getProduct() == null || review.getProduct().getId() == null) {
+            throw new IllegalArgumentException("Invalid review data: Product not found");
+        }
         return "redirect:/product-reviews?productId=" + review.getProduct().getId();
     }
 
@@ -80,8 +85,14 @@ public class ReviewController {
     public String deleteReview(@RequestParam Long reviewId, @AuthenticationPrincipal User user, Model model) {
         Review review = reviewService.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("Review not found"));
+        if (review.getOrder() == null || review.getOrder().getUser() == null) {
+            throw new IllegalArgumentException("Invalid review data: Order or user not found");
+        }
         if (!review.getOrder().getUser().equals(user)) {
             throw new IllegalArgumentException("You can only delete your own review");
+        }
+        if (review.getProduct() == null || review.getProduct().getId() == null) {
+            throw new IllegalArgumentException("Invalid review data: Product not found");
         }
         Long productId = review.getProduct().getId();
         reviewService.deleteReview(reviewId);
