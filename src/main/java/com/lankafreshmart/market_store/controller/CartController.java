@@ -49,15 +49,17 @@ public class CartController {
     }
 
     @PostMapping("/cart/add")
-    public String addToCart(@RequestParam Long productId, @RequestParam int quantity,
-                            @AuthenticationPrincipal User user, Model model) {
+    public String addToCart(@AuthenticationPrincipal User user,
+                            @RequestParam Long productId,
+                            @RequestParam(defaultValue = "1") int quantity,
+                            Model model) {
         try {
-            cartService.addToCart(productId, quantity);
-            model.addAttribute("success", "Item added to cart successfully!");
+            cartService.addToCart(productId, quantity); // Use the existing service method
+            model.addAttribute("success", "Product added to cart successfully!");
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
         }
-        return "redirect:/cart";
+        return "redirect:/cart"; // Redirect to cart page after adding
     }
 
     @PostMapping("/cart/update")
