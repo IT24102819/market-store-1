@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Edit Review - Lanka Fresh Mart</title>
+  <link rel="stylesheet" href="/css/register.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h1>Edit Your Review</h1>
+  <form th:action="@{/review/update}" method="post">
+    <input type="hidden" name="reviewId" th:value="${review.id}"/>
+    <div class="form-group">
+      <label for="comment">Comment:</label>
+      <textarea id="comment" name="comment" class="form-control" th:text="${review.comment}" required></textarea>
+    </div>
+    <div class="form-group">
+      <label for="rating">Rating (1-5):</label>
+      <select id="rating" name="rating" class="form-control" required>
+        <option value="1" th:selected="${review.rating == 1}">1</option>
+        <option value="2" th:selected="${review.rating == 2}">2</option>
+        <option value="3" th:selected="${review.rating == 3}">3</option>
+        <option value="4" th:selected="${review.rating == 4}">4</option>
+        <option value="5" th:selected="${review.rating == 5}">5</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Review</button>
+    <a th:href="@{/product-reviews(productId=${review.product.id})}" class="btn btn-secondary">Cancel</a>
+  </form>
+  <div th:if="${message}" class="alert alert-success" th:text="${message}" role="alert"></div>
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}" role="alert"></div>
+</div>
+</body>
+</html>
