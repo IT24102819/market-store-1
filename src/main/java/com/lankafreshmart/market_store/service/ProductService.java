@@ -107,4 +107,8 @@ public class ProductService {
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
         productRepository.delete(product);
     }
+
+    public Product saveProduct(Product product) {
+        return productRepository.save(product);
+    }
 }
