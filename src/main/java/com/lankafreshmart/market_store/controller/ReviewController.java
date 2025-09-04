@@ -96,4 +96,11 @@ public class ReviewController {
         reviewService.deleteReview(reviewId);
         return "redirect:/product-reviews?productId=" + productId;
     }
+
+    @GetMapping("/your-reviews")
+    public String yourReviews(@AuthenticationPrincipal User user, Model model) {
+        List<Review> reviews = reviewService.getReviewsByUser(user);
+        model.addAttribute("reviews", reviews);
+        return "your-reviews";
+    }
 }
