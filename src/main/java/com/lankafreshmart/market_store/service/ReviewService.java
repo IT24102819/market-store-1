@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class ReviewService {
     private final ReviewRepository reviewRepository;
@@ -45,5 +47,9 @@ public class ReviewService {
                 .orElse(0.0);
         product.setRating(averageRating); // Add rating field to Product if not present
         productService.saveProduct(product);
+    }
+
+    public List<Review> getReviewsByProduct(Product product) {
+        return reviewRepository.findByProduct(product);
     }
 }
