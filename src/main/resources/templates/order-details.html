@@ -31,6 +31,7 @@
         </tr>
         </tbody>
     </table>
+    <a th:href="@{/review(orderId=${order.id})}" class="btn btn-success btn-sm" th:if="${order.delivery != null and order.delivery.status == 'DELIVERED'}">Review</a>
     <a th:href="@{/order/history}" class="btn btn-secondary">Back to Order History</a>
     <a th:href="@{/products}" class="btn btn-primary">Continue Shopping</a>
     <form th:action="@{/order/cancel}" method="post" th:if="${order.status == 'PENDING'}" style="display:inline;">
