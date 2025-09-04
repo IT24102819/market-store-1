@@ -23,6 +23,9 @@ public class Order {
     private double totalAmount;
 
     @Column(nullable = false)
+    private String deliveryMethod;
+
+    @Column(nullable = false)
     private String status = "PENDING"; // e.g., "PENDING", "PAID", "SHIPPED"
 
     @Column(nullable = true)
@@ -88,5 +91,13 @@ public class Order {
 
     public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
+    }
+
+    public String getDeliveryMethod() {
+        return deliveryMethod;
+    }
+
+    public void setDeliveryMethod(String deliveryMethod) {
+        this.deliveryMethod = deliveryMethod;
     }
 }
