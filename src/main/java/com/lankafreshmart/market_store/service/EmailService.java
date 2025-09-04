@@ -103,7 +103,7 @@ public class EmailService {
             case "SHIPPED" -> "Your order has been shipped! Tracking number: " + (delivery.getTrackingNumber() != null ? delivery.getTrackingNumber() : "Not available yet") +
                     ". Estimated delivery: " + delivery.getEstimatedDeliveryDate();
             case "OUT_FOR_DELIVERY" -> "Your order is out for delivery! Tracking number: " + (delivery.getTrackingNumber() != null ? delivery.getTrackingNumber() : "Not available yet");
-            case "DELIVERED" -> "Your order has been delivered! Thank you for shopping with us!";
+            case "DELIVERED" -> "Your order has been delivered! Thank You for Shopping with us! Tracking number: " + (delivery.getTrackingNumber() != null ? delivery.getTrackingNumber() : "Not applicable");
             case "CANCELLED" -> "Your order has been cancelled. Contact support if you have questions.";
             default -> "Your order is " + delivery.getStatus() + ". Check back for updates.";
         };
