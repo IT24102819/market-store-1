@@ -16,6 +16,7 @@
       <th>Status</th>
       <th>Delivery Status</th>
       <th>Estimated Delivery</th>
+      <th>Tracking Number</th>
       <th>Actions</th>
     </tr>
     </thead>
@@ -26,10 +27,11 @@
       <td th:text="${order.status}"></td>
       <td th:text="${order.delivery != null ? order.delivery.status : 'N/A'}"></td>
       <td th:text="${order.delivery != null ? #temporals.format(order.delivery.estimatedDeliveryDate, 'yyyy-MM-dd') : 'N/A'}"></td>
+      <td th:text="${order.delivery != null ? order.delivery.trackingNumber : 'N/A'}"></td>
       <td><a th:href="@{/order/details(orderId=${order.id})}" class="btn btn-info btn-sm">View Details</a></td>
     </tr>
     <tr th:if="${#lists.isEmpty(orders)}">
-      <td colspan="6" class="text-center">No orders found.</td>
+      <td colspan="7" class="text-center">No orders found.</td>
     </tr>
     </tbody>
   </table>
