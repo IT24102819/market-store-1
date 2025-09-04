@@ -31,6 +31,9 @@ public class Product {
     @Column(nullable = true)
     private Double rating;
 
+    @Column(nullable = true)
+    private Integer unitsSold = 0;
+
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -48,4 +51,6 @@ public class Product {
     public void setStockQuantity(int stockQuantity) { this.stockQuantity = stockQuantity; }
     public Double getRating() { return rating; }
     public void setRating(Double rating) { this.rating = rating; }
+    public Integer getUnitsSold() { return unitsSold; }
+    public void setUnitsSold(Integer unitsSold) { this.unitsSold = unitsSold; }
 }
