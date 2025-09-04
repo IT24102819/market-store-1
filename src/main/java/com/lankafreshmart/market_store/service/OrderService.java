@@ -2,6 +2,7 @@ package com.lankafreshmart.market_store.service;
 
 
 import com.lankafreshmart.market_store.model.*;
+import com.lankafreshmart.market_store.repository.DeliveryRepository;
 import com.lankafreshmart.market_store.repository.OrderRepository;
 import com.lankafreshmart.market_store.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,14 +20,18 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final ProductService productService;
     private final EmailService emailService;
+    private final DeliveryService deliveryService;
+    private final DeliveryRepository deliveryRepository;
 
     @Autowired
     public OrderService(OrderRepository orderRepository, ProductRepository productRepository,
-                        ProductService productService, EmailService emailService) {
+                        ProductService productService, EmailService emailService, DeliveryService deliveryService, DeliveryRepository deliveryRepository) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.productService = productService;
         this.emailService = emailService;
+        this.deliveryService = deliveryService;
+        this.deliveryRepository = deliveryRepository;
     }
 
     @Transactional
@@ -51,9 +57,18 @@ public class OrderService {
         Order order = new Order(user, totalAmount.doubleValue(), orderItems);
         order.setStatus("PENDING");
         order.setPaymentMethod(paymentMethod);
-        order.setPaymentStatus("PENDING".equals(paymentMethod) ? "PENDING" : "PROCESSING"); // Update based on payment method
+        order.setPaymentStatus("PENDING".equals(paymentMethod) ? "PENDING" : "PROCESSING");
         order.setDeliveryMethod(deliveryMethod);
         order = orderRepository.save(order);
+
+        // Create delivery
+        Delivery delivery = deliveryService.createDelivery(order);
+        delivery.setStatus("PENDING");
+        delivery.setEstimatedDeliveryDate(LocalDateTime.now().plusDays(3)); // Example: 3 days for delivery
+        deliveryRepository.save(delivery);
+
+        order.setDelivery(delivery);
+        orderRepository.save(order);
 
         // Send confirmation email
         try {
