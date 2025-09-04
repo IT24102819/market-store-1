@@ -98,7 +98,8 @@ public class CartController {
 
     @PostMapping("/order/place")
     public String placeOrder(@AuthenticationPrincipal User user, Model model,
-                             @RequestParam String deliveryMethod) {
+                             @RequestParam String deliveryMethod,
+                             @RequestParam(required = false) String paymentMethod) {
         try {
             List<CartItem> cartItems = cartService.getCartItems();
             if (cartItems == null || cartItems.isEmpty()) {
@@ -106,8 +107,15 @@ public class CartController {
                 return "checkout";
             }
 
-            // Create order with delivery method
-            Order order = orderService.createOrder(user, cartItems, "CASH_ON_DELIVERY", deliveryMethod); // Default payment for now
+            // Default to CASH_ON_DELIVERY if no payment method selected
+            paymentMethod = paymentMethod != null ? paymentMethod : "CASH_ON_DELIVERY";
+            // For card, assume payment details are validated (mock for now)
+            if ("CARD".equals(paymentMethod) && !validateCardDetails(model)) { // Mock validation
+                return "checkout";
+            }
+
+            // Create order with payment and delivery method
+            Order order = orderService.createOrder(user, cartItems, paymentMethod, deliveryMethod);
             cartItems.forEach(item -> cartService.removeFromCart(item.getId()));
 
             model.addAttribute("success", "Order placed successfully! Check your email for confirmation.");
@@ -120,6 +128,16 @@ public class CartController {
             model.addAttribute("error", "Failed to process order: " + e.getMessage());
             return "checkout";
         }
+    }
+
+
+    private boolean validateCardDetails(Model model) {
+        String cardNumber = model.getAttribute("cardNumber") != null ? model.getAttribute("cardNumber").toString() : "";
+        if (cardNumber.isEmpty() || cardNumber.length() < 16) {
+            model.addAttribute("error", "Invalid card details. Please enter a valid card number.");
+            return false;
+        }
+        return true;
     }
 
     @GetMapping("/order/history")
