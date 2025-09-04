@@ -107,7 +107,7 @@ public class Order {
     public Delivery getDelivery() {
         return delivery;
     }
-    
+
     public void setDelivery(Delivery delivery) {
         this.delivery = delivery;
     }
