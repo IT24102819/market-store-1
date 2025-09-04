@@ -96,4 +96,8 @@ public class OrderService {
         order.setStatus("CANCELLED");
         orderRepository.save(order);
     }
+
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
 }
