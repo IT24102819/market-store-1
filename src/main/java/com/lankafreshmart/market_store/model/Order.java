@@ -37,6 +37,9 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
 
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private Delivery delivery;
+
     // Constructors
     public Order() {
         this.orderDate = LocalDateTime.now();
@@ -99,5 +102,13 @@ public class Order {
 
     public void setDeliveryMethod(String deliveryMethod) {
         this.deliveryMethod = deliveryMethod;
+    }
+
+    public Delivery getDelivery() {
+        return delivery;
+    }
+    
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
     }
 }
