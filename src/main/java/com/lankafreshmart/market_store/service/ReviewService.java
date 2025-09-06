@@ -27,17 +27,15 @@ public class ReviewService {
     }
 
     @Transactional
-    public void submitReview(Long orderId, String comment, int rating) throws IllegalStateException {
+    public void submitReview(Long orderId, String comment, int rating, User user) throws IllegalStateException {
         Order order = orderService.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
         if (!"DELIVERED".equals(order.getDelivery().getStatus())) {
             throw new IllegalStateException("Can only review delivered orders");
         }
-        Product product = order.getOrderItems().get(0).getProduct(); // Assuming one product per order for simplicity
-        Review review = new Review(order, product, comment, rating);
+        Product product = order.getOrderItems().get(0).getProduct(); // Assuming one product per order
+        Review review = new Review(order, product, comment, rating, user); // Pass the user
         reviewRepository.save(review);
-
-        // Update product average rating
         updateProductRating(product);
     }
 
