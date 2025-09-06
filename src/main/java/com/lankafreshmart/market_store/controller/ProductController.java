@@ -19,6 +19,28 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @GetMapping("/")
+    public String showLandingPage(
+            @RequestParam(required = false) String search,
+            Model model) {
+        List<Product> products;
+        if (search != null && !search.isEmpty()) {
+            products = productService.searchProducts(search, null, null, null);
+        } else {
+            // Display a limited number of featured products (e.g., first 6)
+            Page<Product> productPage = productService.getAllProducts(0, 6);
+            products = productPage.getContent();
+        }
+        model.addAttribute("products", products);
+        model.addAttribute("categories", productService.getAllProducts(0, Integer.MAX_VALUE).getContent().stream()
+                .map(Product::getCategory)
+                .filter(cat -> cat != null && !cat.isEmpty())
+                .distinct()
+                .collect(Collectors.toList()));
+        model.addAttribute("search", search);
+        return "landing";
+    }
+
     @GetMapping("/products")
     public String showProducts(
             @RequestParam(defaultValue = "0") int page,
@@ -59,6 +81,7 @@ public class ProductController {
         model.addAttribute("category", category);
         return "products";
     }
+
 
     @GetMapping("/admin/products")
     public String adminProducts(@RequestParam(defaultValue = "0") int page,
