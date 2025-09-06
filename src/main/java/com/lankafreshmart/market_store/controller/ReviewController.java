@@ -103,4 +103,16 @@ public class ReviewController {
         model.addAttribute("reviews", reviews);
         return "your-reviews";
     }
+
+    @GetMapping("/review/edit")
+    public String showEditReviewForm(@RequestParam Long reviewId, @AuthenticationPrincipal User user, Model model) {
+        Review review = reviewService.findById(reviewId); // No .orElseThrow needed here
+        System.out.println("Review Order User ID: " + (review.getOrder() != null && review.getOrder().getUser() != null ? review.getOrder().getUser().getId() : "null"));
+        System.out.println("Logged-in User ID: " + user.getId());
+        if (!review.getOrder().getUser().equals(user)) {
+            throw new IllegalArgumentException("You can only edit your own review");
+        }
+        model.addAttribute("review", review);
+        return "edit-review";
+    }
 }
