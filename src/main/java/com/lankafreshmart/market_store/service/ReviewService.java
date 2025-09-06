@@ -68,15 +68,9 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteReview(Long reviewId, User user) {
+    public void deleteReview(Long reviewId) {
         Review review = findById(reviewId);
-        if (!review.getUser().equals(user)) {
-            throw new IllegalArgumentException("You can only delete your own review");
-        }
         Product product = review.getProduct();
-        if (product == null) {
-            throw new IllegalArgumentException("Invalid review data: Product not found");
-        }
         reviewRepository.delete(review);
         updateProductRating(product);
     }

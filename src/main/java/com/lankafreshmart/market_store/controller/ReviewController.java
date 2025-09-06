@@ -93,7 +93,7 @@ public class ReviewController {
             throw new IllegalArgumentException("Invalid review data: Product not found");
         }
         Long productId = review.getProduct().getId();
-        reviewService.deleteReview(reviewId, user); // Pass user to service
+        reviewService.deleteReview(reviewId);
         return "redirect:/product-reviews?productId=" + productId;
     }
 
