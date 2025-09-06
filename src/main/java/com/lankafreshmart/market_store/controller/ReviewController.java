@@ -88,7 +88,7 @@ public class ReviewController {
         }
         System.out.println("Review User ID: " + (review.getUser() != null ? review.getUser().getId() : "null"));
         System.out.println("Logged-in User ID: " + (user != null ? user.getId() : "null"));
-        if (!review.getUser().equals(user)) {
+        if (review.getUser().getId() == null || !review.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("You can only delete your own review");
         }
         if (review.getProduct() == null || review.getProduct().getId() == null) {
