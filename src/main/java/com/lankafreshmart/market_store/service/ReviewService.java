@@ -84,6 +84,20 @@ public class ReviewService {
         updateProductRating(product);
     }
 
+    @Transactional
+    public void deleteReviewByAdmin(Long reviewId) {
+        Review review = findById(reviewId);
+        if (review.getUser() == null) {
+            throw new IllegalArgumentException("Invalid review data: User not found");
+        }
+        Product product = review.getProduct();
+        if (product == null) {
+            throw new IllegalArgumentException("Invalid review data: Product not found");
+        }
+        reviewRepository.delete(review);
+        updateProductRating(product);
+    }
+
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();
     }

@@ -33,10 +33,16 @@ public class AdminReviewController {
 
     @GetMapping("/admin/review/delete")
     @PreAuthorize("hasRole('ADMIN')")
-    public String deleteReviewByAdmin(@RequestParam Long reviewId, Model model) {
+    public String deleteReviewByAdmin(@RequestParam Long reviewId, @AuthenticationPrincipal User user, Model model) {
         Review review = reviewService.findById(reviewId);
-        Long productId = review.getProduct().getId();
-        reviewService.deleteReview(reviewId);
-        return "redirect:/admin/reviews";
+        if (review == null) {
+            throw new IllegalArgumentException("Review not found");
+        }
+        Long productId = review.getProduct() != null && review.getProduct().getId() != null ? review.getProduct().getId() : null;
+        if (productId == null) {
+            throw new IllegalArgumentException("Invalid review data: Product not found");
+        }
+        reviewService.deleteReviewByAdmin(reviewId); // Use the new admin method
+        return "redirect:/admin/reviews?productId=" + productId;
     }
 }

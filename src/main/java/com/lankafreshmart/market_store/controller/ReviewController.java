@@ -83,17 +83,19 @@ public class ReviewController {
     @GetMapping("/review/delete")
     public String deleteReview(@RequestParam Long reviewId, @AuthenticationPrincipal User user, Model model) {
         Review review = reviewService.findById(reviewId); // Should throw IllegalArgumentException if not found
-        if (review.getOrder() == null || review.getOrder().getUser() == null) {
-            throw new IllegalArgumentException("Invalid review data: Order or user not found");
+        if (review.getUser() == null) {
+            throw new IllegalArgumentException("Invalid review data: User not found");
         }
-        if (!review.getOrder().getUser().equals(user)) {
+        System.out.println("Review User ID: " + (review.getUser() != null ? review.getUser().getId() : "null"));
+        System.out.println("Logged-in User ID: " + (user != null ? user.getId() : "null"));
+        if (!review.getUser().equals(user)) {
             throw new IllegalArgumentException("You can only delete your own review");
         }
         if (review.getProduct() == null || review.getProduct().getId() == null) {
             throw new IllegalArgumentException("Invalid review data: Product not found");
         }
         Long productId = review.getProduct().getId();
-        reviewService.deleteReview(reviewId);
+        reviewService.deleteReview(reviewId, user); // Pass the user parameter
         return "redirect:/product-reviews?productId=" + productId;
     }
 
