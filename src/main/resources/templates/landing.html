@@ -8,6 +8,8 @@
         .navbar-brand { font-size: 1.5rem; font-weight: bold; }
         .hero { background-color: #f8f9fa; padding: 40px 0; text-align: center; margin-bottom: 20px; }
         .card-img-top { object-fit: cover; height: 200px; }
+        .category-card { cursor: pointer; margin: 10px; transition: transform 0.2s; }
+        .category-card:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
@@ -16,6 +18,7 @@
     <div class="navbar-nav ml-auto">
         <a class="nav-item nav-link" th:href="@{/login}">Login</a>
         <a class="nav-item nav-link" th:href="@{/register}">Register</a>
+        <a th:href="@{/guest-cart/view}" class="btn btn-info ml-2">Cart</a>
     </div>
 </nav>
 
@@ -32,7 +35,20 @@
         </form>
     </div>
 
+    <!-- Category Section -->
+    <h3 class="mt-4">Browse by Category</h3>
+    <div class="row">
+        <div th:each="cat : ${categories}" class="col-md-3">
+            <div class="card category-card" th:attr="data-category=${cat}" onclick="filterByCategory(this)">
+                <div class="card-body text-center">
+                    <h5 class="card-title" th:text="${cat}"></h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Product List -->
+    <h3 class="mt-4">Featured Products</h3>
     <div class="row">
         <div th:each="product : ${products}" class="col-md-4 mb-4">
             <div class="card">
@@ -41,17 +57,29 @@
                     <h5 class="card-title" th:text="${product.name}"></h5>
                     <p class="card-text" th:text="'Price: ' + ${product.price} + ' LKR'"></p>
                     <p class="card-text" th:text="'In Stock: ' + ${product.stockQuantity}"></p>
-                    <a th:href="@{/products}" class="btn btn-primary btn-sm">View Details</a>
+                    <form th:action="@{/guest-cart/add}" method="post" class="form-inline">
+                        <input type="hidden" name="productId" th:value="${product.id}"/>
+                        <div class="form-group mx-sm-3">
+                            <label for="quantity-${product.id}" class="sr-only">Quantity</label>
+                            <input type="number" name="quantity" id="quantity-${product.id}" value="1" min="1" th:max="${product.stockQuantity}" class="form-control" style="width: 80px;">
+                        </div>
+                        <button type="submit" class="btn btn-primary" th:disabled="${product.stockQuantity == 0}">Add to Cart</button>
+                    </form>
+                    <div th:if="${message}" class="alert alert-success mt-2" th:text="${message}" th:remove="if"></div>
+                    <div th:if="${error}" class="alert alert-danger mt-2" th:text="${error}" th:remove="if"></div>
                 </div>
             </div>
         </div>
     </div>
     <p th:if="${#lists.isEmpty(products)}" class="text-center">No products found.</p>
-
-    <!-- Navigation to Products Page -->
-    <div class="text-center mt-4">
-        <a th:href="@{/products}" class="btn btn-success">View All Products</a>
-    </div>
 </div>
+
+<!-- JavaScript for Category Filtering -->
+<script th:inline="javascript">
+    function filterByCategory(element) {
+        var category = element.getAttribute('data-category');
+        window.location.href = '/' + '?category=' + encodeURIComponent(category);
+    }
+</script>
 </body>
 </html>

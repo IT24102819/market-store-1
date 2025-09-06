@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lanka Fresh Mart - Guest Cart</title>
+    <link rel="stylesheet" href="/css/register.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .cart-item { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Lanka Fresh Mart</a>
+    <div class="navbar-nav ml-auto">
+        <a class="nav-item nav-link" th:href="@{/login}">Login</a>
+        <a class="nav-item nav-link" th:href="@{/register}">Register</a>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h2>Your Guest Cart</h2>
+    <div th:if="${#lists.isEmpty(cartProducts)}" class="alert alert-info">
+        Your cart is empty.
+    </div>
+    <div th:unless="${#lists.isEmpty(cartProducts)}">
+        <div th:each="product : ${cartProducts}" class="cart-item">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${product.name}"></h5>
+                    <p class="card-text" th:text="'Price: ' + ${product.price} + ' LKR'"></p>
+                    <p class="card-text" th:text="'Quantity: ' + ${guestCart[product.id]}"></p>
+                    <p class="card-text" th:text="'Total: ' + ${product.price * guestCart[product.id]} + ' LKR'"></p>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a th:href="@{/login}" class="btn btn-success">Proceed to Checkout (Login Required)</a>
+            <a th:href="@{/}" class="btn btn-secondary ml-2">Continue Shopping</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
