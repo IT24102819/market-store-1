@@ -73,7 +73,7 @@ public class ReviewService {
         if (review.getUser() == null) {
             throw new IllegalArgumentException("Invalid review data: User not found");
         }
-        if (!review.getUser().equals(user)) {
+        if (review.getUser().getId() == null || !review.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("You can only delete your own review");
         }
         Product product = review.getProduct();
