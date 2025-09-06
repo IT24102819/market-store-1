@@ -34,9 +34,9 @@ public class ReviewController {
     }
 
     @PostMapping("/submit-review")
-    public String submitReview(@RequestParam Long orderId, @RequestParam String comment, @RequestParam int rating, Model model) {
+    public String submitReview(@RequestParam Long orderId, @RequestParam String comment, @RequestParam int rating, @AuthenticationPrincipal User user, Model model) {
         try {
-            reviewService.submitReview(orderId, comment, rating);
+            reviewService.submitReview(orderId, comment, rating, user); // Pass user
             model.addAttribute("message", "Review submitted successfully!");
         } catch (IllegalStateException e) {
             model.addAttribute("error", e.getMessage());
