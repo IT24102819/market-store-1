@@ -25,7 +25,7 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user; // New direct user relationship
+    private User user; // direct user relationship
 
     // Constructors
     public Review() {}
@@ -34,7 +34,7 @@ public class Review {
         this.product = product;
         this.comment = comment;
         this.rating = rating;
-        this.user = user;
+        this.user = user; // Update constructor to include user
     }
 
     // Getters and setters...
