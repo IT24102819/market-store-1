@@ -125,6 +125,15 @@ public class ProductService {
     }
 
     public List<Product> searchProducts(String name, BigDecimal minPrice, BigDecimal maxPrice, String category) {
+        if (name != null && !name.isEmpty() && (minPrice == null && maxPrice == null && (category == null || category.isEmpty()))) {
+            return productRepository.findByNameContainingIgnoreCase(name);
+        } else if ((name == null || name.isEmpty()) && (minPrice != null || maxPrice != null || (category != null && !category.isEmpty()))) {
+            if (minPrice != null && maxPrice != null) {
+                return productRepository.findByPriceBetween(minPrice, maxPrice);
+            } else if (category != null && !category.isEmpty()) {
+                return productRepository.findByCategoryIgnoreCase(category);
+            }
+        }
         return productRepository.findByNameContainingIgnoreCaseAndPriceBetweenAndCategoryIgnoreCase(
                 name != null ? name : "",
                 minPrice != null ? minPrice : BigDecimal.ZERO,

@@ -11,13 +11,19 @@
     <div th:if="${param.success}" class="success" th:text="${param.success}"></div>
     <div th:if="${error}" class="error" th:text="${error}"></div>
 
-    <!-- Search and Filter Form -->
+    <!-- Search Form -->
     <form th:action="@{/products}" method="get" class="mb-4">
         <div class="form-group d-inline-block">
             <label for="search">Search by Name:</label>
             <input type="text" name="search" id="search" th:value="${search}" placeholder="Enter product name" class="form-control d-inline-block" style="width: 200px;">
+            <button type="submit" class="btn btn-primary ml-2">Search</button>
+            <a th:href="@{/products}" class="btn btn-secondary ml-2" th:unless="${search == null or search == ''}">Clear Search</a>
         </div>
-        <div class="form-group d-inline-block ml-2">
+    </form>
+
+    <!-- Filter Form -->
+    <form th:action="@{/products}" method="get" class="mb-4">
+        <div class="form-group d-inline-block">
             <label for="minPrice">Min Price:</label>
             <input type="number" name="minPrice" id="minPrice" th:value="${minPrice}" step="0.01" min="0" class="form-control d-inline-block" style="width: 100px;">
         </div>
@@ -33,7 +39,7 @@
             </select>
         </div>
         <button type="submit" class="btn btn-primary ml-2">Filter</button>
-        <a href="/products" class="btn btn-secondary ml-2">Clear Filters</a>
+        <a th:href="@{/products}" class="btn btn-secondary ml-2" th:unless="${minPrice == null and maxPrice == null and (category == null or category == '')}">Clear Filters</a>
     </form>
 
     <!-- Product List -->
@@ -62,6 +68,7 @@
             </div>
         </div>
     </div>
+    <p th:if="${#lists.isEmpty(products)}" class="text-center">No products found.</p>
 
     <!-- Pagination -->
     <ul class="pagination justify-content-center">

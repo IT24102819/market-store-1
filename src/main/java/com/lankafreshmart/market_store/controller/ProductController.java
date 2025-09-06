@@ -28,12 +28,18 @@ public class ProductController {
             @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false) String category,
             Model model) {
+
         List<Product> products;
-        if (search != null || minPrice != null || maxPrice != null || category != null) {
-            // Apply filters
-            products = productService.searchProducts(search, minPrice, maxPrice, category);
-            model.addAttribute("currentPage", page);
-            model.addAttribute("totalPages", 1); // Filters return a list, so no pagination for now
+        if (search != null && !search.isEmpty() && (minPrice == null && maxPrice == null && (category == null || category.isEmpty()))) {
+            // Search by name only
+            products = productService.searchProducts(search, null, null, null);
+            model.addAttribute("currentPage", 0);
+            model.addAttribute("totalPages", 1);
+        } else if ((search == null || search.isEmpty()) && (minPrice != null || maxPrice != null || (category != null && !category.isEmpty()))) {
+            // Filter by price range and/or category only
+            products = productService.searchProducts("", minPrice, maxPrice, category);
+            model.addAttribute("currentPage", 0);
+            model.addAttribute("totalPages", 1);
         } else {
             // Default: paginated list of all products
             Page<Product> productPage = productService.getAllProducts(page, size);
