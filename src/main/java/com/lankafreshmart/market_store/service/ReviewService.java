@@ -84,7 +84,7 @@ public class ReviewService {
         List<Review> allReviews = reviewRepository.findAll();
         System.out.println("Total reviews in DB: " + allReviews.size());
         List<Review> userReviews = allReviews.stream()
-                .filter(review -> review != null && review.getUser() != null && review.getUser().equals(user))
+                .filter(review -> review != null && review.getUser() != null && review.getUser().getId() != null && review.getUser().getId().equals(user.getId()))
                 .collect(Collectors.toList());
         System.out.println("User reviews found: " + userReviews.size());
         return userReviews;
