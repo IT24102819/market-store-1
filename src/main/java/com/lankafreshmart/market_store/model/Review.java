@@ -23,14 +23,20 @@ public class Review {
     @Column(nullable = false)
     private int rating; // 1 to 5
 
-    // Constructors, getters, setters
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user; // New direct user relationship
+
+    // Constructors
     public Review() {}
-    public Review(Order order, Product product, String comment, int rating) {
+    public Review(Order order, Product product, String comment, int rating, User user) {
         this.order = order;
         this.product = product;
         this.comment = comment;
         this.rating = rating;
+        this.user = user;
     }
+
     // Getters and setters...
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -42,4 +48,6 @@ public class Review {
     public void setComment(String comment) { this.comment = comment; }
     public int getRating() { return rating; }
     public void setRating(int rating) { this.rating = rating; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 }
