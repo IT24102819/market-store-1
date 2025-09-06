@@ -1,9 +1,11 @@
 package com.lankafreshmart.market_store.controller;
 
 import com.lankafreshmart.market_store.model.Review;
+import com.lankafreshmart.market_store.model.User;
 import com.lankafreshmart.market_store.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,10 +33,16 @@ public class AdminReviewController {
 
     @GetMapping("/admin/review/delete")
     @PreAuthorize("hasRole('ADMIN')")
-    public String deleteReviewByAdmin(@RequestParam Long reviewId, Model model) {
+    public String deleteReviewByAdmin(@RequestParam Long reviewId, @AuthenticationPrincipal User user, Model model) {
         Review review = reviewService.findById(reviewId);
-        Long productId = review.getProduct().getId();
-        reviewService.deleteReview(reviewId);
-        return "redirect:/admin/reviews";
+        if (review == null) {
+            throw new IllegalArgumentException("Review not found");
+        }
+        Long productId = review.getProduct() != null && review.getProduct().getId() != null ? review.getProduct().getId() : null;
+        if (productId == null) {
+            throw new IllegalArgumentException("Invalid review data: Product not found");
+        }
+        reviewService.deleteReview(reviewId, user); // Pass the authenticated user
+        return "redirect:/admin/reviews?productId=" + productId; // Optional: pass productId if needed
     }
 }
