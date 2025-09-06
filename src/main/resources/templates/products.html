@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Products - Lanka Fresh Mart</title>
+    <title>Our Products</title>
     <link rel="stylesheet" href="/css/register.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
@@ -10,54 +10,82 @@
     <h1>Our Products</h1>
     <div th:if="${param.success}" class="success" th:text="${param.success}"></div>
     <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <!-- Search and Filter Form -->
+    <form th:action="@{/products}" method="get" class="mb-4">
+        <div class="form-group d-inline-block">
+            <label for="search">Search by Name:</label>
+            <input type="text" name="search" id="search" th:value="${search}" placeholder="Enter product name" class="form-control d-inline-block" style="width: 200px;">
+        </div>
+        <div class="form-group d-inline-block ml-2">
+            <label for="minPrice">Min Price:</label>
+            <input type="number" name="minPrice" id="minPrice" th:value="${minPrice}" step="0.01" min="0" class="form-control d-inline-block" style="width: 100px;">
+        </div>
+        <div class="form-group d-inline-block ml-2">
+            <label for="maxPrice">Max Price:</label>
+            <input type="number" name="maxPrice" id="maxPrice" th:value="${maxPrice}" step="0.01" min="0" class="form-control d-inline-block" style="width: 100px;">
+        </div>
+        <div class="form-group d-inline-block ml-2">
+            <label for="category">Category:</label>
+            <select name="category" id="category" class="form-control d-inline-block" style="width: 150px;">
+                <option value="">All</option>
+                <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}" th:selected="${category == cat}"></option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary ml-2">Filter</button>
+        <a href="/products" class="btn btn-secondary ml-2">Clear Filters</a>
+    </form>
+
+    <!-- Product List -->
     <div class="row">
         <div th:each="product : ${products}" class="col-md-4 mb-4">
-            <div class="card" role="article" aria-labelledby="product-title-${product.id}">
+            <div class="card">
                 <img th:src="${product.imageUrl}" th:alt="${product.name}" class="card-img-top" style="height: 200px; object-fit: cover;">
                 <div class="card-body">
-                    <h5 class="card-title" th:id="'product-title-' + ${product.id}" th:text="${product.name}"></h5>
-                    <p class="card-text" th:text="${product.price} + ' LKR'"></p>
+                    <h5 class="card-title" th:text="${product.name}"></h5>
                     <p class="card-text" th:text="${product.description}"></p>
+                    <p class="card-text" th:text="'Price: ' + ${product.price} + ' LKR'"></p>
                     <p class="card-text" th:text="'Category: ' + ${product.category}"></p>
                     <p class="card-text" th:text="'In Stock: ' + ${product.stockQuantity}"></p>
                     <p class="card-text" th:text="'Rating: ' + ${product.rating} + '/5'"></p>
                     <p class="card-text" th:text="'Sold: ' + ${product.unitsSold}"></p>
-                    <form th:action="@{/cart/add}" method="post" aria-label="Add to cart form">
+                    <form th:action="@{/cart/add}" method="post" class="form-inline">
                         <input type="hidden" name="productId" th:value="${product.id}"/>
-                        <div class="form-group">
-                            <label for="quantity-${product.id}">Quantity</label>
-                            <input type="number" name="quantity" id="quantity-${product.id}" value="1" min="1"
-                                   th:max="${product.stockQuantity}" aria-label="Quantity"/>
+                        <div class="form-group mx-sm-3">
+                            <label for="quantity-${product.id}" class="sr-only">Quantity</label>
+                            <input type="number" name="quantity" id="quantity-${product.id}" value="1" min="1" th:max="${product.stockQuantity}" class="form-control" style="width: 80px;">
                         </div>
-                        <button type="submit" class="btn btn-primary" th:disabled="${product.stockQuantity == 0}">
-                            <span th:text="${product.stockQuantity == 0} ? 'Out of Stock' : 'Add to Cart'"></span>
-                        </button>
+                        <button type="submit" class="btn btn-primary" th:disabled="${product.stockQuantity == 0}">Add to Cart</button>
                     </form>
-                    <a th:href="@{/product-reviews(productId=${product.id})}" class="btn btn-info btn-sm">View Reviews</a>
+                    <a th:href="@{/product-reviews(productId=${product.id})}" class="btn btn-info btn-sm mt-2">View Reviews</a>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Pagination -->
     <ul class="pagination justify-content-center">
         <li th:class="${currentPage == 0 ? 'page-item disabled' : 'page-item'}">
-            <a th:href="@{/products(page=${currentPage - 1}, size=10)}" class="page-link">Previous</a>
+            <a th:href="@{/products(page=${currentPage - 1}, size=10, search=${search}, minPrice=${minPrice}, maxPrice=${maxPrice}, category=${category})}" class="page-link">Previous</a>
         </li>
         <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:class="${currentPage == i ? 'page-item active' : 'page-item'}">
-            <a th:href="@{/products(page=${i}, size=10)}" class="page-link" th:text="${i + 1}"></a>
+            <a th:href="@{/products(page=${i}, size=10, search=${search}, minPrice=${minPrice}, maxPrice=${maxPrice}, category=${category})}" class="page-link" th:text="${i + 1}"></a>
         </li>
         <li th:class="${currentPage == totalPages - 1 ? 'page-item disabled' : 'page-item'}">
-            <a th:href="@{/products(page=${currentPage + 1}, size=10)}" class="page-link">Next</a>
+            <a th:href="@{/products(page=${currentPage + 1}, size=10, search=${search}, minPrice=${minPrice}, maxPrice=${maxPrice}, category=${category})}" class="page-link">Next</a>
         </li>
     </ul>
+
+    <!-- Navigation -->
     <div class="nav-links">
         <form th:action="@{/logout}" method="post" aria-label="Logout form">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
             <button type="submit" class="logout-button">Logout</button>
         </form>
         <p><a th:href="@{/cart}" href="/cart">View Cart</a></p>
-        <p><a th:href="@{/profile}">View Profile</a></p>
-        <a th:href="@{/your-reviews}" class="btn btn-info">Your Reviews</a>
-        <a th:href="@{/order/history}" class="btn btn-secondary">View Order History</a>
+        <p><a th:href="@{/profile}" href="/profile">View Profile</a></p>
+        <p><a th:href="@{/your-reviews}" href="/your-reviews">Your Reviews</a></p>
+        <p><a th:href="@{/order/history}" href="/order-history">View Order History</a></p>
     </div>
 </div>
 </body>

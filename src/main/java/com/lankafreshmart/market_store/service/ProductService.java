@@ -11,6 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import jakarta.mail.MessagingException;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -120,5 +122,14 @@ public class ProductService {
 
     public Optional<Product> findById(Long productId) {
         return productRepository.findById(productId);
+    }
+
+    public List<Product> searchProducts(String name, BigDecimal minPrice, BigDecimal maxPrice, String category) {
+        return productRepository.findByNameContainingIgnoreCaseAndPriceBetweenAndCategoryIgnoreCase(
+                name != null ? name : "",
+                minPrice != null ? minPrice : BigDecimal.ZERO,
+                maxPrice != null ? maxPrice : new BigDecimal("999999.99"),
+                category != null ? category : ""
+        );
     }
 }

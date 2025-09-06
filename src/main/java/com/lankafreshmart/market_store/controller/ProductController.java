@@ -7,6 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Controller
 public class ProductController {
     private final ProductService productService;
@@ -16,12 +20,37 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public String showProducts(@RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "10") int size, Model model) {
-        Page<Product> productPage = productService.getAllProducts(page, size);
-        model.addAttribute("products", productPage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", productPage.getTotalPages());
+    public String showProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) String category,
+            Model model) {
+        List<Product> products;
+        if (search != null || minPrice != null || maxPrice != null || category != null) {
+            // Apply filters
+            products = productService.searchProducts(search, minPrice, maxPrice, category);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", 1); // Filters return a list, so no pagination for now
+        } else {
+            // Default: paginated list of all products
+            Page<Product> productPage = productService.getAllProducts(page, size);
+            products = productPage.getContent();
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", productPage.getTotalPages());
+        }
+        model.addAttribute("products", products);
+        model.addAttribute("categories", productService.getAllProducts(0, Integer.MAX_VALUE).getContent().stream()
+                .map(Product::getCategory)
+                .filter(cat -> cat != null && !cat.isEmpty())
+                .distinct()
+                .collect(Collectors.toList()));
+        model.addAttribute("search", search);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("category", category);
         return "products";
     }
 
