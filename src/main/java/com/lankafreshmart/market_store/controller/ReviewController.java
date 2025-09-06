@@ -62,27 +62,30 @@ public class ReviewController {
     @PostMapping("/review/update")
     public String updateReview(@RequestParam Long reviewId, @RequestParam String comment, @RequestParam int rating, @AuthenticationPrincipal User user, Model model) {
         Review review = reviewService.findById(reviewId); // Should throw IllegalArgumentException if not found
-        if (review.getOrder() == null || review.getOrder().getUser() == null) {
-            throw new IllegalArgumentException("Invalid review data: Order or user not found");
+        if (review.getUser() == null) {
+            throw new IllegalArgumentException("Invalid review data: User not found");
         }
-        if (!review.getOrder().getUser().equals(user)) {
+        System.out.println("Review User ID: " + (review.getUser() != null ? review.getUser().getId() : "null"));
+        System.out.println("Logged-in User ID: " + (user != null ? user.getId() : "null"));
+        if (review.getUser().getId() == null || !review.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("You can only update your own review");
-        }
-        try {
-            reviewService.updateReview(reviewId, comment, rating);
-            model.addAttribute("message", "Review updated successfully!");
-        } catch (IllegalStateException e) {
-            model.addAttribute("error", e.getMessage());
         }
         if (review.getProduct() == null || review.getProduct().getId() == null) {
             throw new IllegalArgumentException("Invalid review data: Product not found");
+        }
+        try {
+            reviewService.updateReview(reviewId, comment, rating, user);
+            model.addAttribute("message", "Review updated successfully!");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            model.addAttribute("error", e.getMessage());
+            return "edit-review"; // Return to form with error
         }
         return "redirect:/product-reviews?productId=" + review.getProduct().getId();
     }
 
     @GetMapping("/review/delete")
     public String deleteReview(@RequestParam Long reviewId, @AuthenticationPrincipal User user, Model model) {
-        Review review = reviewService.findById(reviewId); // Should throw IllegalArgumentException if not found
+        Review review = reviewService.findById(reviewId);
         if (review.getUser() == null) {
             throw new IllegalArgumentException("Invalid review data: User not found");
         }
@@ -108,10 +111,13 @@ public class ReviewController {
 
     @GetMapping("/review/edit")
     public String showEditReviewForm(@RequestParam Long reviewId, @AuthenticationPrincipal User user, Model model) {
-        Review review = reviewService.findById(reviewId); // No .orElseThrow needed here
-        System.out.println("Review Order User ID: " + (review.getOrder() != null && review.getOrder().getUser() != null ? review.getOrder().getUser().getId() : "null"));
-        System.out.println("Logged-in User ID: " + user.getId());
-        if (!review.getOrder().getUser().equals(user)) {
+        Review review = reviewService.findById(reviewId);
+        System.out.println("Review User ID: " + (review.getUser() != null ? review.getUser().getId() : "null"));
+        System.out.println("Logged-in User ID: " + (user != null ? user.getId() : "null"));
+        if (review.getUser() == null) {
+            throw new IllegalArgumentException("Invalid review data: User not found");
+        }
+        if (review.getUser().getId() == null || !review.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("You can only edit your own review");
         }
         model.addAttribute("review", review);

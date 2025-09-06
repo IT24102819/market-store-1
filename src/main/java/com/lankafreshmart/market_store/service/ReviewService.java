@@ -59,12 +59,27 @@ public class ReviewService {
     }
 
     @Transactional
-    public void updateReview(Long reviewId, String comment, int rating) {
+    public void updateReview(Long reviewId, String comment, int rating, User user) {
         Review review = findById(reviewId);
+        if (review == null) {
+            throw new IllegalArgumentException("Review not found");
+        }
+        if (review.getUser() == null) {
+            throw new IllegalArgumentException("Invalid review data: User not found");
+        }
+        System.out.println("Review User ID: " + (review.getUser() != null ? review.getUser().getId() : "null"));
+        System.out.println("Logged-in User ID: " + (user != null ? user.getId() : "null"));
+        if (review.getUser().getId() == null || !review.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("You can only update your own review");
+        }
         review.setComment(comment);
         review.setRating(rating);
         reviewRepository.save(review);
-        updateProductRating(review.getProduct());
+        Product product = review.getProduct();
+        if (product == null) {
+            throw new IllegalArgumentException("Invalid review data: Product not found");
+        }
+        updateProductRating(product);
     }
 
     @Transactional
