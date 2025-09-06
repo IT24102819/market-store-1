@@ -82,6 +82,7 @@ public class ReviewService {
     }
 
     public List<Review> getReviewsByUser(User user) {
+        System.out.println("Fetching reviews for user ID: " + user.getId());
         return reviewRepository.findAll().stream()
                 .filter(review -> review != null && review.getOrder() != null && review.getOrder().getUser() != null && review.getOrder().getUser().equals(user))
                 .collect(Collectors.toList());
