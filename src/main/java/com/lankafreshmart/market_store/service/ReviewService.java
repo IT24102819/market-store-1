@@ -33,8 +33,8 @@ public class ReviewService {
         if (!"DELIVERED".equals(order.getDelivery().getStatus())) {
             throw new IllegalStateException("Can only review delivered orders");
         }
-        Product product = order.getOrderItems().get(0).getProduct(); // Assuming one product per order
-        Review review = new Review(order, product, comment, rating, user); // Pass the user
+        Product product = order.getOrderItems().get(0).getProduct();
+        Review review = new Review(order, product, comment, rating, user); // Pass user
         reviewRepository.save(review);
         updateProductRating(product);
     }
