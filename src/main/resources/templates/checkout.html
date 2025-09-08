@@ -66,6 +66,9 @@
     .form-group input[type="radio"] {
       margin-right: 8px;
     }
+    #addressInput {
+      margin-top: 10px;
+    }
     .btn {
       border-radius: 20px;
       font-weight: 600;
@@ -171,13 +174,17 @@
   <h3><i class="fa fa-truck"></i> Delivery Method</h3>
   <div class="form-group">
     <label>
-      <input type="radio" name="deliveryMethod" value="PICKUP" required> <i class="fa fa-store"></i> Pick Up
+      <input type="radio" name="deliveryMethod" value="PICKUP" required onchange="toggleAddressInput(this)" checked> <i class="fa fa-store"></i> Pick Up
     </label>
   </div>
   <div class="form-group">
     <label>
-      <input type="radio" name="deliveryMethod" value="DELIVERY"> <i class="fa fa-shipping-fast"></i> Delivery
+      <input type="radio" name="deliveryMethod" value="DELIVERY" onchange="toggleAddressInput(this)"> <i class="fa fa-shipping-fast"></i> Delivery
     </label>
+  </div>
+  <div id="addressInput" class="form-group" style="display: none;">
+    <label for="deliveryAddress">Delivery Address:</label>
+    <input type="text" id="deliveryAddress" class="form-control" placeholder="Enter your address">
   </div>
 
   <h3><i class="fa fa-wallet"></i> Payment Method</h3>
@@ -198,6 +205,7 @@
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
     <input type="hidden" name="deliveryMethod" id="deliveryMethod">
     <input type="hidden" name="paymentMethod" id="paymentMethod">
+    <input type="hidden" name="deliveryAddress" id="deliveryAddressHidden">
     <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Place Order</button>
     <a th:href="@{/cart}" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Back to Cart</a>
   </form>
@@ -253,6 +261,10 @@
       if (deliveryMethod) {
         $('#deliveryMethod').val(deliveryMethod);
       }
+      var deliveryAddress = $('#deliveryAddress').val();
+      if (deliveryMethod === 'DELIVERY' && deliveryAddress) {
+        $('#deliveryAddressHidden').val(deliveryAddress);
+      }
       $('#orderForm').submit();
     });
 
@@ -266,6 +278,43 @@
 
     $('input[name="deliveryMethod"]').change(function() {
       $('#deliveryMethod').val($(this).val());
+      toggleAddressInput(this);
+    });
+
+    // Function to toggle address input
+    function toggleAddressInput(radio) {
+      const addressInput = $('#addressInput');
+      const deliveryAddressInput = $('#deliveryAddress');
+      if (radio.value === 'DELIVERY') {
+        addressInput.show();
+        const savedAddress = localStorage.getItem('deliveryAddress');
+        if (savedAddress) {
+          deliveryAddressInput.val(savedAddress);
+        }
+        $('#deliveryAddressHidden').val(deliveryAddressInput.val());
+      } else {
+        addressInput.hide();
+        localStorage.removeItem('deliveryAddress');
+        $('#deliveryAddressHidden').val('');
+      }
+    }
+
+    // Load saved delivery address if it exists
+    const savedDeliveryAddress = localStorage.getItem('deliveryAddress');
+    if (savedDeliveryAddress) {
+      $('#delivery').prop('checked', true);
+      $('#addressInput').show();
+      $('#deliveryAddress').val(savedDeliveryAddress);
+      $('#deliveryAddressHidden').val(savedDeliveryAddress);
+      $('#deliveryMethod').val('DELIVERY');
+    }
+
+    // Update deliveryAddress on input change
+    $('#deliveryAddress').on('input', function() {
+      if ($('#delivery').is(':checked')) {
+        localStorage.setItem('deliveryAddress', $(this).val());
+        $('#deliveryAddressHidden').val($(this).val());
+      }
     });
   });
 </script>
