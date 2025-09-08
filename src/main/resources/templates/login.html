@@ -3,6 +3,182 @@
 <head>
     <title>Login - Lanka Fresh Mart</title>
     <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <style>
+        :root {
+            --bg-gradient-start: #eafbe7;
+            --bg-gradient-end: #f4f6f8;
+            --container-bg: #fff;
+            --container-shadow: rgba(44,62,80,0.15);
+            --text-color: #23272f;
+            --heading-color: #249624;
+            --label-color: #2d7a2d;
+            --link-color: #249624;
+            --link-hover-color: #2d7a2d;
+            --input-bg: #f8fafb;
+            --input-border: #eaeaea;
+            --input-focus-border: #249624;
+            --input-shadow: rgba(44,62,80,0.06);
+            --input-focus-shadow: rgba(36,150,36,0.25);
+            --btn-bg-start: #249624;
+            --btn-bg-end: #2d7a2d;
+            --btn-text: #fff;
+            --error-bg: #ffeaea;
+            --error-text: #d32f2f;
+            --success-bg: #eafbe7;
+            --success-text: #249624;
+            --icon-color: #249624;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-gradient-start: #1a202c;
+                --bg-gradient-end: #2d3748;
+                --container-bg: #2d3748;
+                --container-shadow: rgba(0,0,0,0.4);
+                --text-color: #edf2f7;
+                --heading-color: #48bb78;
+                --label-color: #a0aec0;
+                --link-color: #48bb78;
+                --link-hover-color: #68d391;
+                --input-bg: #1a202c;
+                --input-border: #4a5568;
+                --input-focus-border: #48bb78;
+                --input-shadow: rgba(0,0,0,0.1);
+                --input-focus-shadow: rgba(72,187,120,0.3);
+                --btn-bg-start: #38a169;
+                --btn-bg-end: #2f855a;
+                --btn-text: #fff;
+                --error-bg: rgba(229, 62, 62, 0.2);
+                --error-text: #e53e3e;
+                --success-bg: rgba(72, 187, 120, 0.2);
+                --success-text: #48bb78;
+                --icon-color: #48bb78;
+            }
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+        .container {
+            max-width: 400px;
+            margin: 100px auto 40px auto;
+            background: var(--container-bg);
+            border-radius: 22px;
+            box-shadow: 0 8px 32px var(--container-shadow);
+            padding: 40px 36px 32px 36px;
+            animation: fadeIn 0.7s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--heading-color);
+            margin-bottom: 28px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .form-group label {
+            font-weight: 500;
+            color: var(--label-color);
+            margin-bottom: 6px;
+            font-size: 1.08rem;
+        }
+        .form-group input {
+            border-radius: 14px;
+            border: 1px solid var(--input-border);
+            font-size: 1.08rem;
+            padding: 12px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            transition: box-shadow 0.2s, border 0.2s;
+            box-shadow: 0 2px 8px var(--input-shadow);
+            width: 100%;
+        }
+        .form-group input:focus {
+            border-color: var(--input-focus-border);
+            box-shadow: 0 0 0 4px var(--input-focus-shadow);
+            outline: none;
+        }
+        button[type="submit"] {
+            width: 100%;
+            background: linear-gradient(90deg, var(--btn-bg-start) 60%, var(--btn-bg-end) 100%);
+            color: var(--btn-text);
+            border: none;
+            border-radius: 14px;
+            padding: 14px 0;
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-top: 18px;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        button[type="submit"]:hover {
+            background: linear-gradient(90deg, var(--btn-bg-end) 60%, var(--btn-bg-start) 100%);
+            box-shadow: 0 4px 16px rgba(44,62,80,0.13);
+            transform: translateY(-2px) scale(1.02);
+        }
+        .error, .success {
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 18px;
+            text-align: center;
+            font-size: 1rem;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+        }
+        .error {
+            background: var(--error-bg);
+            color: var(--error-text);
+        }
+        .success {
+            background: var(--success-bg);
+            color: var(--success-text);
+        }
+        p {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 1.08rem;
+        }
+        a {
+            color: var(--link-color);
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        a:hover {
+            text-decoration: underline;
+            color: var(--link-hover-color);
+        }
+        .input-icon {
+            position: relative;
+        }
+        .input-icon label {
+            display: block;
+            margin-bottom: 6px;
+        }
+        .input-icon input {
+            padding-left: 38px;
+        }
+        .input-icon .fa {
+            position: absolute;
+            left: 14px;
+            top: 45px; /* adjusted for better alignment */
+            color: var(--icon-color);
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -16,17 +192,19 @@
         You have been logged out successfully.
     </div>
     <form th:action="@{/login}" method="post" aria-label="Login form">
-        <div class="form-group">
+        <div class="form-group input-icon">
             <label for="username">Username</label>
+            <i class="fa fa-user"></i>
             <input type="text" id="username" name="username" required
                    placeholder="Enter your username" autofocus aria-required="true"/>
         </div>
-        <div class="form-group">
+        <div class="form-group input-icon">
             <label for="password">Password</label>
+            <i class="fa fa-lock"></i>
             <input type="password" id="password" name="password" required
                    placeholder="Enter your password" aria-required="true"/>
         </div>
-        <button type="submit">Login</button>
+        <button type="submit"><i class="fa fa-sign-in-alt"></i> Login</button>
     </form>
     <p>Don't have an account? <a th:href="@{/register}" href="/register">Register here</a></p>
 </div>

@@ -4,18 +4,171 @@
   <title>Edit Review - Lanka Fresh Mart</title>
   <link rel="stylesheet" href="/css/register.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #249624;
+      --primary-dark: #2d7a2d;
+      --accent: #ffc107;
+      --bg: #f4f6f8;
+      --card-bg: #fff;
+      --text: #23272f;
+      --text-light: #fff;
+      --shadow: 0 4px 24px rgba(44,62,80,0.10);
+    }
+    body {
+      background: var(--bg);
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+    .dark-mode {
+      --bg: #181a20;
+      --card-bg: #23272f;
+      --text: #f4f6f8;
+    }
+    .navbar {
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+      border-radius: 0 0 18px 18px;
+      margin-bottom: 32px;
+      padding: 0.5rem 2rem;
+    }
+    .navbar-brand {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      letter-spacing: 1px;
+    }
+    .navbar-nav .nav-link {
+      font-weight: 500;
+      color: var(--primary-dark);
+      margin-right: 18px;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+    }
+    .navbar-nav .nav-link i {
+      margin-right: 6px;
+    }
+    .navbar-nav .nav-link:hover {
+      color: var(--accent);
+    }
+    .dark-toggle {
+      background: var(--accent);
+      color: var(--primary-dark);
+      border-radius: 50%;
+      border: none;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      margin-left: 12px;
+      transition: background 0.2s;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: var(--card-bg);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 36px 32px 28px 32px;
+      transition: background 0.3s;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 32px;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+    .form-group label {
+      font-weight: 500;
+      color: var(--primary-dark);
+    }
+    .form-control, select, textarea {
+      border-radius: 12px;
+      border: 1px solid #eaeaea;
+      font-size: 1.05rem;
+      padding: 8px;
+      margin-bottom: 8px;
+      background: var(--card-bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+    .btn-primary, .btn-secondary {
+      border-radius: 12px;
+      font-weight: 600;
+      padding: 8px 22px;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+      box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: var(--primary-dark);
+      border: none;
+      color: var(--text-light);
+    }
+    .btn-primary:hover {
+      background: var(--primary);
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 4px 16px rgba(44,62,80,0.13);
+    }
+    .btn-secondary {
+      background: #eafbe7;
+      color: var(--primary-dark);
+      border: none;
+    }
+    .btn-secondary:hover {
+      background: var(--primary-dark);
+      color: var(--text-light);
+    }
+    .alert {
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 16px;
+      text-align: center;
+      font-size: 1rem;
+    }
+    @media (max-width: 768px) {
+      .container { padding: 18px 6px; }
+      h1 { font-size: 1.3rem; }
+      .form-control { font-size: 0.95rem; }
+    }
+  </style>
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+  </script>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg">
+  <a class="navbar-brand" href="#"><i class="fa fa-leaf"></i> Lanka Fresh Mart</a>
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item"><a th:href="@{/products}" class="nav-link"><i class="fa fa-store"></i> Products</a></li>
+      <li class="nav-item"><a th:href="@{/cart}" class="nav-link"><i class="fa fa-shopping-cart"></i> Cart</a></li>
+      <li class="nav-item"><a th:href="@{/profile}" class="nav-link"><i class="fa fa-user"></i> Profile</a></li>
+    </ul>
+    <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode"><i class="fa fa-moon"></i></button>
+  </div>
+</nav>
 <div class="container">
-  <h1>Edit Your Review</h1>
+  <h1><i class="fa fa-edit"></i> Edit Your Review</h1>
   <form th:action="@{/review/update}" method="post">
     <input type="hidden" name="reviewId" th:value="${review.id}"/>
     <div class="form-group">
-      <label for="comment">Comment:</label>
+      <label for="comment"><i class="fa fa-comment"></i> Comment:</label>
       <textarea id="comment" name="comment" class="form-control" th:text="${review.comment}" required></textarea>
     </div>
     <div class="form-group">
-      <label for="rating">Rating (1-5):</label>
+      <label for="rating"><i class="fa fa-star"></i> Rating (1-5):</label>
       <select id="rating" name="rating" class="form-control" required>
         <option value="1" th:selected="${review.rating == 1}">1</option>
         <option value="2" th:selected="${review.rating == 2}">2</option>
@@ -24,11 +177,12 @@
         <option value="5" th:selected="${review.rating == 5}">5</option>
       </select>
     </div>
-    <button type="submit" class="btn btn-primary">Update Review</button>
-    <a th:href="@{/product-reviews(productId=${review.product.id})}" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Update Review</button>
+    <a th:href="@{/product-reviews(productId=${review.product.id})}" class="btn btn-secondary"><i class="fa fa-times"></i> Cancel</a>
   </form>
   <div th:if="${message}" class="alert alert-success" th:text="${message}" role="alert"></div>
   <div th:if="${error}" class="alert alert-danger" th:text="${error}" role="alert"></div>
 </div>
+<script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
 </body>
 </html>

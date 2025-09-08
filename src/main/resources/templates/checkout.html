@@ -3,32 +3,155 @@
 <head>
   <title>Checkout - Lanka Fresh Mart</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <style>
+    body {
+      background: #f4f6f8;
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    }
+    .container {
+      margin-top: 40px;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(44,62,80,0.08);
+      padding: 32px 24px;
+      max-width: 900px;
+    }
+    h1 {
+      color: #2d7a2d;
+      font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    h3 {
+      color: #249624;
+      font-weight: 600;
+      margin-top: 32px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+    }
+    h3 .fa {
+      margin-right: 8px;
+      color: #ffc107;
+    }
+    .table {
+      background: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(44,62,80,0.07);
+      margin-bottom: 24px;
+      transition: box-shadow 0.2s;
+    }
+    .table th, .table td {
+      vertical-align: middle !important;
+      border-top: none;
+    }
+    .table th {
+      background: #eafbe7;
+      color: #2d7a2d;
+      font-weight: 600;
+      font-size: 1.1rem;
+      border-bottom: 2px solid #eaeaea;
+    }
+    .table td {
+      font-size: 1rem;
+      color: #2c3e50;
+    }
+    .form-group label {
+      font-weight: 600;
+      color: #2d7a2d;
+    }
+    .form-group input[type="radio"] {
+      margin-right: 8px;
+    }
+    .btn {
+      border-radius: 20px;
+      font-weight: 600;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+      box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+    }
+    .btn-success {
+      background: #249624;
+      color: #fff;
+      border: none;
+    }
+    .btn-success:hover {
+      background: #2d7a2d;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 4px 16px rgba(44,62,80,0.13);
+    }
+    .btn-secondary {
+      background: #2c3e50;
+      color: #fff;
+      border: none;
+    }
+    .btn-secondary:hover {
+      background: #34495e;
+    }
+    .btn-info {
+      background: #ffc107;
+      color: #2d7a2d;
+      border: none;
+    }
+    .btn-info:hover {
+      background: #ffe082;
+      color: #249624;
+    }
+    .modal-content {
+      padding: 20px;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(44,62,80,0.13);
+      background: #fff;
+    }
+    .modal-header {
+      border-bottom: none;
+      background: #eafbe7;
+      border-radius: 18px 18px 0 0;
+    }
+    .modal-title {
+      color: #2d7a2d;
+      font-weight: 700;
+    }
+    .card-error {
+      color: #e74c3c;
+      display: none;
+      font-weight: 600;
+      margin-top: 8px;
+      border-radius: 8px;
+      background: #fdecea;
+      padding: 8px 12px;
+    }
+    .alert-danger {
+      border-radius: 12px;
+      font-size: 1rem;
+      background: #fdecea;
+      color: #e74c3c;
+      box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+    }
+    @media (max-width: 768px) {
+      .container { padding: 16px 4px; }
+      .table th, .table td { font-size: 0.95rem; }
+    }
+  </style>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <style>
-    .modal-content {
-      padding: 20px;
-    }
-    .card-error {
-      color: red;
-      display: none;
-    }
-  </style>
 </head>
 <body>
 <div class="container">
-  <h1>Checkout</h1>
+  <h1><i class="fa fa-credit-card"></i> Checkout</h1>
   <div th:if="${error}" class="alert alert-danger" th:text="${error}" role="alert"></div>
 
-  <h3>Order Details</h3>
+  <h3><i class="fa fa-list"></i> Order Details</h3>
   <table class="table table-bordered">
     <thead>
     <tr>
-      <th>Product</th>
-      <th>Quantity</th>
-      <th>Price</th>
-      <th>Subtotal</th>
+      <th><i class="fa fa-box"></i> Product</th>
+      <th><i class="fa fa-sort-numeric-up"></i> Quantity</th>
+      <th><i class="fa fa-money-bill-wave"></i> Price</th>
+      <th><i class="fa fa-calculator"></i> Subtotal</th>
     </tr>
     </thead>
     <tbody>
@@ -45,38 +168,38 @@
     </tbody>
   </table>
 
-  <h3>Delivery Method</h3>
+  <h3><i class="fa fa-truck"></i> Delivery Method</h3>
   <div class="form-group">
     <label>
-      <input type="radio" name="deliveryMethod" value="PICKUP" required> Pick Up
+      <input type="radio" name="deliveryMethod" value="PICKUP" required> <i class="fa fa-store"></i> Pick Up
     </label>
   </div>
   <div class="form-group">
     <label>
-      <input type="radio" name="deliveryMethod" value="DELIVERY"> Delivery
+      <input type="radio" name="deliveryMethod" value="DELIVERY"> <i class="fa fa-shipping-fast"></i> Delivery
     </label>
   </div>
 
-  <h3>Payment Method</h3>
+  <h3><i class="fa fa-wallet"></i> Payment Method</h3>
   <div class="form-group">
     <label>
-      <input type="radio" name="paymentMethod" value="CASH_ON_DELIVERY" required checked> Cash on Delivery
+      <input type="radio" name="paymentMethod" value="CASH_ON_DELIVERY" required checked> <i class="fa fa-money-bill-wave"></i> Cash on Delivery
     </label>
   </div>
   <div class="form-group">
     <label>
-      <input type="radio" name="paymentMethod" value="CARD"> Card
+      <input type="radio" name="paymentMethod" value="CARD"> <i class="fa fa-credit-card"></i> Card
     </label>
     <!-- Card Details Modal Trigger -->
-    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#cardModal" th:if="${param.paymentMethod == 'CARD'}">Enter Card Details</button>
+    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#cardModal" th:if="${param.paymentMethod == 'CARD'}"><i class="fa fa-pencil-alt"></i> Enter Card Details</button>
   </div>
 
   <form th:action="@{/order/place}" method="post" id="orderForm">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
     <input type="hidden" name="deliveryMethod" id="deliveryMethod">
     <input type="hidden" name="paymentMethod" id="paymentMethod">
-    <button type="submit" class="btn btn-success">Place Order</button>
-    <a th:href="@{/cart}" class="btn btn-secondary">Back to Cart</a>
+    <button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Place Order</button>
+    <a th:href="@{/cart}" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Back to Cart</a>
   </form>
 
   <!-- Card Details Modal -->
@@ -84,7 +207,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="cardModalLabel">Enter Card Details</h5>
+          <h5 class="modal-title" id="cardModalLabel"><i class="fa fa-credit-card"></i> Enter Card Details</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -105,8 +228,8 @@
           <div class="card-error" id="cardError"></div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id="submitCardDetails">Submit</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+          <button type="button" class="btn btn-primary" id="submitCardDetails"><i class="fa fa-check"></i> Submit</button>
         </div>
       </div>
     </div>
@@ -119,10 +242,6 @@
       var cardNumber = $('#cardNumber').val().replace(/[^0-9]/g, '');
       var expiryDate = $('#expiryDate').val().trim();
       var cvv = $('#cvv').val().replace(/[^0-9]/g, '');
-      console.log('Card Number:', cardNumber, 'Length:', cardNumber.length);
-      console.log('Expiry Date:', expiryDate, 'Matches MM/YY:', /^\d{2}\/\d{2}$/.test(expiryDate));
-      console.log('CVV:', cvv, 'Length:', cvv.length);
-
       if (cardNumber.length !== 16 || !/^\d{2}\/\d{2}$/.test(expiryDate) || cvv.length < 3 || cvv.length > 4) {
         $('#cardError').text('Invalid card details. Please check your input. Card: 16 digits, Expiry: MM/YY, CVV: 3-4 digits.').show();
         return;
@@ -130,7 +249,6 @@
       $('#cardError').hide();
       $('#paymentMethod').val('CARD');
       $('#cardModal').modal('hide');
-      // Ensure deliveryMethod is set before submission
       var deliveryMethod = $('input[name="deliveryMethod"]:checked').val();
       if (deliveryMethod) {
         $('#deliveryMethod').val(deliveryMethod);
@@ -151,5 +269,6 @@
     });
   });
 </script>
+<script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
 </body>
 </html>

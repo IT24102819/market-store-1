@@ -2,16 +2,216 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Admin Dashboard - Lanka Fresh Mart</title>
-  <link rel="stylesheet" href="admin-dashboard.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #249624;
+      --primary-dark: #2d7a2d;
+      --accent: #ffc107;
+      --bg: #f4f6f8;
+      --card-bg: #fff;
+      --card-bg-alt: #23272f;
+      --text: #23272f;
+      --text-light: #fff;
+      --shadow: 0 4px 24px rgba(44,62,80,0.10);
+    }
+    body {
+      background: var(--bg);
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+    .dark-mode {
+      --bg: #181a20;
+      --card-bg: #23272f;
+      --text: #f4f6f8;
+    }
+    .navbar {
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+      border-radius: 0 0 18px 18px;
+      margin-bottom: 32px;
+      padding: 0.5rem 2rem;
+    }
+    .navbar-brand {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      letter-spacing: 1px;
+    }
+    .navbar-nav .nav-link {
+      font-weight: 500;
+      color: var(--primary-dark);
+      margin-right: 18px;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+    }
+    .navbar-nav .nav-link i {
+      margin-right: 6px;
+    }
+    .navbar-nav .nav-link:hover {
+      color: var(--accent);
+    }
+    .dark-toggle {
+      background: var(--accent);
+      color: var(--primary-dark);
+      border-radius: 50%;
+      border: none;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      margin-left: 12px;
+      transition: background 0.2s;
+    }
+    .container {
+      max-width: 900px;
+      margin: 60px auto;
+      background: var(--card-bg);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 36px 32px 28px 32px;
+      transition: background 0.3s;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 32px;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+    table {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(44,62,80,0.07);
+      margin-bottom: 30px;
+      background: #fafafa;
+      transition: background 0.3s;
+    }
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background: #eafbe7;
+      color: var(--primary-dark);
+      font-weight: 600;
+      border-bottom: 2px solid #eaeaea;
+      font-size: 1.08rem;
+    }
+    tr {
+      border-bottom: 1px solid #eaeaea;
+      transition: background 0.2s;
+    }
+    tbody tr:hover {
+      background: #f0fff0;
+    }
+    .delete-button {
+      background: #d32f2f;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 6px 18px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background 0.2s, transform 0.2s;
+      box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .delete-button i {
+      margin-right: 4px;
+    }
+    .delete-button:hover {
+      background: #b71c1c;
+      transform: scale(1.05);
+    }
+    .success, .error {
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 16px;
+      text-align: center;
+      font-size: 1rem;
+    }
+    .success {
+      background: #eafbe7;
+      color: var(--primary-dark);
+    }
+    .error {
+      background: #ffeaea;
+      color: #d32f2f;
+    }
+    .nav-links {
+      margin-top: 24px;
+      text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+    .nav-links a, .logout-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 8px 8px 0;
+      padding: 8px 22px;
+      border-radius: 12px;
+      background: var(--primary-dark);
+      color: var(--text-light);
+      font-weight: 500;
+      text-decoration: none;
+      border: none;
+      transition: background 0.2s;
+    }
+    .nav-links a:hover, .logout-button:hover {
+      background: var(--primary);
+      color: var(--text-light);
+      text-decoration: none;
+    }
+    .logout-button {
+      margin-top: 10px;
+    }
+    @media (max-width: 768px) {
+      .container { padding: 18px 6px; }
+      table { font-size: 0.95rem; }
+      th, td { padding: 8px 6px; }
+      h1 { font-size: 1.3rem; }
+    }
+  </style>
   <script>
     function confirmDelete(username) {
       return confirm('Are you sure you want to delete user ' + username + '?');
     }
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
   </script>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg">
+  <a class="navbar-brand" href="#"><i class="fa fa-leaf"></i> Lanka Fresh Mart Admin</a>
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item"><a th:href="@{/admin/products}" class="nav-link"><i class="fa fa-box"></i>Manage Products</a></li>
+      <li class="nav-item"><a th:href="@{/admin/orders}" class="nav-link"><i class="fa fa-shopping-cart"></i>Manage Orders</a></li>
+      <li class="nav-item"><a th:href="@{/admin/reviews}" class="nav-link"><i class="fa fa-star"></i>Manage Reviews</a></li>
+    </ul>
+    <form th:action="@{/logout}" method="post" aria-label="Logout form" style="display:inline;">
+      <button type="submit" class="logout-button"><i class="fa fa-sign-out-alt"></i> Logout</button>
+    </form>
+    <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode"><i class="fa fa-moon"></i></button>
+  </div>
+</nav>
 <div class="container">
-  <h1>Admin Dashboard</h1>
+  <h1><i class="fa fa-user-shield"></i> Admin Dashboard</h1>
   <!-- Success or error messages -->
   <div th:if="${param.success}" class="success" th:text="${param.success}"></div>
   <div th:if="${error}" class="error" th:text="${error}"></div>
@@ -19,10 +219,10 @@
   <table role="grid" aria-label="User management table">
     <thead>
     <tr>
-      <th>Username</th>
-      <th>Email</th>
-      <th>Role</th>
-      <th>Action</th>
+      <th><i class="fa fa-user"></i> Username</th>
+      <th><i class="fa fa-envelope"></i> Email</th>
+      <th><i class="fa fa-id-badge"></i> Role</th>
+      <th><i class="fa fa-cogs"></i> Action</th>
     </tr>
     </thead>
     <tbody>
@@ -33,23 +233,16 @@
       <td>
         <form th:action="@{/admin/delete-user}" method="post"
               th:attr="data-username=${user.username}"
-              onsubmit="return confirmDelete(this.getAttribute('data-username'));">
+              onsubmit="return confirmDelete(this.getAttribute('data-username'));"
+              style="display:inline;">
           <input type="hidden" name="username" th:value="${user.username}"/>
-          <button type="submit" class="delete-button">Delete</button>
+          <button type="submit" class="delete-button"><i class="fa fa-trash"></i> Delete</button>
         </form>
       </td>
     </tr>
     </tbody>
   </table>
-  <!-- Navigation links (placeholders for other modules) -->
-  <div class="nav-links">
-    <p><a th:href="@{/admin/products}" href="/admin/products">Manage Products</a></p>
-    <p><a th:href="@{/admin/orders}" href="/admin/orders">Manage Orders</a></p>
-    <p><a th:href="@{/admin/reviews}">Manage Reviews</a></p>
-    <form th:action="@{/logout}" method="post" aria-label="Logout form">
-      <button type="submit" class="logout-button">Logout</button>
-    </form>
-  </div>
 </div>
+<script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
 </body>
 </html>

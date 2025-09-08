@@ -4,40 +4,219 @@
     <title>Lanka Fresh Mart - Guest Cart</title>
     <link rel="stylesheet" href="/css/register.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
     <style>
-        .cart-item { margin-bottom: 20px; }
+        :root {
+            --primary: #249624;
+            --primary-dark: #2d7a2d;
+            --accent: #ffc107;
+            --bg: #f4f6f8;
+            --card-bg: #fff;
+            --text: #23272f;
+            --text-light: #fff;
+            --shadow: 0 4px 24px rgba(44,62,80,0.10);
+        }
+        body {
+            background: var(--bg);
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
+        }
+        .dark-mode {
+            --bg: #181a20;
+            --card-bg: #23272f;
+            --text: #f4f6f8;
+        }
+        .navbar {
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid #eaeaea;
+            border-radius: 0 0 18px 18px;
+            padding: 0.5rem 2rem;
+            margin-bottom: 32px;
+        }
+        .navbar-brand {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--primary-dark) !important;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-brand .fa-leaf {
+            margin-right: 8px;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+        .navbar-nav .nav-link {
+            font-size: 1.1rem;
+            margin-right: 10px;
+            color: var(--primary-dark) !important;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-nav .nav-link i {
+            margin-right: 6px;
+        }
+        .navbar-nav .nav-link:hover {
+            color: var(--accent) !important;
+        }
+        .dark-toggle {
+            background: var(--accent);
+            color: var(--primary-dark);
+            border-radius: 50%;
+            border: none;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-left: 12px;
+            transition: background 0.2s;
+        }
+        .container {
+            margin-top: 60px;
+            max-width: 700px;
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 32px 24px;
+        }
+        h2 {
+            color: var(--primary-dark);
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-align: center;
+            font-size: 2rem;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .cart-item .card {
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(44,62,80,0.07);
+            background: var(--card-bg);
+            transition: box-shadow 0.2s, transform 0.2s;
+            margin-bottom: 18px;
+        }
+        .cart-item .card:hover {
+            box-shadow: 0 8px 32px rgba(44,62,80,0.15);
+            transform: translateY(-2px) scale(1.02);
+        }
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+        }
+        .card-title .fa-box {
+            margin-right: 8px;
+            color: var(--accent);
+        }
+        .btn-success {
+            background: var(--primary-dark);
+            color: var(--text-light);
+            border-radius: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+            padding: 10px 28px;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-success:hover {
+            background: var(--primary);
+            box-shadow: 0 4px 16px rgba(44,62,80,0.13);
+            transform: translateY(-2px) scale(1.04);
+        }
+        .btn-secondary {
+            background: #eafbe7;
+            color: var(--primary-dark);
+            border-radius: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+            padding: 10px 28px;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-secondary:hover {
+            background: var(--primary-dark);
+            color: var(--text-light);
+        }
+        .alert-info {
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #eafbe7;
+            color: var(--primary-dark);
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .cart-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+        @media (max-width: 768px) {
+            .container { padding: 8px; }
+            .cart-item .card-title { font-size: 1rem; }
+            .cart-actions { flex-direction: column; gap: 10px; }
+        }
     </style>
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/">Lanka Fresh Mart</a>
-    <div class="navbar-nav ml-auto">
-        <a class="nav-item nav-link" th:href="@{/login}">Login</a>
-        <a class="nav-item nav-link" th:href="@{/register}">Register</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <a class="navbar-brand" href="/">
+        <i class="fa fa-leaf"></i> Lanka Fresh Mart
+    </a>
+    <div class="navbar-nav ml-auto align-items-center">
+        <a class="nav-item nav-link" th:href="@{/login}"><i class="fa fa-sign-in-alt"></i> Login</a>
+        <a class="nav-item nav-link" th:href="@{/register}"><i class="fa fa-user-plus"></i> Register</a>
+        <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode"><i class="fa fa-moon"></i></button>
     </div>
 </nav>
 
 <div class="container mt-4">
-    <h2>Your Guest Cart</h2>
+    <h2><i class="fa fa-shopping-cart"></i> Your Guest Cart</h2>
     <div th:if="${#lists.isEmpty(cartProducts)}" class="alert alert-info">
-        Your cart is empty.
+        <i class="fa fa-shopping-basket"></i> Your cart is empty.
     </div>
     <div th:unless="${#lists.isEmpty(cartProducts)}">
         <div th:each="product : ${cartProducts}" class="cart-item">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title" th:text="${product.name}"></h5>
+                    <h5 class="card-title">
+                        <i class="fa fa-box"></i>
+                        <span th:text="${product.name}"></span>
+                    </h5>
                     <p class="card-text" th:text="'Price: ' + ${product.price} + ' LKR'"></p>
                     <p class="card-text" th:text="'Quantity: ' + ${guestCart[product.id]}"></p>
                     <p class="card-text" th:text="'Total: ' + ${product.price * guestCart[product.id]} + ' LKR'"></p>
                 </div>
             </div>
         </div>
-        <div class="text-center mt-4">
-            <a th:href="@{/login}" class="btn btn-success">Proceed to Checkout (Login Required)</a>
-            <a th:href="@{/}" class="btn btn-secondary ml-2">Continue Shopping</a>
+        <div class="cart-actions">
+            <a th:href="@{/login}" class="btn btn-success"><i class="fa fa-sign-in-alt"></i> Proceed to Checkout (Login Required)</a>
+            <a th:href="@{/}" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Continue Shopping</a>
         </div>
     </div>
 </div>
+<script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
 </body>
 </html>

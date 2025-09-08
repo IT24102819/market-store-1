@@ -4,29 +4,193 @@
     <title>Your Reviews - Lanka Fresh Mart</title>
     <link rel="stylesheet" href="/css/register.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <style>
+        :root {
+            --primary: #249624;
+            --primary-dark: #2d7a2d;
+            --accent: #ffc107;
+            --bg: #f4f6f8;
+            --card-bg: #fff;
+            --text: #23272f;
+            --text-light: #fff;
+            --shadow: 0 4px 24px rgba(44,62,80,0.10);
+        }
+        body {
+            background: var(--bg);
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
+        }
+        .dark-mode {
+            --bg: #181a20;
+            --card-bg: #23272f;
+            --text: #f4f6f8;
+        }
+        .navbar {
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            border-radius: 0 0 18px 18px;
+            margin-bottom: 32px;
+            padding: 0.5rem 2rem;
+        }
+        .navbar-brand {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            letter-spacing: 1px;
+        }
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            color: var(--primary-dark);
+            margin-right: 18px;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-nav .nav-link i {
+            margin-right: 6px;
+        }
+        .navbar-nav .nav-link:hover {
+            color: var(--accent);
+        }
+        .dark-toggle {
+            background: var(--accent);
+            color: var(--primary-dark);
+            border-radius: 50%;
+            border: none;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-left: 12px;
+            transition: background 0.2s;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 36px 32px 28px 32px;
+            transition: background 0.3s;
+        }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 32px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        table {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(44,62,80,0.07);
+            margin-bottom: 30px;
+            background: #fafafa;
+            transition: background 0.3s;
+        }
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            vertical-align: middle;
+        }
+        th {
+            background: #eafbe7;
+            color: var(--primary-dark);
+            font-weight: 600;
+            border-bottom: 2px solid #eaeaea;
+            font-size: 1.08rem;
+        }
+        tr {
+            border-bottom: 1px solid #eaeaea;
+            transition: background 0.2s;
+        }
+        tbody tr:hover {
+            background: #f0fff0;
+        }
+        .btn-warning, .btn-danger, .btn-secondary {
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 6px 18px;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-warning i, .btn-danger i, .btn-secondary i {
+            margin-right: 4px;
+        }
+        .btn-warning:hover {
+            background: #ffe082;
+            color: var(--primary);
+            transform: scale(1.05);
+        }
+        .btn-danger:hover {
+            background: #b71c1c;
+            color: #fff;
+            transform: scale(1.05);
+        }
+        .btn-secondary {
+            background: #eafbe7;
+            color: var(--primary-dark);
+            border: none;
+        }
+        .btn-secondary:hover {
+            background: var(--primary-dark);
+            color: var(--text-light);
+        }
+        @media (max-width: 768px) {
+            .container { padding: 18px 6px; }
+            table { font-size: 0.95rem; }
+            th, td { padding: 8px 6px; }
+            h1 { font-size: 1.3rem; }
+        }
+    </style>
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="#"><i class="fa fa-leaf"></i> Lanka Fresh Mart</a>
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item"><a th:href="@{/products}" class="nav-link"><i class="fa fa-store"></i> Products</a></li>
+            <li class="nav-item"><a th:href="@{/cart}" class="nav-link"><i class="fa fa-shopping-cart"></i> Cart</a></li>
+            <li class="nav-item"><a th:href="@{/profile}" class="nav-link"><i class="fa fa-user"></i> Profile</a></li>
+        </ul>
+        <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode"><i class="fa fa-moon"></i></button>
+    </div>
+</nav>
 <div class="container">
-    <h1>Your Reviews</h1>
+    <h1><i class="fa fa-star"></i> Your Reviews</h1>
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th>Comment</th>
-            <th>Rating</th>
-            <th>Order ID</th>
-            <th>Product</th>
-            <th>Actions</th>
+            <th><i class="fa fa-comment"></i> Comment</th>
+            <th><i class="fa fa-star"></i> Rating</th>
+            <th><i class="fa fa-receipt"></i> Order ID</th>
+            <th><i class="fa fa-box"></i> Product</th>
+            <th><i class="fa fa-cogs"></i> Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="review : ${reviews}">
             <td th:text="${review.comment}"></td>
-            <td th:text="${review.rating} + '/5'"></td>
+            <td><i class="fa fa-star" style="color:var(--accent);"></i> <span th:text="${review.rating} + '/5'"></span></td>
             <td th:text="${review.order.id}"></td>
             <td th:text="${review.product.name}"></td>
             <td>
-                <a th:href="@{/review/edit(reviewId=${review.id})}" class="btn btn-warning btn-sm">Edit</a>
-                <a th:href="@{/review/delete(reviewId=${review.id})}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+                <a th:href="@{/review/edit(reviewId=${review.id})}" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Edit</a>
+                <a th:href="@{/review/delete(reviewId=${review.id})}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')"><i class="fa fa-trash"></i> Delete</a>
             </td>
         </tr>
         <tr th:if="${#lists.isEmpty(reviews)}">
@@ -34,7 +198,8 @@
         </tr>
         </tbody>
     </table>
-    <a th:href="@{/products}" class="btn btn-secondary">Continue Shopping</a>
+    <a th:href="@{/products}" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Continue Shopping</a>
 </div>
+<script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
 </body>
 </html>

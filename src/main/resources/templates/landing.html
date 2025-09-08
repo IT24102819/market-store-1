@@ -4,24 +4,313 @@
     <title>Lanka Fresh Mart - Welcome</title>
     <link rel="stylesheet" href="/css/register.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
     <style>
-        .navbar-brand { font-size: 1.5rem; font-weight: bold; }
-        .hero { background-color: #f8f9fa; padding: 40px 0; text-align: center; margin-bottom: 20px; }
-        .card-img-top { object-fit: cover; height: 200px; }
-        .category-card { cursor: pointer; margin: 10px; transition: transform 0.2s; }
-        .category-card:hover { transform: scale(1.05); }
+        :root {
+            --primary: #249624;
+            --primary-dark: #2d7a2d;
+            --accent: #ffc107;
+            --bg: #f4f6f8;
+            --card-bg: #fff;
+            --text: #23272f;
+            --text-light: #fff;
+            --shadow: 0 4px 24px rgba(44,62,80,0.10);
+        }
+        body {
+            background: var(--bg);
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
+        }
+        .dark-mode {
+            --bg: #181a20;
+            --card-bg: #23272f;
+            --text: #f4f6f8;
+        }
+        .navbar {
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid #eaeaea;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: var(--card-bg);
+            transition: box-shadow 0.3s, background 0.3s;
+        }
+        .navbar-brand {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-dark) !important;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-brand .fa-leaf {
+            margin-right: 10px;
+            color: var(--primary);
+            font-size: 1.6rem;
+        }
+        .navbar-nav .nav-link {
+            font-size: 1.1rem;
+            margin-right: 10px;
+            color: var(--primary-dark) !important;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-nav .nav-link i {
+            margin-right: 6px;
+        }
+        .navbar-nav .nav-link:hover {
+            color: var(--accent) !important;
+        }
+        .navbar-nav .btn-info {
+            font-size: 1rem;
+            border-radius: 20px;
+            background: var(--primary);
+            color: var(--text-light);
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .navbar-nav .btn-info:hover {
+            background: var(--primary-dark);
+            color: var(--text-light);
+            box-shadow: 0 4px 16px rgba(44,62,80,0.13);
+        }
+        .dark-toggle {
+            background: var(--accent);
+            color: var(--primary-dark);
+            border-radius: 50%;
+            border: none;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-left: 12px;
+            transition: background 0.2s;
+        }
+        .hero {
+            background: linear-gradient(rgba(44, 62, 80, 0.5), rgba(44, 62, 80, 0.5)), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+            color: #fff;
+            padding: 90px 0 40px 0;
+            border-radius: 0 0 30px 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            text-align: center;
+            animation: fadeIn 1s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .hero h2 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 8px rgba(44,62,80,0.18);
+        }
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            text-shadow: 0 2px 8px rgba(44,62,80,0.12);
+        }
+        .form-inline .form-control {
+            border-radius: 20px;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.06);
+            transition: box-shadow 0.2s;
+        }
+        .form-inline .form-control:focus {
+            box-shadow: 0 4px 16px rgba(44,62,80,0.13);
+        }
+        .form-inline .btn-primary {
+            border-radius: 20px;
+            font-size: 1.1rem;
+            padding: 8px 24px;
+            background: var(--primary-dark);
+            border: none;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .form-inline .btn-primary:hover {
+            background: var(--primary);
+            box-shadow: 0 4px 16px rgba(44,62,80,0.13);
+        }
+        .category-section {
+            margin-top: 40px;
+        }
+        .category-section h3 {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+        .category-section h3 .fa-th-large {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        .category-card {
+            cursor: pointer;
+            margin: 10px 0;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(44,62,80,0.07);
+            background: var(--card-bg);
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.7s;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .category-card:hover {
+            transform: translateY(-4px) scale(1.04);
+            box-shadow: 0 6px 24px rgba(44,62,80,0.13);
+            background: #eafbe7;
+        }
+        .category-card .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .category-card .fa {
+            margin-right: 8px;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        .product-card {
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(44,62,80,0.07);
+            transition: box-shadow 0.2s, transform 0.2s;
+            border: none;
+            background: var(--card-bg);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.7s;
+        }
+        .product-card:hover {
+            box-shadow: 0 8px 32px rgba(44,62,80,0.15);
+            transform: translateY(-4px) scale(1.02);
+        }
+        .card-img-top {
+            object-fit: cover;
+            height: 220px;
+            border-radius: 18px 18px 0 0;
+            transition: transform 0.3s;
+        }
+        .product-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+        }
+        .card-title .fa-apple-alt, .card-title .fa-carrot, .card-title .fa-cheese, .card-title .fa-bread-slice, .card-title .fa-tv {
+            margin-right: 8px;
+            color: var(--accent);
+        }
+        .card-text {
+            font-size: 1.1rem;
+            color: #444;
+        }
+        .badge-stock {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--accent);
+            color: var(--primary-dark);
+            font-weight: 600;
+            border-radius: 12px;
+            padding: 6px 14px;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+        }
+        .form-inline .form-control {
+            border-radius: 12px;
+        }
+        .form-inline .btn-primary {
+            border-radius: 12px;
+        }
+        .alert {
+            border-radius: 12px;
+            font-size: 1rem;
+        }
+        .container {
+            margin-top: 110px;
+        }
+        /* Footer styles */
+        .footer {
+            background: var(--primary-dark);
+            color: var(--text-light);
+            padding: 32px 0 16px 0;
+            margin-top: 60px;
+            border-radius: 30px 30px 0 0;
+            box-shadow: 0 -2px 12px rgba(44,62,80,0.08);
+            text-align: center;
+        }
+        .footer .social-icons a {
+            color: var(--accent);
+            margin: 0 12px;
+            font-size: 1.5rem;
+            transition: color 0.2s;
+        }
+        .footer .social-icons a:hover {
+            color: var(--text-light);
+        }
+        .footer .copyright {
+            margin-top: 18px;
+            font-size: 1rem;
+            color: #eaeaea;
+        }
+        @media (max-width: 768px) {
+            .hero h2 { font-size: 2rem; }
+            .card-img-top { height: 160px; }
+            .container { margin-top: 80px; }
+            .footer { padding: 24px 0 10px 0; }
+        }
     </style>
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/">Lanka Fresh Mart</a>
-    <div class="navbar-nav ml-auto">
-        <a class="nav-item nav-link" th:href="@{/login}">Login</a>
-        <a class="nav-item nav-link" th:href="@{/register}">Register</a>
-        <a th:href="@{/guest-cart/view}" class="btn btn-info ml-2">Cart</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <a class="navbar-brand" href="/">
+        <i class="fa fa-leaf"></i> Lanka Fresh Mart
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="navbar-nav ml-auto align-items-center">
+            <a class="nav-item nav-link" th:href="@{/login}">
+                <i class="fa fa-sign-in-alt"></i> Login
+            </a>
+            <a class="nav-item nav-link" th:href="@{/register}">
+                <i class="fa fa-user-plus"></i> Register
+            </a>
+            <a th:href="@{/guest-cart/view}" class="btn btn-info ml-2 px-4 py-2" title="View Cart">
+                <span class="fa fa-shopping-cart"></span>
+            </a>
+            <button class="dark-toggle ml-2" onclick="toggleDarkMode()" title="Toggle dark mode"><i class="fa fa-moon"></i></button>
+        </div>
     </div>
 </nav>
-
 <div class="container">
     <div class="hero">
         <h2>Welcome to Lanka Fresh Mart</h2>
@@ -30,31 +319,54 @@
         <form th:action="@{/}" method="get" class="form-inline justify-content-center">
             <div class="form-group">
                 <input type="text" name="search" id="search" th:value="${search}" placeholder="Search products..." class="form-control mr-2" style="width: 300px;">
-                <button type="submit" class="btn btn-primary">Search</button>
+                <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
             </div>
         </form>
     </div>
 
     <!-- Category Section -->
-    <h3 class="mt-4">Browse by Category</h3>
-    <div class="row">
-        <div th:each="cat : ${categories}" class="col-md-3">
-            <div class="card category-card" th:attr="data-category=${cat}" onclick="filterByCategory(this)">
-                <div class="card-body text-center">
-                    <h5 class="card-title" th:text="${cat}"></h5>
+    <div class="category-section">
+        <h3 class="mb-3 text-success font-weight-bold"><i class="fa fa-th-large"></i> Browse by Category</h3>
+        <div class="row">
+            <div th:each="cat : ${categories}" class="col-md-3 col-sm-6 mb-3">
+                <div class="card category-card shadow-sm" th:attr="data-category=${cat}" onclick="filterByCategory(this)">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">
+                            <span th:switch="${cat}">
+                                <i th:case="'Fruit'" class="fa fa-apple-alt"></i>
+                                <i th:case="'Vegetable'" class="fa fa-carrot"></i>
+                                <i th:case="'Dairy'" class="fa fa-cheese"></i>
+                                <i th:case="'Bakery'" class="fa fa-bread-slice"></i>
+                                <i th:case="'Electronics'" class="fa fa-tv"></i>
+                                <i th:case="*" class="fa fa-box-open"></i>
+                            </span>
+                            <span th:text="${cat}"></span>
+                        </h5>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Product List -->
-    <h3 class="mt-4">Featured Products</h3>
+    <h3 class="mt-5 mb-3 text-success font-weight-bold"><i class="fa fa-star"></i> Featured Products</h3>
     <div class="row">
-        <div th:each="product : ${products}" class="col-md-4 mb-4">
-            <div class="card">
+        <div th:each="product : ${products}" class="col-md-4 col-sm-6 mb-4">
+            <div class="card product-card shadow-sm">
                 <img th:src="${product.imageUrl}" th:alt="${product.name}" class="card-img-top">
+                <div class="badge-stock" th:if="${product.stockQuantity <= 10}" th:text="'Low Stock: ' + ${product.stockQuantity}"></div>
                 <div class="card-body">
-                    <h5 class="card-title" th:text="${product.name}"></h5>
+                    <h5 class="card-title">
+                        <span th:switch="${product.category}">
+                            <i th:case="'Fruit'" class="fa fa-apple-alt"></i>
+                            <i th:case="'Vegetable'" class="fa fa-carrot"></i>
+                            <i th:case="'Dairy'" class="fa fa-cheese"></i>
+                            <i th:case="'Bakery'" class="fa fa-bread-slice"></i>
+                            <i th:case="'Electronics'" class="fa fa-tv"></i>
+                            <i th:case="*" class="fa fa-box-open"></i>
+                        </span>
+                        <span th:text="${product.name}"></span>
+                    </h5>
                     <p class="card-text" th:text="'Price: ' + ${product.price} + ' LKR'"></p>
                     <p class="card-text" th:text="'In Stock: ' + ${product.stockQuantity}"></p>
                     <form th:action="@{/guest-cart/add}" method="post" class="form-inline">
@@ -63,7 +375,9 @@
                             <label for="quantity-${product.id}" class="sr-only">Quantity</label>
                             <input type="number" name="quantity" id="quantity-${product.id}" value="1" min="1" th:max="${product.stockQuantity}" class="form-control" style="width: 80px;">
                         </div>
-                        <button type="submit" class="btn btn-primary" th:disabled="${product.stockQuantity == 0}">Add to Cart</button>
+                        <button type="submit" class="btn btn-primary" th:disabled="${product.stockQuantity == 0}">
+                            <i class="fa fa-cart-plus"></i> Add to Cart
+                        </button>
                     </form>
                     <div th:if="${message}" class="alert alert-success mt-2" th:text="${message}" th:remove="if"></div>
                     <div th:if="${error}" class="alert alert-danger mt-2" th:text="${error}" th:remove="if"></div>
@@ -74,6 +388,19 @@
     <p th:if="${#lists.isEmpty(products)}" class="text-center">No products found.</p>
 </div>
 
+<!-- Stylish Footer -->
+<footer class="footer">
+    <div class="social-icons mb-2">
+        <a href="https://www.facebook.com/profile.php?id=100071017777140&ref=_ig_profile_ac" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="https://www.linkedin.com/in/pamindu-rashmitha-93980127b/" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+    </div>
+    <div class="copyright">
+        &copy; 2024 Lanka Fresh Mart. All rights reserved.
+    </div>
+</footer>
+
 <!-- JavaScript for Category Filtering -->
 <script th:inline="javascript">
     function filterByCategory(element) {
@@ -81,5 +408,8 @@
         window.location.href = '/' + '?category=' + encodeURIComponent(category);
     }
 </script>
+<script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
