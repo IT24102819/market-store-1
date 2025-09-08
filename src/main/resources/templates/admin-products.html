@@ -3,29 +3,139 @@
 <head>
   <title>Admin Products - Lanka Fresh Mart</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
+    :root {
+      --primary: #2d7a2d;
+      --primary-dark: #249624;
+      --accent: #ffc107;
+      --danger: #d32f2f;
+      --danger-dark: #b71c1c;
+      --bg-light: #f4f6f8;
+      --bg-dark: #23272f;
+      --card-bg: #fafafa;
+      --card-bg-dark: #2c313a;
+      --text-main: #222;
+      --text-main-dark: #f4f6f8;
+      --shadow: 0 4px 24px rgba(44,62,80,0.10);
+      --shadow-hover: 0 8px 32px rgba(44,62,80,0.15);
+    }
     body {
-      background: #f4f6f8;
+      background: var(--bg-light);
       font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      color: var(--text-main);
+      transition: background 0.3s, color 0.3s;
+    }
+    body.dark-mode {
+      background: var(--bg-dark);
+      color: var(--text-main-dark);
+    }
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: 220px;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 0 0 0;
+      box-shadow: 2px 0 16px rgba(44,62,80,0.07);
+      z-index: 100;
+      min-height: 100vh;
+    }
+    .sidebar .logo {
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin-bottom: 32px;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar .nav-links {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .sidebar .nav-links a, .sidebar .logout-button {
+      width: 90%;
+      margin: 0 auto;
+      padding: 10px 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-weight: 500;
+      text-decoration: none;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      transition: background 0.2s;
+      font-size: 1.08rem;
+    }
+    .sidebar .nav-links a:hover, .sidebar .logout-button:hover {
+      background: var(--primary-dark);
+      color: #fff;
+      text-decoration: none;
+    }
+    .sidebar .logout-button {
+      margin-top: auto;
+      margin-bottom: 24px;
+      cursor: pointer;
+    }
+    .dark-toggle {
+      margin: 0 auto 24px auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: #fff;
+      font-size: 1.1rem;
+      background: none;
+      border: none;
     }
     .container {
       max-width: 1100px;
       margin: 60px auto;
+      margin-left: 260px;
       background: #fff;
       border-radius: 18px;
-      box-shadow: 0 4px 24px rgba(44,62,80,0.10);
+      box-shadow: var(--shadow);
       padding: 36px 32px 28px 32px;
+      transition: background 0.3s;
+    }
+    body.dark-mode .container {
+      background: var(--card-bg-dark);
+      color: var(--text-main-dark);
     }
     h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #2d7a2d;
+      font-size: 2.3rem;
+      font-weight: 800;
+      color: var(--primary);
       margin-bottom: 24px;
-      text-align: center;
+      text-align: left;
+      letter-spacing: 1px;
+    }
+    .form-section {
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(44,62,80,0.07);
+      padding: 24px 18px;
+      margin-bottom: 32px;
+      transition: background 0.3s;
+    }
+    body.dark-mode .form-section {
+      background: var(--card-bg-dark);
     }
     .form-group label {
-      font-weight: 500;
-      color: #2d7a2d;
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 1.08rem;
+      margin-bottom: 4px;
     }
     .form-group input, .form-group select, .form-group textarea {
       border-radius: 12px;
@@ -33,42 +143,90 @@
       font-size: 1.05rem;
       padding: 10px;
       margin-bottom: 8px;
+      background: #f8f8f8;
+      transition: border 0.2s;
+    }
+    body.dark-mode .form-group input, body.dark-mode .form-group select, body.dark-mode .form-group textarea {
+      background: #23272f;
+      color: #fff;
+      border: 1px solid #444;
     }
     .btn-primary {
-      background: #2d7a2d;
+      background: var(--primary);
       border: none;
       border-radius: 12px;
       padding: 10px 28px;
       font-size: 1.1rem;
       font-weight: 600;
-      transition: background 0.2s;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     .btn-primary:hover {
-      background: #249624;
+      background: var(--primary-dark);
+      box-shadow: 0 4px 16px rgba(44,62,80,0.12);
+    }
+    .products-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      justify-content: flex-start;
+    }
+    .products-grid > .col-md-4 {
+      flex: 1 1 320px;
+      max-width: 340px;
+      min-width: 260px;
+      margin: 0;
     }
     .card {
       border-radius: 18px;
-      box-shadow: 0 2px 12px rgba(44,62,80,0.07);
+      box-shadow: var(--shadow);
       border: none;
-      transition: box-shadow 0.2s, transform 0.2s;
-      background: #fafafa;
+      transition: box-shadow 0.2s, transform 0.2s, background 0.3s;
+      background: var(--card-bg);
+      position: relative;
+      overflow: hidden;
+    }
+    body.dark-mode .card {
+      background: var(--card-bg-dark);
+      color: var(--text-main-dark);
     }
     .card.border-warning {
-      border: 2px solid #ffc107 !important;
+      border: 2px solid var(--accent) !important;
     }
     .card:hover {
-      box-shadow: 0 8px 32px rgba(44,62,80,0.15);
+      box-shadow: var(--shadow-hover);
       transform: translateY(-4px) scale(1.02);
     }
     .card-img-top {
       object-fit: cover;
-      height: 200px;
+      height: 180px;
       border-radius: 18px 18px 0 0;
+      background: #eaeaea;
+      transition: filter 0.2s;
+    }
+    .card:hover .card-img-top {
+      filter: brightness(0.95) saturate(1.1);
     }
     .card-title {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 700;
-      color: #2d7a2d;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .low-stock {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .update-button, .delete-button {
       border-radius: 10px;
@@ -78,21 +236,27 @@
       border: none;
       margin-right: 8px;
       margin-bottom: 4px;
-      transition: background 0.2s;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 1px 4px rgba(44,62,80,0.07);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     .update-button {
-      background: #249624;
+      background: var(--primary-dark);
       color: #fff;
     }
     .update-button:hover {
-      background: #2d7a2d;
+      background: var(--primary);
+      box-shadow: 0 2px 8px rgba(44,62,80,0.12);
     }
     .delete-button {
-      background: #d32f2f;
+      background: var(--danger);
       color: #fff;
     }
     .delete-button:hover {
-      background: #b71c1c;
+      background: var(--danger-dark);
+      box-shadow: 0 2px 8px rgba(44,62,80,0.12);
     }
     .success, .error {
       border-radius: 10px;
@@ -100,54 +264,64 @@
       margin-bottom: 16px;
       text-align: center;
       font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
     .success {
       background: #eafbe7;
-      color: #2d7a2d;
+      color: var(--primary);
+      border: 1px solid #b2e5b2;
     }
     .error {
       background: #ffeaea;
-      color: #d32f2f;
+      color: var(--danger);
+      border: 1px solid #f5bcbc;
     }
-    .nav-links {
-      margin-top: 24px;
-      text-align: center;
+    .alert-warning {
+      border-radius: 10px;
+      font-size: 1.05rem;
+      margin-bottom: 18px;
+      background: #fffbe7;
+      color: var(--accent);
+      border: 1px solid #ffe58f;
+      box-shadow: 0 1px 6px rgba(44,62,80,0.07);
     }
-    .nav-links a, .logout-button {
-      display: inline-block;
-      margin: 0 8px 8px 0;
-      padding: 8px 22px;
-      border-radius: 12px;
-      background: #2d7a2d;
-      color: #fff;
-      font-weight: 500;
-      text-decoration: none;
-      border: none;
-      transition: background 0.2s;
-    }
-    .nav-links a:hover, .logout-button:hover {
-      background: #249624;
-      color: #fff;
-      text-decoration: none;
-    }
-    .logout-button {
-      margin-top: 10px;
+    .pagination {
+      margin-top: 32px;
     }
     .pagination .page-link {
       border-radius: 10px !important;
-      color: #2d7a2d;
+      color: var(--primary);
       font-weight: 500;
       margin: 0 2px;
+      transition: background 0.2s, color 0.2s;
+      box-shadow: 0 1px 4px rgba(44,62,80,0.07);
     }
     .pagination .active .page-link {
-      background: #2d7a2d;
+      background: var(--primary);
       color: #fff !important;
       border: none;
+      box-shadow: 0 2px 8px rgba(44,62,80,0.12);
+    }
+    .pagination .page-link:hover {
+      background: var(--primary-dark);
+      color: #fff !important;
+    }
+    @media (max-width: 1200px) {
+      .container { margin-left: 0; }
+      .sidebar { position: static; width: 100%; flex-direction: row; height: auto; min-height: 0; padding: 12px 0; }
+      .sidebar .logo { margin-bottom: 0; }
+      .sidebar .nav-links { flex-direction: row; gap: 8px; margin-bottom: 0; }
+      .sidebar .nav-links a, .sidebar .logout-button { width: auto; padding: 8px 18px; font-size: 1rem; }
+      .dark-toggle { margin-bottom: 0; }
     }
     @media (max-width: 768px) {
-      .container { padding: 18px 6px; }
+      .container { padding: 18px 6px; margin: 24px 0; }
+      .form-section { padding: 12px 6px; }
+      .products-grid { gap: 12px; }
+      .products-grid > .col-md-4 { min-width: 180px; max-width: 100%; }
       .card-img-top { height: 120px; }
-      .form-group input, .form-group select, .form-group textarea { font-size: 0.95rem; }
+      h1 { font-size: 1.5rem; }
     }
   </style>
   <script>
@@ -157,79 +331,113 @@
     function confirmUpdate(name) {
       return confirm('Are you sure you want to update product ' + name + '?');
     }
+    // Dark mode toggle
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
+    window.onload = function() {
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+      }
+    }
   </script>
 </head>
 <body>
+<div class="sidebar">
+  <span class="logo"><i class="fa-solid fa-store"></i> Lanka Fresh Mart</span>
+  <button class="dark-toggle" onclick="toggleDarkMode()">
+    <i class="fa-solid fa-moon"></i> <span>Dark Mode</span>
+  </button>
+  <div class="nav-links">
+    <a th:href="@{/admin/dashboard}" href="/admin/dashboard"><i class="fa-solid fa-users-cog"></i> Manage Users</a>
+    <a th:href="@{/admin/orders}" href="/admin/orders"><i class="fa-solid fa-box"></i> Manage Orders</a>
+  </div>
+  <form th:action="@{/logout}" method="post" aria-label="Logout form" style="width:90%;">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <button type="submit" class="logout-button"><i class="fa-solid fa-sign-out-alt"></i> Logout</button>
+  </form>
+</div>
 <div class="container">
-  <h1>Manage Products</h1>
+  <h1><i class="fa-solid fa-cubes"></i> Manage Products</h1>
   <div th:if="${param.success}" class="success" th:text="${param.success}"></div>
   <div th:if="${error}" class="error" th:text="${error}"></div>
   <div th:if="${!#lists.isEmpty(lowStockProducts)}" class="alert alert-warning" role="alert">
-    <strong>Low Stock Alert!</strong> The following products are low on stock:
+    <strong><i class="fa-solid fa-triangle-exclamation"></i> Low Stock Alert!</strong> The following products are low on stock:
     <ul>
       <li th:each="product : ${lowStockProducts}"
           th:text="${product.name} + ' (' + ${product.stockQuantity} + ' left)'"></li>
     </ul>
   </div>
-  <form th:action="@{/admin/products/create}" th:object="${product}" method="post" aria-label="Create product form">
-    <div class="form-group">
-      <label for="name">Product Name</label>
-      <input type="text" th:field="*{name}" id="name" required placeholder="Enter product name" aria-required="true"/>
-    </div>
-    <div class="form-group">
-      <label for="price">Price</label>
-      <input type="number" step="0.01" th:field="*{price}" id="price" required placeholder="Enter price" aria-required="true"/>
-    </div>
-    <div class="form-group">
-      <label for="category">Category</label>
-      <select th:field="*{category}" id="category" aria-label="Select product category">
-        <option value="">Select Category</option>
-        <option value="Fruit">Fruit</option>
-        <option value="Vegetable">Vegetable</option>
-        <option value="Dairy">Dairy</option>
-        <option value="Bakery">Bakery</option>
-        <option value="Bakery">Electronics</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="imageUrl">Image URL</label>
-      <input type="text" th:field="*{imageUrl}" id="imageUrl" maxlength="500"
-             placeholder="e.g., /images/product.jpg (max 500 characters)" aria-label="Image URL"/>
-    </div>
-    <div class="form-group">
-      <label for="stockQuantity">Stock Quantity</label>
-      <input type="number" th:field="*{stockQuantity}" id="stockQuantity" required min="0"
-             placeholder="Enter stock quantity" aria-required="true"/>
-    </div>
-    <div class="form-group">
-      <label for="description">Description</label>
-      <textarea th:field="*{description}" id="description" placeholder="Enter description"></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Create Product</button>
-  </form>
-  <div class="row mt-4">
+  <div class="form-section">
+    <form th:action="@{/admin/products/create}" th:object="${product}" method="post" aria-label="Create product form">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="name"><i class="fa-solid fa-tag"></i> Product Name</label>
+          <input type="text" th:field="*{name}" id="name" required placeholder="Enter product name" aria-required="true"/>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="price"><i class="fa-solid fa-money-bill-wave"></i> Price</label>
+          <input type="number" step="0.01" th:field="*{price}" id="price" required placeholder="Enter price" aria-required="true"/>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="category"><i class="fa-solid fa-list"></i> Category</label>
+          <select th:field="*{category}" id="category" aria-label="Select product category">
+            <option value="">Select Category</option>
+            <option value="Fruit">Fruit</option>
+            <option value="Vegetable">Vegetable</option>
+            <option value="Dairy">Dairy</option>
+            <option value="Bakery">Bakery</option>
+            <option value="Electronics">Electronics</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="imageUrl"><i class="fa-solid fa-image"></i> Image URL</label>
+          <input type="text" th:field="*{imageUrl}" id="imageUrl" maxlength="500"
+                 placeholder="e.g., /images/product.jpg (max 500 characters)" aria-label="Image URL"/>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="stockQuantity"><i class="fa-solid fa-boxes-stacked"></i> Stock Quantity</label>
+          <input type="number" th:field="*{stockQuantity}" id="stockQuantity" required min="0"
+                 placeholder="Enter stock quantity" aria-required="true"/>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="description"><i class="fa-solid fa-align-left"></i> Description</label>
+          <textarea th:field="*{description}" id="description" placeholder="Enter description"></textarea>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Create Product</button>
+    </form>
+  </div>
+  <div class="products-grid mt-4">
     <div th:each="product : ${products}" class="col-md-4 mb-4">
       <div class="card" th:classappend="${product.stockQuantity <= 10} ? 'border-warning' : ''"
            role="article" aria-labelledby="product-title-${product.id}">
         <img th:src="${product.imageUrl}" th:alt="${product.name}" class="card-img-top">
         <div class="card-body">
-          <h5 class="card-title" th:id="'product-title-' + ${product.id}" th:text="${product.name}"></h5>
-          <p th:if="${product.stockQuantity <= 10}" class="text-warning font-weight-bold">
+          <h5 class="card-title" th:id="'product-title-' + ${product.id}">
+            <i class="fa-solid fa-cube"></i>
+            <span th:text="${product.name}"></span>
+          </h5>
+          <p th:if="${product.stockQuantity <= 10}" class="low-stock">
+            <i class="fa-solid fa-triangle-exclamation"></i>
             Low Stock: <span th:text="${product.stockQuantity} + ' left'"></span>
           </p>
           <form th:action="@{/admin/products/update}" method="post" th:attr="data-name=${product.name}"
                 onsubmit="return confirmUpdate(this.getAttribute('data-name'));">
             <input type="hidden" name="id" th:value="${product.id}"/>
             <div class="form-group">
-              <label for="name-${product.id}">Name</label>
+              <label for="name-${product.id}"><i class="fa-solid fa-tag"></i> Name</label>
               <input type="text" name="name" th:value="${product.name}" id="name-${product.id}" aria-label="Product name"/>
             </div>
             <div class="form-group">
-              <label for="price-${product.id}">Price</label>
+              <label for="price-${product.id}"><i class="fa-solid fa-money-bill-wave"></i> Price</label>
               <input type="number" step="0.01" name="price" th:value="${product.price}" id="price-${product.id}" aria-label="Product price"/>
             </div>
             <div class="form-group">
-              <label for="category-${product.id}">Category</label>
+              <label for="category-${product.id}"><i class="fa-solid fa-list"></i> Category</label>
               <select name="category" id="category-${product.id}" aria-label="Select product category">
                 <option value="" th:selected="${product.category == null}">Select Category</option>
                 <option value="Fruit" th:selected="${product.category == 'Fruit'}">Fruit</option>
@@ -240,25 +448,25 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="imageUrl-${product.id}">Image URL</label>
+              <label for="imageUrl-${product.id}"><i class="fa-solid fa-image"></i> Image URL</label>
               <input type="text" name="imageUrl" th:value="${product.imageUrl}" id="imageUrl-${product.id}"
                      maxlength="500" placeholder="e.g., /images/product.jpg (max 500 characters)" aria-label="Image URL"/>
             </div>
             <div class="form-group">
-              <label for="stockQuantity-${product.id}">Stock Quantity</label>
+              <label for="stockQuantity-${product.id}"><i class="fa-solid fa-boxes-stacked"></i> Stock Quantity</label>
               <input type="number" name="stockQuantity" th:value="${product.stockQuantity}" id="stockQuantity-${product.id}"
                      min="0" aria-label="Stock quantity"/>
             </div>
             <div class="form-group">
-              <label for="description-${product.id}">Description</label>
+              <label for="description-${product.id}"><i class="fa-solid fa-align-left"></i> Description</label>
               <textarea name="description" id="description-${product.id}" th:text="${product.description}" aria-label="Product description"></textarea>
             </div>
-            <button type="submit" class="update-button">Update</button>
+            <button type="submit" class="update-button"><i class="fa-solid fa-pen-to-square"></i> Update</button>
           </form>
           <form th:action="@{/admin/products/delete}" method="post" th:attr="data-name=${product.name}"
                 onsubmit="return confirmDelete(this.getAttribute('data-name'));">
             <input type="hidden" name="id" th:value="${product.id}"/>
-            <button type="submit" class="delete-button mt-2">Delete</button>
+            <button type="submit" class="delete-button mt-2"><i class="fa-solid fa-trash"></i> Delete</button>
           </form>
         </div>
       </div>
@@ -266,23 +474,15 @@
   </div>
   <ul class="pagination justify-content-center">
     <li th:class="${currentPage == 0 ? 'page-item disabled' : 'page-item'}">
-      <a th:href="@{/admin/products(page=${currentPage - 1}, size=10)}" class="page-link">Previous</a>
+      <a th:href="@{/admin/products(page=${currentPage - 1}, size=10)}" class="page-link"><i class="fa-solid fa-angle-left"></i> Previous</a>
     </li>
     <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:class="${currentPage == i ? 'page-item active' : 'page-item'}">
       <a th:href="@{/admin/products(page=${i}, size=10)}" class="page-link" th:text="${i + 1}"></a>
     </li>
     <li th:class="${currentPage == totalPages - 1 ? 'page-item disabled' : 'page-item'}">
-      <a th:href="@{/admin/products(page=${currentPage + 1}, size=10)}" class="page-link">Next</a>
+      <a th:href="@{/admin/products(page=${currentPage + 1}, size=10)}" class="page-link">Next <i class="fa-solid fa-angle-right"></i></a>
     </li>
   </ul>
-  <div class="nav-links">
-    <a th:href="@{/admin/dashboard}" href="/admin/dashboard">Manage Users</a>
-    <a th:href="@{/admin/orders}" href="/admin/orders">Manage Orders</a>
-    <form th:action="@{/logout}" method="post" aria-label="Logout form" style="display:inline;">
-      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-      <button type="submit" class="logout-button">Logout</button>
-    </form>
-  </div>
 </div>
 </body>
 </html>
