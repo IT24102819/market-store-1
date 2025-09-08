@@ -21,12 +21,16 @@ public class Delivery {
 
     private LocalDateTime estimatedDeliveryDate;
 
-    // Constructors, getters, setters
+    @Column(name = "address", length = 500) // Nullable so Pick Up can be null
+    private String address;
+
+    // Constructors
     public Delivery() {}
     public Delivery(Order order) {
         this.order = order;
     }
-    // Getters and setters...
+
+    // Getters and setters (existing ones unchanged)
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Order getOrder() { return order; }
@@ -37,4 +41,6 @@ public class Delivery {
     public void setTrackingNumber(String trackingNumber) { this.trackingNumber = trackingNumber; }
     public LocalDateTime getEstimatedDeliveryDate() { return estimatedDeliveryDate; }
     public void setEstimatedDeliveryDate(LocalDateTime estimatedDeliveryDate) { this.estimatedDeliveryDate = estimatedDeliveryDate; }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
 }

@@ -33,10 +33,13 @@ public class DeliveryService {
     }
 
     @Transactional
-    public Delivery createDelivery(Order order) {
+    public Delivery createDelivery(Order order, String address) {
         Delivery delivery = new Delivery(order);
         String trackingNumber = generateTrackingNumber();
         delivery.setTrackingNumber(trackingNumber);
+        if (address != null && !address.trim().isEmpty()) {  // NEW: Set address if provided
+            delivery.setAddress(address);
+        }
         return deliveryRepository.save(delivery);
     }
 

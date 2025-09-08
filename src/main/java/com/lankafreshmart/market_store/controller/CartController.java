@@ -101,7 +101,8 @@ public class CartController {
     @PostMapping("/order/place")
     public String placeOrder(@AuthenticationPrincipal User user, Model model,
                              @RequestParam String deliveryMethod,
-                             @RequestParam(required = false) String paymentMethod) {
+                             @RequestParam(required = false) String paymentMethod,
+                             @RequestParam(required = false) String address) {  // NEW: Add address param
         try {
             List<CartItem> cartItems = cartService.getCartItems();
             if (cartItems == null || cartItems.isEmpty()) {
@@ -109,15 +110,24 @@ public class CartController {
                 return "checkout";
             }
 
-            // Default to CASH_ON_DELIVERY if no payment method selected
-            paymentMethod = paymentMethod != null ? paymentMethod : "CASH_ON_DELIVERY";
-            // For card, assume payment details are validated (mock for now)
-            if ("CARD".equals(paymentMethod) && !validateCardDetails(model)) { // Mock validation
+            // NEW: Validate address if delivery is selected
+            if ("Delivery".equals(deliveryMethod) && (address == null || address.trim().isEmpty())) {
+                model.addAttribute("error", "Please enter a delivery address.");
+                model.addAttribute("cartItems", cartItems);
+                model.addAttribute("total", cartService.getCartTotal());
                 return "checkout";
             }
 
-            // Create order with payment and delivery method
-            Order order = orderService.createOrder(user, cartItems, paymentMethod, deliveryMethod);
+            // Default to CASH_ON_DELIVERY if no payment method selected
+            paymentMethod = paymentMethod != null ? paymentMethod : "CASH_ON_DELIVERY";
+            // For card, assume payment details are validated (mock for now)
+            if ("CARD".equals(paymentMethod) && !validateCardDetails(model)) {
+                return "checkout";
+            }
+
+            // Create order with payment, delivery method, and address (if applicable)
+            // UPDATED: Pass address to service
+            Order order = orderService.createOrder(user, cartItems, paymentMethod, deliveryMethod, address);
             cartItems.forEach(item -> cartService.removeFromCart(item.getId()));
 
             model.addAttribute("success", "Order placed successfully! Check your email for confirmation.");

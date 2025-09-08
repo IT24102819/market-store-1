@@ -36,7 +36,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order createOrder(User user, List<CartItem> cartItems, String paymentMethod, String deliveryMethod) throws IllegalStateException {
+    public Order createOrder(User user, List<CartItem> cartItems, String paymentMethod, String deliveryMethod, String address) throws IllegalStateException {
         BigDecimal totalAmount = BigDecimal.ZERO;
         List<OrderItem> orderItems = new ArrayList<>();
 
@@ -51,7 +51,7 @@ public class OrderService {
             totalAmount = totalAmount.add(itemTotal);
             orderItems.add(new OrderItem(product, requestedQuantity, product.getPrice().doubleValue()));
             product.setStockQuantity(product.getStockQuantity() - requestedQuantity);
-            product.setUnitsSold(product.getUnitsSold() != null ? product.getUnitsSold() + requestedQuantity : requestedQuantity); // Increment units sold
+            product.setUnitsSold(product.getUnitsSold() != null ? product.getUnitsSold() + requestedQuantity : requestedQuantity);
             productRepository.save(product); // Save updated stock and units sold
         }
 
@@ -63,8 +63,8 @@ public class OrderService {
         order.setDeliveryMethod(deliveryMethod);
         order = orderRepository.save(order);
 
-        // Create delivery
-        Delivery delivery = deliveryService.createDelivery(order);
+        // Create delivery with address
+        Delivery delivery = deliveryService.createDelivery(order, address);  // UPDATED: Pass address
         delivery.setStatus("PENDING");
         delivery.setEstimatedDeliveryDate(LocalDateTime.now().plusDays(3)); // Example: 3 days for delivery
         deliveryRepository.save(delivery);
@@ -81,7 +81,6 @@ public class OrderService {
 
         return order;
     }
-
     @Transactional
     public void cancelOrder(Long orderId) throws IllegalStateException {
         Order order = orderRepository.findById(orderId)
