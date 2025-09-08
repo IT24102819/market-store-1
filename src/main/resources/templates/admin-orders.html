@@ -6,254 +6,292 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
     :root {
-      --primary: #2d7a2d;
-      --primary-dark: #249624;
+      --primary: #249624;
+      --primary-dark: #2d7a2d;
       --accent: #ffc107;
-      --danger: #d32f2f;
-      --bg-light: #f4f6f8;
-      --bg-dark: #23272f;
-      --card-bg: #fafafa;
-      --card-bg-dark: #2c313a;
-      --text-main: #222;
-      --text-main-dark: #f4f6f8;
+      --bg: #f4f6f8;
+      --card-bg: #ffffff;
+      --text: #23272f;
+      --text-light: #ffffff;
       --shadow: 0 4px 24px rgba(44,62,80,0.10);
-      --shadow-hover: 0 8px 32px rgba(44,62,80,0.15);
+      --border-color: #eaeaea;
     }
     body {
-      background: var(--bg-light);
+      background: var(--bg);
       font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
-      color: var(--text-main);
+      color: var(--text);
       transition: background 0.3s, color 0.3s;
     }
-    body.dark-mode {
-      background: var(--bg-dark);
-      color: var(--text-main-dark);
+    .dark-mode {
+      --bg: #181a20;
+      --card-bg: #23272f;
+      --text: #f4f6f8;
+      --border-color: #3a3f48;
     }
-    .sidebar {
-      position: fixed;
-      top: 0; left: 0; bottom: 0;
-      width: 220px;
-      background: var(--primary);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 32px 0 0 0;
-      box-shadow: 2px 0 16px rgba(44,62,80,0.07);
-      z-index: 100;
-      min-height: 100vh;
-    }
-    .sidebar .logo {
-      font-size: 1.7rem;
-      font-weight: 700;
-      margin-bottom: 32px;
-      letter-spacing: 1px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .sidebar .nav-links {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 32px;
-    }
-    .sidebar .nav-links a, .sidebar .logout-button {
-      width: 90%;
-      margin: 0 auto;
-      padding: 10px 0;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.08);
-      color: #fff;
-      font-weight: 500;
-      text-decoration: none;
-      border: none;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      justify-content: center;
-      transition: background 0.2s;
-      font-size: 1.08rem;
-    }
-    .sidebar .nav-links a.active {
-      background: var(--accent);
-      color: var(--primary);
-      font-weight: 700;
-    }
-    .sidebar .nav-links a:hover, .sidebar .logout-button:hover {
-      background: var(--primary-dark);
-      color: #fff;
-      text-decoration: none;
-    }
-    .sidebar .logout-button {
-      margin-top: auto;
-      margin-bottom: 24px;
-      cursor: pointer;
-    }
-    .dark-toggle {
-      margin: 0 auto 24px auto;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      color: #fff;
-      font-size: 1.1rem;
-      background: none;
-      border: none;
-    }
-    .container {
-      max-width: 1000px;
-      margin: 60px auto;
-      margin-left: 260px;
-      background: #fff;
-      border-radius: 18px;
+    .navbar {
+      background: var(--card-bg);
       box-shadow: var(--shadow);
-      padding: 36px 32px 28px 32px;
+      padding: 0.75rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1020;
       transition: background 0.3s;
     }
-    body.dark-mode .container {
-      background: var(--card-bg-dark);
-      color: var(--text-main-dark);
+    .navbar-brand {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      letter-spacing: 1px;
+    }
+    .dark-mode .navbar-brand { color: var(--primary); }
+    .navbar-nav .nav-link {
+      font-weight: 500;
+      color: var(--text);
+      margin-right: 18px;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .navbar-nav .nav-link:hover { color: var(--primary); }
+    .dark-toggle {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border-color);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      margin-left: 12px;
+      transition: all 0.2s;
+      border-radius: 50%;
+    }
+    .dark-toggle:hover {
+      background: var(--primary);
+      color: var(--text-light);
+      border-color: var(--primary);
+    }
+    .logout-button {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 18px;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logout-button:hover {
+      background: var(--primary-dark);
+      color: var(--text-light);
+      border-color: var(--primary-dark);
+    }
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      background: var(--card-bg);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 36px;
+      transition: background 0.3s;
     }
     h1 {
       font-size: 2.3rem;
       font-weight: 800;
-      color: var(--primary);
-      margin-bottom: 24px;
-      text-align: left;
+      color: var(--primary-dark);
+      margin-bottom: 32px;
       letter-spacing: 1px;
       display: flex;
       align-items: center;
       gap: 12px;
     }
-    .table {
-      border-radius: 14px;
+    .dark-mode h1 { color: var(--primary); }
+    .table-responsive {
+      border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 2px 12px rgba(44,62,80,0.07);
-      background: var(--card-bg);
-      margin-bottom: 32px;
-      transition: background 0.3s;
+      border: 1px solid var(--border-color);
     }
-    body.dark-mode .table {
-      background: var(--card-bg-dark);
-      color: var(--text-main-dark);
+    .table {
+      margin-bottom: 0;
+      background: var(--card-bg);
     }
     th, td {
-      padding: 14px 18px;
+      padding: 16px;
       text-align: left;
       vertical-align: middle;
-      font-size: 1.08rem;
+      font-size: 1rem;
+      border-top: 1px solid var(--border-color);
     }
     th {
       background: #eafbe7;
-      color: var(--primary);
+      color: var(--primary-dark);
       font-weight: 700;
-      border-bottom: 2px solid #eaeaea;
-      letter-spacing: 0.5px;
+      border-top: none;
     }
-    body.dark-mode th {
+    .dark-mode th {
       background: #294d29;
       color: var(--accent);
-      border-bottom: 2px solid #333;
-    }
-    tr {
-      border-bottom: 1px solid #eaeaea;
-      transition: background 0.2s;
     }
     tbody tr:hover {
       background: #f5fbe7;
-      box-shadow: var(--shadow-hover);
     }
-    body.dark-mode tbody tr:hover {
-      background: #294d29;
+    .dark-mode tbody tr:hover {
+      background: #2c313a;
     }
     .btn-primary {
       background: var(--primary);
       border: none;
-      border-radius: 12px;
-      padding: 8px 24px;
-      font-size: 1.08rem;
+      border-radius: 10px;
+      padding: 6px 16px;
+      font-size: 0.95rem;
       font-weight: 600;
-      transition: background 0.2s, box-shadow 0.2s;
+      transition: all 0.2s;
       box-shadow: 0 2px 8px rgba(44,62,80,0.07);
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
     .btn-primary:hover {
       background: var(--primary-dark);
-      box-shadow: 0 4px 16px rgba(44,62,80,0.12);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(44,62,80,0.12);
     }
     .form-control {
       border-radius: 10px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       padding: 6px 10px;
       background: #f8f8f8;
-      border: 1px solid #eaeaea;
+      border: 1px solid #ddd;
       transition: border 0.2s;
       display: inline-block;
+      width: auto;
+      margin-right: 8px;
+    }
+    .dark-mode .form-control {
+      background: #3a3f48;
+      border-color: #555;
+      color: var(--text);
     }
     a.btn-secondary {
-      border-radius: 10px;
-      background: #249624;
+      border-radius: 12px;
+      background: var(--primary-dark);
       color: #fff;
       font-weight: 500;
-      padding: 8px 22px;
-      margin-top: 18px;
+      padding: 10px 24px;
+      margin-top: 24px;
       transition: background 0.2s;
       text-decoration: none;
       display: inline-block;
     }
     a.btn-secondary:hover {
-      background: #2d7a2d;
-      color: #fff;
-      text-decoration: none;
+      background: var(--primary);
+    }
+    .status-badge {
+      padding: 5px 12px;
+      border-radius: 15px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+    .status-pending { background-color: #fffbe7; color: #f59e0b; }
+    .status-shipped { background-color: #eef2ff; color: #4f46e5; }
+    .status-out_for_delivery { background-color: #ecfeff; color: #0891b2; }
+    .status-delivered { background-color: #f0fdf4; color: #16a34a; }
+    .status-cancelled { background-color: #fef2f2; color: #ef4444; }
+    .status-na { background-color: #f3f4f6; color: #6b7280; }
+    @media (max-width: 992px) {
+      .navbar-collapse { margin-top: 1rem; }
     }
     @media (max-width: 768px) {
-      .container { padding: 18px 6px; }
-      .table { font-size: 0.95rem; }
-      th, td { padding: 8px 6px; }
+      .container { padding: 24px 12px; margin: 24px auto; }
+      h1 { font-size: 1.8rem; }
+      th, td { padding: 12px 8px; font-size: 0.9rem; }
     }
   </style>
+  <script>
+    function toggleDarkMode() {
+      const isDarkMode = document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', isDarkMode);
+      const icon = document.querySelector('.dark-toggle i');
+      icon.className = isDarkMode ? 'fa fa-sun' : 'fa fa-moon';
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+        const icon = document.querySelector('.dark-toggle i');
+        if(icon) icon.className = 'fa fa-sun';
+      }
+    });
+  </script>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg">
+  <a class="navbar-brand" href="#"><i class="fa fa-leaf"></i>Lanka Fresh Mart</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"><i class="fa fa-bars"></i></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item"><a th:href="@{/admin/dashboard}" class="nav-link"><i class="fa fa-user-shield"></i>Dashboard</a></li>
+      <li class="nav-item"><a th:href="@{/admin/products}" class="nav-link"><i class="fa fa-box"></i>Manage Products</a></li>
+      <li class="nav-item"><a th:href="@{/admin/reviews}" class="nav-link"><i class="fa fa-star"></i>Manage Reviews</a></li>
+    </ul>
+    <div class="d-flex align-items-center">
+      <form th:action="@{/logout}" method="post" aria-label="Logout form" class="mr-2">
+        <button type="submit" class="logout-button"><i class="fa fa-sign-out-alt"></i> Logout</button>
+      </form>
+      <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode"><i class="fa fa-moon"></i></button>
+    </div>
+  </div>
+</nav>
 <div class="container">
-  <h1>Manage Orders</h1>
-  <table class="table table-bordered">
-    <thead>
-    <tr>
-      <th>Order ID</th>
-      <th>User</th>
-      <th>Total</th>
-      <th>Delivery Status</th>
-      <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="order : ${orders}">
-      <td th:text="${order.id}"></td>
-      <td th:text="${order.user.username}"></td>
-      <td th:text="${#numbers.formatDecimal(order.totalAmount, 2, 2)}"></td>
-      <td th:text="${order.delivery != null ? order.delivery.status : 'N/A'}"></td>
-      <td>
-        <form th:action="@{/admin/delivery/update}" method="post" th:if="${order.delivery != null}">
-          <input type="hidden" name="deliveryId" th:value="${order.delivery.id}"/>
-          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-          <select name="newStatus" class="form-control d-inline-block" style="width: auto;">
-            <option value="PENDING">PENDING</option>
-            <option value="SHIPPED">SHIPPED</option>
-            <option value="OUT_FOR_DELIVERY">OUT FOR DELIVERY</option>
-            <option value="DELIVERED">DELIVERED</option>
-            <option value="CANCELLED">CANCELLED</option>
-          </select>
-          <button type="submit" class="btn btn-primary btn-sm">Update</button>
-        </form>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-  <a th:href="@{/admin/dashboard}" class="btn btn-secondary">Back To Dashboard</a>
+  <h1><i class="fa-solid fa-dolly"></i> Manage Orders</h1>
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>User</th>
+        <th>Total</th>
+        <th>Delivery Status</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="order : ${orders}">
+        <td th:text="${order.id}"></td>
+        <td th:text="${order.user.username}"></td>
+        <td th:text="'LKR ' + ${#numbers.formatDecimal(order.totalAmount, 1, 'COMMA', 2, 'POINT')}"></td>
+        <td>
+            <span class="status-badge"
+                  th:classappend="${order.delivery == null ? 'status-na' : 'status-' + #strings.toLowerCase(order.delivery.status)}"
+                  th:text="${order.delivery != null ? order.delivery.status : 'N/A'}">
+            </span>
+        </td>
+        <td>
+          <form th:action="@{/admin/delivery/update}" method="post" th:if="${order.delivery != null}" class="form-inline">
+            <input type="hidden" name="deliveryId" th:value="${order.delivery.id}"/>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <select name="newStatus" class="form-control">
+              <option value="PENDING" th:selected="${order.delivery.status == 'PENDING'}">PENDING</option>
+              <option value="SHIPPED" th:selected="${order.delivery.status == 'SHIPPED'}">SHIPPED</option>
+              <option value="OUT_FOR_DELIVERY" th:selected="${order.delivery.status == 'OUT_FOR_DELIVERY'}">OUT FOR DELIVERY</option>
+              <option value="DELIVERED" th:selected="${order.delivery.status == 'DELIVERED'}">DELIVERED</option>
+              <option value="CANCELLED" th:selected="${order.delivery.status == 'CANCELLED'}">CANCELLED</option>
+            </select>
+            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <a th:href="@{/admin/dashboard}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back To Dashboard</a>
 </div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

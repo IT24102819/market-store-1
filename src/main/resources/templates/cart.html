@@ -2,7 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Shopping Cart - Lanka Fresh Mart</title>
-  <link rel="stylesheet" href="/css/register.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
   <style>
@@ -11,10 +10,11 @@
       --primary-dark: #2d7a2d;
       --accent: #ffc107;
       --bg: #f4f6f8;
-      --card-bg: #fff;
+      --card-bg: #ffffff;
       --text: #23272f;
-      --text-light: #fff;
+      --text-light: #ffffff;
       --shadow: 0 4px 24px rgba(44,62,80,0.10);
+      --border-color: #eaeaea;
     }
     body {
       background: var(--bg);
@@ -26,60 +26,60 @@
       --bg: #181a20;
       --card-bg: #23272f;
       --text: #f4f6f8;
+      --border-color: #3a3f48;
     }
     .navbar {
       background: var(--card-bg);
       box-shadow: var(--shadow);
-      border-radius: 0 0 18px 18px;
-      margin-bottom: 32px;
-      padding: 0.5rem 2rem;
+      padding: 0.75rem 2rem;
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1020;
+      transition: background 0.3s;
     }
     .navbar-brand {
-      font-size: 2rem;
+      font-size: 1.8rem;
       font-weight: 700;
       color: var(--primary-dark);
       letter-spacing: 1px;
-      display: flex;
-      align-items: center;
     }
+    .dark-mode .navbar-brand { color: var(--primary); }
     .navbar-nav .nav-link {
       font-weight: 500;
-      color: var(--primary-dark);
+      color: var(--text);
       margin-right: 18px;
       transition: color 0.2s;
       display: flex;
       align-items: center;
+      gap: 6px;
     }
-    .navbar-nav .nav-link i {
-      margin-right: 6px;
-    }
-    .navbar-nav .nav-link:hover {
-      color: var(--accent);
-    }
+    .navbar-nav .nav-link:hover { color: var(--primary); }
     .dark-toggle {
-      background: var(--accent);
-      color: var(--primary-dark);
-      border-radius: 50%;
-      border: none;
-      width: 38px;
-      height: 38px;
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border-color);
+      width: 40px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.2rem;
       margin-left: 12px;
-      transition: background 0.2s;
+      transition: all 0.2s;
+      border-radius: 50%;
+    }
+    .dark-toggle:hover {
+      background: var(--primary);
+      color: var(--text-light);
+      border-color: var(--primary);
     }
     .container {
       margin-top: 40px;
       background: var(--card-bg);
       border-radius: 18px;
       box-shadow: var(--shadow);
-      padding: 36px 32px 28px 32px;
-      max-width: 900px;
+      padding: 36px;
+      max-width: 1100px;
       transition: background 0.3s;
     }
     h1 {
@@ -94,17 +94,20 @@
       justify-content: center;
       gap: 12px;
     }
-    .table {
-      background: var(--card-bg);
-      border-radius: 14px;
+    .dark-mode h1 { color: var(--primary); }
+    .table-responsive {
+      border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 2px 12px rgba(44,62,80,0.07);
-      margin-bottom: 24px;
-      transition: box-shadow 0.2s;
+      border: 1px solid var(--border-color);
+    }
+    .table {
+      margin-bottom: 0;
+      background: var(--card-bg);
     }
     .table th, .table td {
       vertical-align: middle !important;
-      border-top: none;
+      border-top: 1px solid var(--border-color);
       font-size: 1rem;
       color: var(--text);
     }
@@ -112,130 +115,109 @@
       background: #eafbe7;
       color: var(--primary-dark);
       font-weight: 600;
-      font-size: 1.1rem;
-      border-bottom: 2px solid #eaeaea;
+      font-size: 1.05rem;
+      border-top: none;
+    }
+    .dark-mode .table th {
+      background: #294d29;
+      color: var(--accent);
     }
     .table tbody tr:hover {
       background: #f0fff0;
       transition: background 0.2s;
     }
+    .dark-mode .table tbody tr:hover { background: #2c313a; }
     img {
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(44,62,80,0.08);
       transition: transform 0.3s;
     }
-    img:hover {
-      transform: scale(1.07);
-    }
+    img:hover { transform: scale(1.07); }
     .btn {
       border-radius: 12px;
       font-weight: 600;
-      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+      transition: all 0.2s;
       box-shadow: 0 2px 8px rgba(44,62,80,0.08);
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      padding: 10px 24px;
     }
-    .btn-primary {
-      background: var(--primary-dark);
-      border: none;
-      color: var(--text-light);
-    }
-    .btn-primary:hover {
-      background: var(--primary);
-      transform: translateY(-2px) scale(1.04);
+    .btn:hover {
+      transform: translateY(-2px);
       box-shadow: 0 4px 16px rgba(44,62,80,0.13);
     }
-    .btn-danger {
-      background: #e74c3c;
-      border: none;
-      color: #fff;
-    }
-    .btn-danger:hover {
-      background: #c0392b;
-      transform: translateY(-2px) scale(1.04);
-    }
-    .btn-success {
-      background: var(--accent);
-      color: var(--primary-dark);
-      border: none;
-    }
-    .btn-success:hover {
-      background: #ffe082;
-      color: var(--primary);
-    }
-    .btn-secondary {
-      background: #eafbe7;
-      color: var(--primary-dark);
-      border: none;
-    }
-    .btn-secondary:hover {
-      background: var(--primary-dark);
-      color: var(--text-light);
-    }
-    .btn-info {
-      background: #249624;
-      color: #fff;
-      border: none;
-    }
-    .btn-info:hover {
-      background: #2d7a2d;
-      color: #fff;
-    }
+    .btn-primary { background: var(--primary-dark); border: none; color: var(--text-light); }
+    .btn-primary:hover { background: var(--primary); }
+    .btn-danger { background: #e74c3c; border: none; color: #fff; }
+    .btn-danger:hover { background: #c0392b; }
+    .btn-success { background: var(--primary); border: none; color: var(--text-light); }
+    .btn-success:hover { background: var(--primary-dark); }
+    .btn-secondary { background: #6c757d; color: #fff; border: none; }
+    .btn-secondary:hover { background: #5a6268; }
     .success, .error, .alert {
       border-radius: 12px;
       font-size: 1rem;
-      margin-bottom: 16px;
-      padding: 10px 18px;
+      margin-bottom: 24px;
+      padding: 12px 18px;
       box-shadow: 0 2px 8px rgba(44,62,80,0.08);
       text-align: center;
     }
-    .success { background: #eafbe7; color: var(--primary-dark); }
-    .error { background: #fdecea; color: #e74c3c; }
-    .nav-links {
-      margin-top: 32px;
-      text-align: center;
+    .success { background: #eafbe7; color: var(--primary-dark); border: 1px solid #b2e5b2; }
+    .error, .alert { background: #fdecea; color: #e74c3c; border: 1px solid #f5bcbc; }
+    .cart-actions {
+      margin-top: 24px;
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
-      justify-content: center;
-    }
-    .logout-button {
-      background: #e74c3c;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      padding: 8px 24px;
-      font-weight: 600;
-      margin-top: 8px;
-      box-shadow: 0 2px 8px rgba(44,62,80,0.08);
-      transition: background 0.2s, box-shadow 0.2s;
-      display: inline-flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      gap: 16px;
     }
-    .logout-button:hover {
-      background: #c0392b;
-      box-shadow: 0 4px 16px rgba(44,62,80,0.13);
+    .form-control {
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: #f8f8f8;
+    }
+    .dark-mode .form-control {
+      background: #3a3f48;
+      color: var(--text);
+      border-color: #555;
+    }
+    @media (max-width: 992px) {
+      .navbar-collapse { margin-top: 1rem; }
     }
     @media (max-width: 768px) {
-      .container { padding: 16px 4px; }
-      .table th, .table td { font-size: 0.95rem; }
-      img { width: 70px !important; height: 70px !important; }
-      h1 { font-size: 1.3rem; }
-      .nav-links { flex-direction: column; gap: 8px; }
+      .container { padding: 24px 12px; }
+      .table th, .table td { font-size: 0.9rem; }
+      img { width: 60px !important; height: 60px !important; }
+      h1 { font-size: 1.8rem; }
+      .cart-actions { flex-direction: column; align-items: stretch; }
+      .btn { width: 100%; justify-content: center; }
     }
   </style>
   <script>
     function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
+      const isDarkMode = document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', isDarkMode);
+      const icon = document.querySelector('.dark-toggle i');
+      icon.className = isDarkMode ? 'fa fa-sun' : 'fa fa-moon';
     }
+    window.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+        const icon = document.querySelector('.dark-toggle i');
+        if(icon) icon.className = 'fa fa-sun';
+      }
+    });
   </script>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg">
   <a class="navbar-brand" href="#"><i class="fa fa-leaf"></i> Lanka Fresh Mart</a>
-  <div class="collapse navbar-collapse">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"><i class="fa fa-bars"></i></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
       <li class="nav-item"><a th:href="@{/products}" class="nav-link"><i class="fa fa-store"></i> Products</a></li>
       <li class="nav-item"><a th:href="@{/profile}" class="nav-link"><i class="fa fa-user"></i> Profile</a></li>
@@ -248,58 +230,61 @@
   <h1><i class="fa fa-shopping-cart"></i> Your Cart</h1>
   <div th:if="${param.success}" class="success" th:text="${param.success}"></div>
   <div th:if="${error}" class="error" th:text="${error}"></div>
-  <div th:if="${lowStockWarning}" style="color: #e74c3c; font-weight:600;"><i class="fa fa-exclamation-triangle"></i> Warning: Some items have low stock!</div>
-  <table class="table table-bordered" role="grid" aria-label="Shopping cart table">
-    <thead>
-    <tr>
-      <th><i class="fa fa-image"></i> Image</th>
-      <th><i class="fa fa-box"></i> Product</th>
-      <th><i class="fa fa-money-bill-wave"></i> Price</th>
-      <th><i class="fa fa-sort-numeric-up"></i> Quantity</th>
-      <th><i class="fa fa-calculator"></i> Total</th>
-      <th><i class="fa fa-cogs"></i> Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="item : ${cartItems}">
-      <td>
-        <img th:src="${item.product.imageUrl}" th:alt="${item.product.name}" style="width: 100px; height: 100px; object-fit: cover;">
-      </td>
-      <td th:text="${item.product.name}"></td>
-      <td th:text=" ${item.product.price} + ' LKR' "></td>
-      <td>
-        <form th:action="@{/cart/update}" method="post" aria-label="Update cart item quantity" class="form-inline">
-          <input type="hidden" name="cartItemId" th:value="${item.id}"/>
-          <input type="number" name="quantity" th:value="${item.quantity}" min="1" aria-label="Quantity" class="form-control mr-2" style="width: 80px;"/>
-          <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-sync-alt"></i> Update</button>
-        </form>
-      </td>
-      <td th:text="${item.quantity * item.product.price} + ' LKR' "></td>
-      <td>
-        <form th:action="@{/cart/remove}" method="post" aria-label="Remove from cart" style="display:inline;">
-          <input type="hidden" name="cartItemId" th:value="${item.id}"/>
-          <button type="submit" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Remove</button>
-        </form>
-      </td>
-    </tr>
-    <tr th:if="${#lists.isEmpty(cartItems)}">
-      <td colspan="6" class="text-center"><i class="fa fa-shopping-basket"></i> Your cart is empty.</td>
-    </tr>
-    <tr th:if="${!#lists.isEmpty(cartItems)}">
-      <td colspan="4" class="text-right"><strong>Total:</strong></td>
-      <td th:text="${#numbers.formatDecimal(total, 2, 2) + ' LKR'}"></td>
-      <td></td>
-    </tr>
-    </tbody>
-  </table>
-  <div class="d-flex flex-wrap justify-content-center align-items-center mb-4" style="gap: 16px;">
+  <div th:if="${lowStockWarning}" class="alert"><i class="fa fa-exclamation-triangle"></i> Warning: Some items have low stock!</div>
+  <div class="table-responsive">
+    <table class="table" role="grid" aria-label="Shopping cart table">
+      <thead>
+      <tr>
+        <th><i class="fa fa-image"></i> Image</th>
+        <th><i class="fa fa-box"></i> Product</th>
+        <th><i class="fa fa-money-bill-wave"></i> Price</th>
+        <th><i class="fa fa-sort-numeric-up"></i> Quantity</th>
+        <th><i class="fa fa-calculator"></i> Total</th>
+        <th><i class="fa fa-cogs"></i> Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="item : ${cartItems}">
+        <td>
+          <img th:src="${item.product.imageUrl}" th:alt="${item.product.name}" style="width: 80px; height: 80px; object-fit: cover;">
+        </td>
+        <td th:text="${item.product.name}"></td>
+        <td th:text="${#numbers.formatDecimal(item.product.price, 1, 'COMMA', 2, 'POINT') + ' LKR'}"></td>
+        <td>
+          <form th:action="@{/cart/update}" method="post" aria-label="Update cart item quantity" class="form-inline">
+            <input type="hidden" name="cartItemId" th:value="${item.id}"/>
+            <input type="number" name="quantity" th:value="${item.quantity}" min="1" aria-label="Quantity" class="form-control mr-2" style="width: 80px;"/>
+            <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-sync-alt"></i></button>
+          </form>
+        </td>
+        <td th:text="${#numbers.formatDecimal(item.quantity * item.product.price, 1, 'COMMA', 2, 'POINT') + ' LKR'}"></td>
+        <td>
+          <form th:action="@{/cart/remove}" method="post" aria-label="Remove from cart" style="display:inline;">
+            <input type="hidden" name="cartItemId" th:value="${item.id}"/>
+            <button type="submit" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(cartItems)}">
+        <td colspan="6" class="text-center py-5"><i class="fa fa-shopping-basket fa-2x mb-2"></i><br/>Your cart is empty.</td>
+      </tr>
+      <tr th:if="${!#lists.isEmpty(cartItems)}">
+        <td colspan="4" class="text-right"><strong>Total:</strong></td>
+        <td colspan="2"><strong><span th:text="${#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT') + ' LKR'}"></span></strong></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="cart-actions">
     <a th:href="@{/products}" href="/products" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Continue Shopping</a>
-    <form th:action="@{/cart/checkout}" method="post" class="d-inline-block">
+    <form th:if="${!#lists.isEmpty(cartItems)}" th:action="@{/cart/checkout}" method="post" class="d-inline-block">
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
       <button type="submit" class="btn btn-success"><i class="fa fa-credit-card"></i> Proceed to Checkout</button>
     </form>
   </div>
 </div>
-<script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

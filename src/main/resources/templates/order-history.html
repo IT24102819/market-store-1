@@ -217,10 +217,6 @@
   </table>
   <div class="d-flex flex-wrap justify-content-center align-items-center mb-4" style="gap: 16px;">
     <a th:href="@{/products}" class="btn btn-primary"><i class="fa fa-shopping-basket"></i> Continue Shopping</a>
-    <form th:action="@{/logout}" method="post">
-      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-      <button type="submit" class="btn btn-danger"><i class="fa fa-sign-out-alt"></i> Logout</button>
-    </form>
   </div>
 </div>
 <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
