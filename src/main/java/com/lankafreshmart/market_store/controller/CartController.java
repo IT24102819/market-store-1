@@ -1,12 +1,9 @@
 package com.lankafreshmart.market_store.controller;
 
 import com.lankafreshmart.market_store.model.CartItem;
-import com.lankafreshmart.market_store.model.Order;
 import com.lankafreshmart.market_store.model.Product;
 import com.lankafreshmart.market_store.model.User;
-import com.lankafreshmart.market_store.repository.OrderRepository;
 import com.lankafreshmart.market_store.service.CartService;
-import com.lankafreshmart.market_store.service.OrderService;
 import com.lankafreshmart.market_store.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,15 +17,11 @@ import java.util.List;
 public class CartController {
     private final ProductService productService;
     private final CartService cartService;
-    private final OrderService orderService;
-    private final OrderRepository orderRepository;
 
     @Autowired
-    public CartController(ProductService productService, CartService cartService, OrderService orderService, OrderRepository orderRepository) {
+    public CartController(ProductService productService, CartService cartService) {
         this.productService = productService;
         this.cartService = cartService;
-        this.orderService = orderService;
-        this.orderRepository = orderRepository;
     }
 
     @GetMapping("/cart")
@@ -54,12 +47,12 @@ public class CartController {
                             @RequestParam(defaultValue = "1") int quantity,
                             Model model) {
         try {
-            cartService.addToCart(productId, quantity); // Use the existing service method
+            cartService.addToCart(productId, quantity);
             model.addAttribute("success", "Product added to cart successfully!");
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
         }
-        return "redirect:/cart"; // Redirect to cart page after adding
+        return "redirect:/cart";
     }
 
     @PostMapping("/cart/update")
@@ -96,97 +89,5 @@ public class CartController {
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("total", cartService.getCartTotal());
         return "checkout";
-    }
-
-    @PostMapping("/order/place")
-    public String placeOrder(@AuthenticationPrincipal User user, Model model,
-                             @RequestParam String deliveryMethod,
-                             @RequestParam(required = false) String paymentMethod,
-                             @RequestParam(required = false) String address) {  // NEW: Add address param
-        try {
-            List<CartItem> cartItems = cartService.getCartItems();
-            if (cartItems == null || cartItems.isEmpty()) {
-                model.addAttribute("error", "Your cart is empty.");
-                return "checkout";
-            }
-
-            // NEW: Validate address if delivery is selected
-            if ("Delivery".equals(deliveryMethod) && (address == null || address.trim().isEmpty())) {
-                model.addAttribute("error", "Please enter a delivery address.");
-                model.addAttribute("cartItems", cartItems);
-                model.addAttribute("total", cartService.getCartTotal());
-                return "checkout";
-            }
-
-            // Default to CASH_ON_DELIVERY if no payment method selected
-            paymentMethod = paymentMethod != null ? paymentMethod : "CASH_ON_DELIVERY";
-            // For card, assume payment details are validated (mock for now)
-            if ("CARD".equals(paymentMethod) && !validateCardDetails(model)) {
-                return "checkout";
-            }
-
-            // Create order with payment, delivery method, and address (if applicable)
-            // UPDATED: Pass address to service
-            Order order = orderService.createOrder(user, cartItems, paymentMethod, deliveryMethod, address);
-            cartItems.forEach(item -> cartService.removeFromCart(item.getId()));
-
-            model.addAttribute("success", "Order placed successfully! Check your email for confirmation.");
-            model.addAttribute("orderId", order.getId());
-            return "order-success";
-        } catch (IllegalStateException e) {
-            model.addAttribute("error", e.getMessage());
-            return "checkout";
-        } catch (Exception e) {
-            model.addAttribute("error", "Failed to process order: " + e.getMessage());
-            return "checkout";
-        }
-    }
-
-
-    private boolean validateCardDetails(Model model) {
-        String cardNumber = model.getAttribute("cardNumber") != null ? model.getAttribute("cardNumber").toString() : "";
-        if (cardNumber.isEmpty() || cardNumber.length() < 16) {
-            model.addAttribute("error", "Invalid card details. Please enter a valid card number.");
-            return false;
-        }
-        return true;
-    }
-
-    @GetMapping("/order/history")
-    public String orderHistory(@AuthenticationPrincipal User user, Model model) {
-        List<Order> orders = orderRepository.findByUser(user); // Assume OrderRepository is autowired
-        model.addAttribute("orders", orders);
-        return "order-history";
-    }
-
-    @GetMapping("/order/details")
-    public String orderDetails(@RequestParam Long orderId, @AuthenticationPrincipal User user, Model model) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
-        if (!order.getUser().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("Unauthorized access to order");
-        }
-        model.addAttribute("order", order);
-        return "order-details";
-    }
-
-    @PostMapping("/order/cancel")
-    public String cancelOrder(@RequestParam Long orderId, @AuthenticationPrincipal User user, Model model) {
-        try {
-            Order order = orderRepository.findById(orderId)
-                    .orElseThrow(() -> new IllegalArgumentException("Order not found"));
-            if (!order.getUser().getId().equals(user.getId())) {
-                throw new IllegalArgumentException("Unauthorized access to order");
-            }
-            orderService.cancelOrder(orderId);
-            model.addAttribute("success", "Order cancelled successfully. Stock has been reverted.");
-            return "redirect:/order/history";
-        } catch (IllegalStateException e) {
-            model.addAttribute("error", e.getMessage());
-            return "redirect:/order/history";
-        } catch (Exception e) {
-            model.addAttribute("error", "Failed to cancel order: " + e.getMessage());
-            return "redirect:/order/history";
-        }
     }
 }
