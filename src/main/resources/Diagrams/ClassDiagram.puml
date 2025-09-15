@@ -1,0 +1,173 @@
+@startuml
+
+interface UserDetails {
+  +getAuthorities(): Collection<? extends GrantedAuthority>
+  +getUsername(): String
+  +getPassword(): String
+  +isAccountNonExpired(): boolean
+  +isAccountNonLocked(): boolean
+  +isCredentialsNonExpired(): boolean
+  +isEnabled(): boolean
+}
+
+
+class User {
+  -id: Long
+  -username: String
+  -password: String
+  -email: String
+  -role: String
+  +getId(): Long
+  +setId(id: Long)
+  +getUsername(): String
+  +setUsername(username: String)
+  +getPassword(): String
+  +setPassword(password: String)
+  +getEmail(): String
+  +setEmail(email: String)
+  +getRole(): String
+  +setRole(role: String)
+}
+
+class Product {
+  -id: Long
+  -name: String
+  -price: BigDecimal
+  -description: String
+  -category: String
+  -imageUrl: String
+  -stockQuantity: int
+  -rating: Double
+  -unitsSold: Integer
+  +getId(): Long
+  +setId(id: Long)
+  +getName(): String
+  +setName(name: String)
+  +getPrice(): BigDecimal
+  +setPrice(price: BigDecimal)
+  +getDescription(): String
+  +setDescription(description: String)
+  +getCategory(): String
+  +setCategory(category: String)
+  +getImageUrl(): String
+  +setImageUrl(imageUrl: String)
+  +getStockQuantity(): int
+  +setStockQuantity(stockQuantity: int)
+  +getRating(): Double
+  +setRating(rating: Double)
+  +getUnitsSold(): Integer
+  +setUnitsSold(unitsSold: Integer)
+}
+
+class CartItem {
+  -id: Long
+  -quantity: int
+  +getId(): Long
+  +setId(id: Long)
+  +getUser(): User
+  +setUser(user: User)
+  +getProduct(): Product
+  +setProduct(product: Product)
+  +getQuantity(): int
+  +setQuantity(quantity: int)
+}
+
+class Order {
+  -id: Long
+  -orderDate: LocalDateTime
+  -totalAmount: double
+  -deliveryMethod: String
+  -status: String
+  -paymentMethod: String
+  -paymentStatus: String
+  +getId(): Long
+  +setId(id: Long)
+  +getUser(): User
+  +setUser(user: User)
+  +getOrderDate(): LocalDateTime
+  +setOrderDate(orderDate: LocalDateTime)
+  +getTotalAmount(): double
+  +setTotalAmount(totalAmount: double)
+  +getDeliveryMethod(): String
+  +setDeliveryMethod(deliveryMethod: String)
+  +getStatus(): String
+  +setStatus(status: String)
+  +getPaymentMethod(): String
+  +setPaymentMethod(paymentMethod: String)
+  +getPaymentStatus(): String
+  +setPaymentStatus(paymentStatus: String)
+  +getOrderItems(): List<OrderItem>
+  +setOrderItems(orderItems: List<OrderItem>)
+  +getDelivery(): Delivery
+  +setDelivery(delivery: Delivery)
+}
+
+class OrderItem {
+  -id: Long
+  -quantity: int
+  -price: double
+  +getId(): Long
+  +setId(id: Long)
+  +getOrder(): Order
+  +setOrder(order: Order)
+  +getProduct(): Product
+  +setProduct(product: Product)
+  +getQuantity(): int
+  +setQuantity(quantity: int)
+  +getPrice(): double
+  +setPrice(price: double)
+}
+
+class Delivery {
+  -id: Long
+  -status: String
+  -trackingNumber: String
+  -estimatedDeliveryDate: LocalDateTime
+  -address: String
+  +getId(): Long
+  +setId(id: Long)
+  +getOrder(): Order
+  +setOrder(order: Order)
+  +getStatus(): String
+  +setStatus(status: String)
+  +getTrackingNumber(): String
+  +setTrackingNumber(trackingNumber: String)
+  +getEstimatedDeliveryDate(): LocalDateTime
+  +setEstimatedDeliveryDate(estimatedDeliveryDate: LocalDateTime)
+  +getAddress(): String
+  +setAddress(address: String)
+}
+
+class Review {
+  -id: Long
+  -comment: String
+  -rating: int
+  +getId(): Long
+  +setId(id: Long)
+  +getOrder(): Order
+  +setOrder(order: Order)
+  +getProduct(): Product
+  +setProduct(product: Product)
+  +getComment(): String
+  +setComment(comment: String)
+  +getRating(): int
+  +setRating(rating: int)
+  +getUser(): User
+  +setUser(user: User)
+}
+
+
+UserDetails <|.. User
+User "1" --> "*" CartItem
+User "1" --> "*" Order
+User "1" --> "*" Review
+Product "1" --> "*" CartItem
+Product "1" --> "*" OrderItem
+Product "1" --> "*" Review
+Order "1" --> "*" OrderItem
+Order "1" --> "1" Delivery
+Order "1" --> "*" Review
+
+
+hide empty members
+@enduml
