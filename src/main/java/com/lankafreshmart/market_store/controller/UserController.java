@@ -38,7 +38,7 @@ public class UserController {
         try {
             userService.register(user);
             model.addAttribute("success", "Registration successful! Please log in.");
-            return "register";
+            return "redirect:/login";
         } catch (Exception e) {
             model.addAttribute("error", "Registration failed: " + e.getMessage());
             return "register";
