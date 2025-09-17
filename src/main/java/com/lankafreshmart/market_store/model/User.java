@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
+import jakarta.validation.constraints.*;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -13,9 +13,23 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotEmpty(message = "Username cannot be empty")
+    @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters")
+    @Column(nullable = false, unique = true)
     private String username;
+
+    @NotEmpty(message = "Password cannot be empty")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
+    @Pattern(regexp = "^(?=.*[!@#$%^&*(),.?\":{}|<>]).*$", message = "Password must contain at least one special character")
+    @Column(nullable = false)
     private String password;
+
+    @NotEmpty(message = "Email cannot be empty")
+    @Email(message = "Email must be valid")
+    @Column(nullable = false, unique = true)
     private String email;
+
     private String role;
 
     @Column(name = "agreed_to_terms", nullable = false)

@@ -2,9 +2,11 @@ package com.lankafreshmart.market_store.controller;
 
 import com.lankafreshmart.market_store.model.User;
 import com.lankafreshmart.market_store.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,20 +26,17 @@ public class UserController {
         return "register";
     }
 
-    @GetMapping("/privacy")
-    public String showPrivacyPolicy() {
-        return "privacy"; // Maps to privacy.html
-    }
-
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user, Model model) {
+    public String registerUser(@Valid @ModelAttribute User user, BindingResult result, Model model) {
         if (!user.isAgreedToTerms()) {
             model.addAttribute("error", "You must agree to the Privacy Policy to register.");
             return "register";
         }
+        if (result.hasErrors()) {
+            return "register";
+        }
         try {
             userService.register(user);
-            model.addAttribute("success", "Registration successful! Please log in.");
             return "redirect:/login";
         } catch (Exception e) {
             model.addAttribute("error", "Registration failed: " + e.getMessage());
@@ -50,10 +49,15 @@ public class UserController {
         return "login";
     }
 
+    @GetMapping("/privacy")
+    public String showPrivacyPolicy() {
+        return "privacy";
+    }
+
     @GetMapping("/profile")
     public String showProfile(Model model) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(username) // Add this method to UserService if needed
+        User user = userService.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         model.addAttribute("user", user);
         return "profile";
@@ -76,7 +80,7 @@ public class UserController {
     public String deleteAccount() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         userService.deleteAccount(username);
-        return "redirect:/logout"; // Log out after deletion
+        return "redirect:/logout";
     }
 
     @GetMapping("/admin/dashboard")

@@ -22,16 +22,22 @@ public class UserService {
         if (!user.isAgreedToTerms()) {
             throw new IllegalStateException("User must agree to terms.");
         }
+        // Custom uniqueness check before saving
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            throw new IllegalStateException("Username already taken.");
+        }
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new IllegalStateException("Email already registered.");
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("USER");
         userRepository.save(user);
     }
 
-    public void updateProfile(String currentUsername,User updatedUser){
-        User  user = userRepository.findByUsername(currentUsername)
+    public void updateProfile(String currentUsername, User updatedUser) {
+        User user = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new IllegalArgumentException("Username not found"));
 
-        // Update fields only if provided
         if (updatedUser.getUsername() != null && !updatedUser.getUsername().isEmpty()) {
             if (!updatedUser.getUsername().equals(currentUsername) &&
                     userRepository.findByUsername(updatedUser.getUsername()).isPresent()) {
@@ -48,8 +54,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void deleteAccount(String username){
-        User  user = userRepository.findByUsername(username)
+    public void deleteAccount(String username) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         userRepository.delete(user);
     }
@@ -61,5 +67,4 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-
 }
