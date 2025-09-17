@@ -21,13 +21,28 @@ public class UserController {
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("user", new User());
-        return "register";  // Thymeleaf template
+        return "register";
+    }
+
+    @GetMapping("/privacy")
+    public String showPrivacyPolicy() {
+        return "privacy"; // Maps to privacy.html
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user) {
-        userService.register(user);
-        return "redirect:/login";
+    public String registerUser(@ModelAttribute User user, Model model) {
+        if (!user.isAgreedToTerms()) {
+            model.addAttribute("error", "You must agree to the Privacy Policy to register.");
+            return "register";
+        }
+        try {
+            userService.register(user);
+            model.addAttribute("success", "Registration successful! Please log in.");
+            return "register";
+        } catch (Exception e) {
+            model.addAttribute("error", "Registration failed: " + e.getMessage());
+            return "register";
+        }
     }
 
     @GetMapping("/login")

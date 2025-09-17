@@ -1,9 +1,6 @@
 package com.lankafreshmart.market_store.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +17,13 @@ public class User implements UserDetails {
     private String password;
     private String email;
     private String role;
+
+    @Column(name = "agreed_to_terms", nullable = false)
+    private boolean agreedToTerms;
+
+    public User() {
+        this.agreedToTerms = false;
+    }
 
     public Long getId() {
         return id;
@@ -61,6 +65,14 @@ public class User implements UserDetails {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public boolean isAgreedToTerms() {
+        return agreedToTerms;
+    }
+
+    public void setAgreedToTerms(boolean agreedToTerms) {
+        this.agreedToTerms = agreedToTerms;
     }
 
     @Override

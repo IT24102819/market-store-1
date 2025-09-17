@@ -18,7 +18,10 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void register(User user){
+    public void register(User user) {
+        if (!user.isAgreedToTerms()) {
+            throw new IllegalStateException("User must agree to terms.");
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("USER");
         userRepository.save(user);
