@@ -192,19 +192,12 @@
         <tr>
             <th><i class="fa fa-comment"></i> Comment</th>
             <th><i class="fa fa-star"></i> Rating</th>
-            <th><i class="fa fa-receipt"></i> Order ID</th>
-            <th><i class="fa fa-cogs"></i> Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="review : ${reviews}">
             <td th:text="${review.comment}"></td>
             <td><i class="fa fa-star" style="color:var(--accent);"></i> <span th:text="${review.rating} + '/5'"></span></td>
-            <td th:text="${review.order.id}"></td>
-            <td>
-                <a th:href="@{/review/edit(reviewId=${review.id})}" class="btn btn-warning btn-sm" th:if="${#authentication.principal == review.order.user}"><i class="fa fa-edit"></i> Edit</a>
-                <a th:href="@{/review/delete(reviewId=${review.id})}" class="btn btn-danger btn-sm" th:if="${#authentication.principal == review.order.user}" onclick="return confirm('Are you sure?')"><i class="fa fa-trash"></i> Delete</a>
-            </td>
         </tr>
         <tr th:if="${#lists.isEmpty(reviews)}">
             <td colspan="4" class="text-center">No reviews yet.</td>

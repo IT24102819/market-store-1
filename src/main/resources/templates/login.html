@@ -2,211 +2,239 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Login - Lanka Fresh Mart</title>
-    <link rel="stylesheet" href="login.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
     <style>
         :root {
-            --bg-gradient-start: #eafbe7;
-            --bg-gradient-end: #f4f6f8;
-            --container-bg: #fff;
-            --container-shadow: rgba(44,62,80,0.15);
-            --text-color: #23272f;
-            --heading-color: #249624;
-            --label-color: #2d7a2d;
-            --link-color: #249624;
-            --link-hover-color: #2d7a2d;
-            --input-bg: #f8fafb;
-            --input-border: #eaeaea;
-            --input-focus-border: #249624;
-            --input-shadow: rgba(44,62,80,0.06);
-            --input-focus-shadow: rgba(36,150,36,0.25);
-            --btn-bg-start: #249624;
-            --btn-bg-end: #2d7a2d;
-            --btn-text: #fff;
-            --error-bg: #ffeaea;
-            --error-text: #d32f2f;
-            --success-bg: #eafbe7;
-            --success-text: #249624;
-            --icon-color: #249624;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-gradient-start: #1a202c;
-                --bg-gradient-end: #2d3748;
-                --container-bg: #2d3748;
-                --container-shadow: rgba(0,0,0,0.4);
-                --text-color: #edf2f7;
-                --heading-color: #48bb78;
-                --label-color: #a0aec0;
-                --link-color: #48bb78;
-                --link-hover-color: #68d391;
-                --input-bg: #1a202c;
-                --input-border: #4a5568;
-                --input-focus-border: #48bb78;
-                --input-shadow: rgba(0,0,0,0.1);
-                --input-focus-shadow: rgba(72,187,120,0.3);
-                --btn-bg-start: #38a169;
-                --btn-bg-end: #2f855a;
-                --btn-text: #fff;
-                --error-bg: rgba(229, 62, 62, 0.2);
-                --error-text: #e53e3e;
-                --success-bg: rgba(72, 187, 120, 0.2);
-                --success-text: #48bb78;
-                --icon-color: #48bb78;
-            }
+            --primary-green: #2f9e44;
+            --primary-green-dark: #1e7d32;
+            --accent-orange: #ff8c42;
+            --bg-light: #f9fafb;
+            --text-dark: #2d3748;
+            --error-red: #e53e3e;
         }
 
         body {
-            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            background: linear-gradient(135deg, #e9fdf1, #ffffff);
             font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            color: var(--text-dark);
             min-height: 100vh;
-            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
         }
+
+        /* Navbar */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            padding: 0.8rem 2rem;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--primary-green);
+            font-size: 1.3rem;
+        }
+
+        /* Container */
         .container {
-            max-width: 400px;
-            margin: 100px auto 40px auto;
-            background: var(--container-bg);
-            border-radius: 22px;
-            box-shadow: 0 8px 32px var(--container-shadow);
-            padding: 40px 36px 32px 36px;
-            animation: fadeIn 0.7s;
+            max-width: 420px;
+            margin: auto;
+            margin-top: 60px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 40px 36px;
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.7s ease;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px);}
+            from { opacity: 0; transform: translateY(20px);}
             to { opacity: 1; transform: translateY(0);}
         }
+
         h1 {
-            font-size: 2.2rem;
+            font-size: 1.9rem;
             font-weight: 700;
-            color: var(--heading-color);
-            margin-bottom: 28px;
             text-align: center;
-            letter-spacing: 1px;
+            margin-bottom: 28px;
+            color: var(--primary-green);
         }
-        .form-group label {
-            font-weight: 500;
-            color: var(--label-color);
-            margin-bottom: 6px;
-            font-size: 1.08rem;
+
+        /* Floating labels */
+        .form-group {
+            position: relative;
+            margin-bottom: 1.8rem;
         }
         .form-group input {
-            border-radius: 14px;
-            border: 1px solid var(--input-border);
-            font-size: 1.08rem;
-            padding: 12px;
-            background: var(--input-bg);
-            color: var(--text-color);
-            transition: box-shadow 0.2s, border 0.2s;
-            box-shadow: 0 2px 8px var(--input-shadow);
+            border-radius: 12px;
+            padding: 14px 16px;
+            border: 1px solid #d1d5db;
+            font-size: 1rem;
+            background: #f9fafb;
             width: 100%;
+            transition: all 0.25s ease;
         }
-        .form-group input:focus {
-            border-color: var(--input-focus-border);
-            box-shadow: 0 0 0 4px var(--input-focus-shadow);
+        .form-group label {
+            position: absolute;
+            top: 50%;
+            left: 16px;
+            transform: translateY(-50%);
+            background: white;
+            padding: 0 6px;
+            color: #6b7280;
+            transition: 0.25s ease;
+            pointer-events: none;
+        }
+        .form-group input:focus,
+        .form-group input:not(:placeholder-shown) {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(47,158,68,0.25);
             outline: none;
         }
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label {
+            top: -8px;
+            font-size: 0.8rem;
+            color: var(--primary-green);
+        }
+
+        /* Password toggle */
+        .password-toggle {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6b7280;
+        }
+        .password-toggle:hover {
+            color: var(--primary-green);
+        }
+
+        /* Button */
         button[type="submit"] {
             width: 100%;
-            background: linear-gradient(90deg, var(--btn-bg-start) 60%, var(--btn-bg-end) 100%);
-            color: var(--btn-text);
+            background: linear-gradient(90deg, var(--primary-green), var(--primary-green-dark));
+            color: #fff;
             border: none;
-            border-radius: 14px;
+            border-radius: 12px;
             padding: 14px 0;
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            margin-top: 18px;
-            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
-            transition: all 0.2s ease-in-out;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            margin-top: 16px;
+            transition: all 0.25s ease-in-out;
+            position: relative;
+            overflow: hidden;
         }
         button[type="submit"]:hover {
-            background: linear-gradient(90deg, var(--btn-bg-end) 60%, var(--btn-bg-start) 100%);
-            box-shadow: 0 4px 16px rgba(44,62,80,0.13);
-            transform: translateY(-2px) scale(1.02);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(47,158,68,0.25);
         }
+
+        /* Ripple effect */
+        button[type="submit"]::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            top: 50%;
+            left: 50%;
+            background: rgba(255,255,255,0.5);
+            border-radius: 100%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+        button[type="submit"]:active::after {
+            width: 200%;
+            height: 500%;
+        }
+
+        /* Messages */
         .error, .success {
-            border-radius: 12px;
+            border-radius: 10px;
             padding: 12px;
             margin-bottom: 18px;
             text-align: center;
-            font-size: 1rem;
-            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+            font-size: 0.95rem;
         }
         .error {
-            background: var(--error-bg);
-            color: var(--error-text);
+            background: #ffeaea;
+            color: var(--error-red);
         }
         .success {
-            background: var(--success-bg);
-            color: var(--success-text);
+            background: #eafbe7;
+            color: var(--primary-green);
         }
+
+        /* Links */
         p {
             text-align: center;
-            margin-top: 22px;
-            font-size: 1.08rem;
+            margin-top: 20px;
+            font-size: 1rem;
         }
         a {
-            color: var(--link-color);
+            color: var(--accent-orange);
             font-weight: 500;
             text-decoration: none;
-            transition: color 0.2s;
         }
         a:hover {
             text-decoration: underline;
-            color: var(--link-hover-color);
+            color: #ff6a00;
         }
-        .input-icon {
-            position: relative;
-        }
-        .input-icon label {
-            display: block;
-            margin-bottom: 6px;
-        }
-        .input-icon input {
-            padding-left: 38px;
-        }
-        .input-icon .fa {
-            position: absolute;
-            left: 14px;
-            top: 45px; /* adjusted for better alignment */
-            color: var(--icon-color);
-            font-size: 1.1rem;
-            pointer-events: none;
+
+        /* Responsive */
+        @media (max-width: 576px) {
+            .container {
+                margin: 30px 15px;
+                padding: 28px 22px;
+            }
         }
     </style>
 </head>
 <body>
+<nav class="navbar">
+    <a class="navbar-brand" href="/">Lanka Fresh Mart</a>
+</nav>
+
 <div class="container">
     <h1>Login to Your Account</h1>
-    <!-- Show error message if login fails -->
+
+    <!-- Error message -->
     <div th:if="${param.error}" class="error">
         Invalid username or password. Please try again.
     </div>
-    <!-- Show logout message -->
+    <!-- Logout message -->
     <div th:if="${param.logout}" class="success">
         You have been logged out successfully.
     </div>
+
     <form th:action="@{/login}" method="post" aria-label="Login form">
-        <div class="form-group input-icon">
-            <label for="username">Username</label>
-            <i class="fa fa-user"></i>
-            <input type="text" id="username" name="username" required
-                   placeholder="Enter your username" autofocus aria-required="true"/>
+        <div class="form-group">
+            <input type="text" id="username" name="username" required placeholder=" " autofocus aria-required="true"/>
+            <label for="username"><i class="fa fa-user mr-2"></i> Username</label>
         </div>
-        <div class="form-group input-icon">
-            <label for="password">Password</label>
-            <i class="fa fa-lock"></i>
-            <input type="password" id="password" name="password" required
-                   placeholder="Enter your password" aria-required="true"/>
+        <div class="form-group">
+            <input type="password" id="password" name="password" required placeholder=" " aria-required="true"/>
+            <label for="password"><i class="fa fa-lock mr-2"></i> Password</label>
+            <i class="fa fa-eye password-toggle" id="togglePassword"></i>
         </div>
-        <button type="submit"><i class="fa fa-sign-in-alt"></i> Login</button>
+        <button type="submit"><i class="fa fa-sign-in-alt mr-2"></i>Login</button>
     </form>
+
     <p>Don't have an account? <a th:href="@{/register}" href="/register">Register here</a></p>
 </div>
+
+<script>
+    // Toggle password visibility
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordField = document.getElementById("password");
+
+    togglePassword.addEventListener("click", () => {
+        const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+        passwordField.setAttribute("type", type);
+        togglePassword.classList.toggle("fa-eye-slash");
+    });
+</script>
 </body>
 </html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Order Cancellation Notification</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 50px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { color: #d32f2f; text-align: center; }
+        p { color: #333333; line-height: 1.6; }
+        .footer { text-align: center; font-size: 0.9em; color: #777777; margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Order Cancellation Notification</h1>
+    <p th:text="'Dear ' + ${order.user.username} + ','"></p>
+    <p>Your order <strong th:text="'#' + ${order.id}"></strong> has been cancelled.</p>
+    <p th:if="${order.status == 'CANCELLED'}" th:text="'Status: ' + ${order.status}"></p>
+    <p th:text="'If this was a mistake, please contact our support team at ' + ${adminEmail} + ' or visit ' + ${baseUrl} + '/contact.'"></p>
+    <div class="footer">
+        <p>Best regards,<br/>Lanka Fresh Mart Team</p>
+        <p th:text="'Admin Note: This email was also sent to ' + ${adminEmail}"></p>
+    </div>
+</div>
+</body>
+</html>

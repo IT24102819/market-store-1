@@ -1,6 +1,5 @@
 package com.lankafreshmart.market_store.service;
 
-
 import com.lankafreshmart.market_store.model.Delivery;
 import com.lankafreshmart.market_store.model.Order;
 import com.lankafreshmart.market_store.model.Product;
@@ -111,5 +110,34 @@ public class EmailService {
                 "<p>Order ID: " + delivery.getOrder().getId() + "</p>" +
                 "<p>" + statusMessage + "</p>", true);
         mailSender.send(message);
+    }
+
+    public void sendOrderCancellationEmail(String userEmail, Order order) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        // Set both customer and admin as recipients
+        helper.setTo(userEmail);
+        helper.setTo(adminEmail);
+        helper.setSubject("Order Cancellation Notification - Order #" + order.getId());
+        helper.setFrom("no-reply@lankafreshmart.com");
+
+        Context context = new Context();
+        context.setVariable("order", order);
+        context.setVariable("adminEmail", adminEmail);
+        context.setVariable("baseUrl", baseUrl);
+
+        try {
+            String htmlContent = templateEngine.process("email/order-cancellation-email", context);
+            helper.setText(htmlContent, true);
+            mailSender.send(message);
+        } catch (TemplateInputException e) {
+            System.err.println("Failed to process order cancellation email for order #" + order.getId() + ": " + e.getMessage());
+            helper.setText("Order Cancellation: Order #" + order.getId() + " has been cancelled. Contact " + adminEmail + " if needed.", false);
+            mailSender.send(message);
+        } catch (MailAuthenticationException e) {
+            System.err.println("Failed to authenticate with SMTP server for order #" + order.getId() + ": " + e.getMessage());
+            throw e;
+        }
     }
 }

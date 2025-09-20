@@ -188,10 +188,6 @@
         </div>
         <button type="submit"><i class="fa fa-save"></i> Update Profile</button>
     </form>
-    <!-- Delete account form -->
-    <form th:action="@{/delete-account}" method="post" aria-label="Delete account form" onsubmit="return confirm('Are you sure you want to delete your account? This cannot be undone.');">
-        <button type="submit" class="delete-button"><i class="fa fa-trash"></i> Delete Account</button>
-    </form>
     <form th:action="@{/logout}" method="post" aria-label="Logout form">
         <button type="submit" class="logout-button"><i class="fa fa-sign-out-alt"></i> Logout</button>
     </form>

@@ -15,7 +15,7 @@ public class User implements UserDetails {
     private Long id;
 
     @NotEmpty(message = "Username cannot be empty")
-    @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters")
+    @Size(min = 4, max = 10, message = "Username must be between 4 and 10 characters")
     @Column(nullable = false, unique = true)
     private String username;
 

@@ -5,6 +5,7 @@ import com.lankafreshmart.market_store.model.*;
 import com.lankafreshmart.market_store.repository.DeliveryRepository;
 import com.lankafreshmart.market_store.repository.OrderRepository;
 import com.lankafreshmart.market_store.repository.ProductRepository;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,6 +97,12 @@ public class OrderService {
         }
         order.setStatus("CANCELLED");
         orderRepository.save(order);
+
+        try {
+            emailService.sendOrderCancellationEmail(order.getUser().getEmail(), order);
+        } catch (MessagingException e) {
+            System.err.println("Failed to send cancellation email for order #" + orderId + ": " + e.getMessage());
+        }
     }
 
     public List<Order> getAllOrders() {

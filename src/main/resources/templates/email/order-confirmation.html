@@ -21,9 +21,9 @@
   <div class="content">
     <p>Dear Customer,</p>
     <p>Thank you for your order! Below are the details:</p>
-    <p><strong>Order ID:</strong> <span th:text="${orderId}"></span></p>
-    <p><strong>Order Date:</strong> <span th:text="${#dates.format(orderDate, 'yyyy-MM-dd HH:mm')}"></span></p>
-    <p><strong>Total Amount:</strong> LKR <span th:text="${#numbers.formatDecimal(totalAmount, 2, 2)}"></span></p>
+    <p><strong>Order ID:</strong> <span th:text="${orderId} ?: 'N/A'"></span></p>
+    <p><strong>Order Date:</strong> <span th:text="${#dates.format(orderDate, 'yyyy-MM-dd HH:mm')} ?: 'N/A'"></span></p>
+    <p><strong>Total Amount:</strong> LKR <span th:text="${#numbers.formatDecimal(totalAmount, 0.0, 2, 2)}"></span></p>
     <table class="item-table">
       <thead>
       <tr>
@@ -35,14 +35,14 @@
       </thead>
       <tbody>
       <tr th:each="item : ${orderItems}">
-        <td th:text="${item.product.name}"></td>
-        <td th:text="${item.quantity}"></td>
+        <td th:text="${item.product?.name} ?: 'N/A'"></td>
+        <td th:text="${item.quantity} ?: 0"></td>
         <td th:text="${#numbers.formatDecimal(item.price, 2, 2)}"></td>
-        <td th:text="${#numbers.formatDecimal(item.quantity * item.price, 2, 2)}"></td>
+        <td th:text="${#numbers.formatDecimal((item.quantity ?: 0) * (item.price ?: 0.0), 2, 2)}"></td>
       </tr>
       </tbody>
     </table>
-    <p>View your order status: <a th:href="${baseUrl} + '/orders/' + ${orderId}" href="http://localhost:8080/market-store/orders/1">Track Order</a></p>
+    <p>View your order status: <a th:href="${baseUrl} + '/orders/' + ${orderId}" href="${baseUrl} + '/orders/' + ${orderId} ?: '#'">Track Order</a></p>
   </div>
   <div class="footer">
     <p>This is an automated message from Lanka Fresh Mart. For support, contact admin@lankafreshmart.com.</p>

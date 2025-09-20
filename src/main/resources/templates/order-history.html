@@ -190,7 +190,6 @@
     <tr>
       <th><i class="fa fa-hashtag"></i> Order ID</th>
       <th><i class="fa fa-money-bill-wave"></i> Total</th>
-      <th><i class="fa fa-info-circle"></i> Status</th>
       <th><i class="fa fa-truck"></i> Delivery Status</th>
       <th><i class="fa fa-calendar-alt"></i> Estimated Delivery</th>
       <th><i class="fa fa-barcode"></i> Tracking Number</th>
@@ -201,7 +200,6 @@
     <tr th:each="order : ${orders}">
       <td th:text="${order.id}"></td>
       <td th:text="${#numbers.formatDecimal(order.totalAmount, 2, 2) + ' LKR'}"></td>
-      <td th:text="${order.status}"></td>
       <td th:text="${order.delivery != null ? order.delivery.status : 'N/A'}"></td>
       <td th:text="${order.delivery != null ? #temporals.format(order.delivery.estimatedDeliveryDate, 'yyyy-MM-dd') : 'N/A'}"></td>
       <td th:text="${order.delivery != null ? order.delivery.trackingNumber : 'N/A'}"></td>
