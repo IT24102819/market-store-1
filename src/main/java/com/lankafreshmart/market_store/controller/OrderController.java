@@ -105,6 +105,43 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/order/edit")
+    public String showEditOrderForm(@RequestParam Long orderId, @AuthenticationPrincipal User user, Model model) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        if (!order.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("Unauthorized access to order");
+        }
+        if (!"PENDING".equals(order.getStatus())) {
+            model.addAttribute("error", "Only PENDING orders can be updated.");
+            return "redirect:/order/details?orderId=" + orderId;
+        }
+        model.addAttribute("order", order);
+        return "order-edit";
+    }
+
+    @PostMapping("/order/update")
+    public String updateOrder(@RequestParam Long orderId, @AuthenticationPrincipal User user,
+                              @RequestParam String deliveryMethod, @RequestParam String address,
+                              Model model) {
+        try {
+            Order order = orderRepository.findById(orderId)
+                    .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+            if (!order.getUser().getId().equals(user.getId())) {
+                throw new IllegalArgumentException("Unauthorized access to order");
+            }
+            orderService.updateOrder(orderId, deliveryMethod, address);
+            model.addAttribute("success", "Order updated successfully.");
+            return "redirect:/order/details?orderId=" + orderId;
+        } catch (IllegalStateException e) {
+            model.addAttribute("error", e.getMessage());
+            return "redirect:/order/edit?orderId=" + orderId;
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to update order: " + e.getMessage());
+            return "redirect:/order/edit?orderId=" + orderId;
+        }
+    }
+
     private boolean validateCardDetails(Model model) {
         String cardNumber = model.getAttribute("cardNumber") != null ? model.getAttribute("cardNumber").toString() : "";
         if (cardNumber.isEmpty() || cardNumber.length() < 16) {

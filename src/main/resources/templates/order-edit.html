@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Order - Lanka Fresh Mart</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .container { margin-top: 40px; max-width: 600px; }
+        .form-group label { font-weight: 500; }
+        .alert { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Edit Order #<span th:text="${order.id}"></span></h2>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}" role="alert"></div>
+    <form th:action="@{/order/update}" method="post">
+        <input type="hidden" name="orderId" th:value="${order.id}">
+        <div class="form-group">
+            <label for="deliveryMethod">Delivery Method</label>
+            <select name="deliveryMethod" id="deliveryMethod" class="form-control" required>
+                <option value="PICKUP" th:selected="${order.deliveryMethod == 'PICKUP'}">Pick Up From Store</option>
+                <option value="DELIVERY" th:selected="${order.deliveryMethod == 'DELIVERY'}">Home Delivery</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="address">Delivery Address</label>
+            <input type="text" name="address" id="address" class="form-control" th:value="${order.delivery?.address ?: ''}"
+                   placeholder="Enter delivery address" th:disabled="${order.deliveryMethod != 'DELIVERY'}">
+        </div>
+        <button type="submit" class="btn btn-primary">Update Order</button>
+        <a th:href="@{'/order/details?orderId=' + ${order.id}}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $('#deliveryMethod').change(function() {
+        $('#address').prop('disabled', $(this).val() !== 'DELIVERY');
+        if ($(this).val() === 'PICKUP') {
+            $('#address').val('');
+        }
+    });
+</script>
+</body>
+</html>

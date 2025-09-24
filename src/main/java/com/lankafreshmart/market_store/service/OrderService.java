@@ -112,4 +112,30 @@ public class OrderService {
     public Optional<Order> findById(Long orderId) {
         return orderRepository.findById(orderId);
     }
+
+    @Transactional
+    public void updateOrder(Long orderId, String deliveryMethod, String address) throws IllegalStateException {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+        if (!"PENDING".equals(order.getStatus())) {
+            throw new IllegalStateException("Only PENDING orders can be updated.");
+        }
+        order.setDeliveryMethod(deliveryMethod);
+
+        Delivery delivery = order.getDelivery();
+        if (delivery == null) {
+            delivery = new Delivery(order);
+            order.setDelivery(delivery);
+        }
+        if ("DELIVERY".equals(deliveryMethod)) {
+            if (address == null || address.trim().isEmpty()) {
+                throw new IllegalStateException("Delivery address is required for home delivery.");
+            }
+            delivery.setAddress(address);
+        } else {
+            delivery.setAddress(null);
+        }
+        deliveryRepository.save(delivery);
+        orderRepository.save(order);
+    }
 }
