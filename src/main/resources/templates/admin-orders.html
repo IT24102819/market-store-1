@@ -137,7 +137,11 @@
       background: #294d29;
       color: var(--accent);
     }
-    tbody tr:hover {
+    .dark-mode td,
+    .dark-mode tbody tr {
+      color: var(--text);
+
+      tbody tr:hover {
       background: #f5fbe7;
     }
     .dark-mode tbody tr:hover {
@@ -171,7 +175,7 @@
     }
     .dark-mode .form-control {
       background: #3a3f48;
-      border-color: #555;
+      border-color: #fff;
       color: var(--text);
     }
     a.btn-secondary {
@@ -255,6 +259,8 @@
         <th>Order ID</th>
         <th>User</th>
         <th>Total</th>
+        <th>Order Status</th>
+        <th>Payment Status</th>
         <th>Delivery Status</th>
         <th>Actions</th>
       </tr>
@@ -264,6 +270,8 @@
         <td th:text="${order.id}"></td>
         <td th:text="${order.user.username}"></td>
         <td th:text="'LKR ' + ${#numbers.formatDecimal(order.totalAmount, 1, 'COMMA', 2, 'POINT')}"></td>
+        <td th:text="${order.status}"></td>
+        <td th:text="${order.getPaymentStatus()}"></td>
         <td>
             <span class="status-badge"
                   th:classappend="${order.delivery == null ? 'status-na' : 'status-' + #strings.toLowerCase(order.delivery.status)}"
@@ -274,21 +282,13 @@
           <form th:action="@{/admin/delivery/update}" method="post" th:if="${order.delivery != null}" class="form-inline">
             <input type="hidden" name="deliveryId" th:value="${order.delivery.id}"/>
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-            <select name="newStatus" class="form-control">
-              <option value="PENDING" th:selected="${order.delivery.status == 'PENDING'}">PENDING</option>
-              <option value="SHIPPED" th:selected="${order.delivery.status == 'SHIPPED'}">SHIPPED</option>
-              <option value="OUT_FOR_DELIVERY" th:selected="${order.delivery.status == 'OUT_FOR_DELIVERY'}">OUT FOR DELIVERY</option>
-              <option value="DELIVERED" th:selected="${order.delivery.status == 'DELIVERED'}">DELIVERED</option>
-              <option value="CANCELLED" th:selected="${order.delivery.status == 'CANCELLED'}">CANCELLED</option>
-            </select>
-            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+            <a th:href="@{'/admin/delivery/' + ${order.delivery.id}}" th:if="${order.delivery != null}" class="btn btn-info btn-sm">View Delivery</a>
           </form>
         </td>
       </tr>
       </tbody>
     </table>
   </div>
-  <a th:href="@{/admin/dashboard}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back To Dashboard</a>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

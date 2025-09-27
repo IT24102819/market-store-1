@@ -28,6 +28,69 @@
             box-shadow: var(--shadow);
             padding: 36px;
         }
+        .navbar {
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            padding: 0.75rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            transition: background 0.3s;
+        }
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            letter-spacing: 1px;
+        }
+        .dark-mode .navbar-brand { color: var(--primary); }
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            color: var(--text);
+            margin-right: 18px;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .navbar-nav .nav-link:hover { color: var(--primary); }
+        .dark-toggle {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border-color);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-left: 12px;
+            transition: all 0.2s;
+            border-radius: 50%;
+        }
+        .dark-toggle:hover {
+            background: var(--primary);
+            color: var(--text-light);
+            border-color: var(--primary);
+        }
+        .logout-button {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text);
+            border-radius: 10px;
+            padding: 8px 18px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logout-button:hover {
+            background: var(--primary-dark);
+            color: var(--text-light);
+            border-color: var(--primary-dark);
+        }
+        .dark-mode .form-group label { color: var(--primary); }
         h1 {
             font-size: 2.2rem;
             font-weight: 700;
@@ -39,6 +102,52 @@
             justify-content: center;
             gap: 12px;
         }
+        .dark-mode {
+            --bg: #181a20;
+            --card-bg: #23272f;
+            --text: #f4f6f8;
+            --border-color: #3a3f48;
+        }
+        .dark-toggle:hover {
+            background: var(--primary);
+            color: var(--text-light);
+            border-color: var(--primary);
+        }
+        .table {
+            margin-bottom: 0;
+            background: var(--card-bg);
+        }
+        th, td {
+            padding: 16px;
+            text-align: left;
+            vertical-align: middle;
+            font-size: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        th {
+            background: #eafbe7;
+            color: var(--primary-dark);
+            font-weight: 700;
+            border-top: none;
+        }
+        .dark-mode th {
+            background: #294d29;
+            color: var(--accent);
+        }
+        .dark-mode td,
+        .dark-mode tbody tr {
+            color: var(--text);
+
+            tbody tr:hover {
+                background: #f5fbe7;
+            }
+            .dark-mode tbody tr:hover {
+                background: #2c313a;
+            }
+        .dark-mode h1 { color: var(--primary); }
+        .dark-mode th,
+        .dark-mode td { color: var(--text); border-color: var(--border-color); }
+
         .table-responsive {
             border-radius: 12px;
             overflow: hidden;
@@ -102,8 +211,43 @@
             th, td { padding: 12px 8px; font-size: 0.9rem; }
         }
     </style>
+    <script>
+        function toggleDarkMode() {
+            const isDarkMode = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+            const icon = document.querySelector('.dark-toggle i');
+            icon.className = isDarkMode ? 'fa fa-sun' : 'fa fa-moon';
+        }
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+                const icon = document.querySelector('.dark-toggle i');
+                if(icon) icon.className = 'fa fa-sun';
+            }
+        });
+    </script>
+
 </head>
 <body>
+<nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="#"><i class="fa-solid fa-store"></i> Lanka Fresh Mart</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"><i class="fa fa-bars"></i></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item"><a th:href="@{/admin/dashboard}" class="nav-link"><i class="fa-solid fa-users-cog"></i> Manage Users</a></li>
+            <li class="nav-item"><a th:href="@{/admin/orders}" class="nav-link"><i class="fa-solid fa-box"></i> Manage Orders</a></li>
+        </ul>
+        <div class="d-flex align-items-center">
+            <form th:action="@{/logout}" method="post" aria-label="Logout form" class="mr-2">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" class="logout-button"><i class="fa-solid fa-sign-out-alt"></i> Logout</button>
+            </form>
+            <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode"><i class="fa fa-moon"></i></button>
+        </div>
+    </div>
+</nav>
 <div class="container">
     <h1><i class="fa-solid fa-star-half-stroke"></i> Manage Reviews</h1>
     <div class="table-responsive">

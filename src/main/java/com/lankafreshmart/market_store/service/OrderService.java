@@ -58,14 +58,21 @@ public class OrderService {
 
         // Create and save order with payment and delivery details
         Order order = new Order(user, totalAmount.doubleValue(), orderItems);
-        order.setStatus("PENDING");
+        order.setStatus("PLACED");
         order.setPaymentMethod(paymentMethod);
-        order.setPaymentStatus("PENDING".equals(paymentMethod) ? "PENDING" : "PROCESSING");
+        // Set payment status based on payment method
+        if ("CASH_ON_DELIVERY".equals(paymentMethod)) {
+            order.setPaymentStatus("COD/Pickup");
+        } else if ("PENDING".equals(paymentMethod)) {
+            order.setPaymentStatus("PENDING");
+        } else {
+            order.setPaymentStatus("PROCESSED");
+        }
         order.setDeliveryMethod(deliveryMethod);
         order = orderRepository.save(order);
 
         // Create delivery with address
-        Delivery delivery = deliveryService.createDelivery(order, address);  // UPDATED: Pass address
+        Delivery delivery = deliveryService.createDelivery(order, address);  // Pass address
         delivery.setStatus("PENDING");
         delivery.setEstimatedDeliveryDate(LocalDateTime.now().plusDays(3)); // Example: 3 days for delivery
         deliveryRepository.save(delivery);
@@ -82,6 +89,7 @@ public class OrderService {
 
         return order;
     }
+
     @Transactional
     public void cancelOrder(Long orderId) throws IllegalStateException {
         Order order = orderRepository.findById(orderId)
@@ -117,7 +125,7 @@ public class OrderService {
     public void updateOrder(Long orderId, String deliveryMethod, String address) throws IllegalStateException {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
-        if (!"PENDING".equals(order.getStatus())) {
+        if (!"PLACED".equals(order.getStatus())) {
             throw new IllegalStateException("Only PENDING orders can be updated.");
         }
         order.setDeliveryMethod(deliveryMethod);

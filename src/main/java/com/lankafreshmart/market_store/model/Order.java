@@ -26,13 +26,13 @@ public class Order {
     private String deliveryMethod;
 
     @Column(nullable = false)
-    private String status = "PENDING"; // e.g., "PENDING", "PAID", "SHIPPED"
+    private String status = "PLACED";
 
-    @Column(nullable = true)
-    private String paymentMethod; // e.g., "CASH_ON_DELIVERY", "CARD"
+    @Column(nullable = false)
+    private String paymentMethod;
 
-    @Column(nullable = true)
-    private String paymentStatus; // e.g., "PENDING", "PAID", "FAILED"
+    @Column(nullable = false)
+    private String paymentStatus = "PAID";
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;

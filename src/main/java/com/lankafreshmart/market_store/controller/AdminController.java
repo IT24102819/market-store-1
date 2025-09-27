@@ -1,17 +1,17 @@
 package com.lankafreshmart.market_store.controller;
 
 import com.lankafreshmart.market_store.model.Order;
+import com.lankafreshmart.market_store.model.Delivery;
 import com.lankafreshmart.market_store.service.DeliveryService;
 import com.lankafreshmart.market_store.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Controller
@@ -35,19 +35,46 @@ public class AdminController {
         return "admin-orders";
     }
 
-    @PostMapping("/delivery/update")
-    public String updateDeliveryStatus(@RequestParam Long deliveryId, @RequestParam String newStatus) {
+    @GetMapping("/delivery/{deliveryId}")
+    public String getDeliveryDetails(@PathVariable Long deliveryId, Model model) {
+        Delivery delivery = deliveryService.getDelivery(deliveryId); // Ensure fresh fetch
+        model.addAttribute("delivery", delivery);
+        return "delivery-details";
+    }
+
+    @PostMapping("/delivery/{deliveryId}/update")
+    public String updateDeliveryStatus(@PathVariable Long deliveryId,
+                                       @RequestParam String newStatus,
+                                       Model model) {
         System.out.println("Attempting to update delivery ID: " + deliveryId + " to status: " + newStatus);
         try {
             deliveryService.updateDeliveryStatus(deliveryId, newStatus);
             System.out.println("Successfully updated delivery status for ID: " + deliveryId);
+            return "redirect:/admin/delivery/" + deliveryId + "?success=Delivery status updated successfully";
         } catch (IllegalArgumentException e) {
             System.out.println("Failed to update delivery status: " + e.getMessage());
-            return "redirect:/admin/orders?error=Delivery not found";
+            return "redirect:/admin/delivery/" + deliveryId + "?error=Delivery not found";
+        } catch (IllegalStateException e) {
+            System.out.println("Unexpected error updating delivery status: " + e.getMessage());
+            return "redirect:/admin/delivery/" + deliveryId + "?error=" + URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8);
         } catch (Exception e) {
             System.out.println("Unexpected error updating delivery status: " + e.getMessage());
-            return "redirect:/admin/orders?error=Unexpected error";
+            return "redirect:/admin/delivery/" + deliveryId + "?error=Unexpected error occurred";
         }
-        return "redirect:/admin/orders";
+    }
+
+    @PostMapping("/delivery/{deliveryId}/delete")
+    public String deleteDelivery(@PathVariable Long deliveryId, Model model) {
+        try {
+            deliveryService.deleteDelivery(deliveryId);
+            System.out.println("Successfully deleted delivery ID: " + deliveryId);
+            return "redirect:/admin/orders?success=Delivery deleted successfully";
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+            return "redirect:/admin/orders?error=Delivery not found";
+        } catch (Exception e) {
+            System.out.println("Unexpected error: " + e.getMessage());
+            return "redirect:/admin/orders?error=Failed to delete delivery: " + e.getMessage();
+        }
     }
 }

@@ -369,6 +369,8 @@
                     </h5>
                     <p class="card-text" th:text="'Price: ' + ${product.price} + ' LKR'"></p>
                     <p class="card-text" th:text="'In Stock: ' + ${product.stockQuantity}"></p>
+                    <p class="card-text" th:text="'Description: ' + ${product.description}"></p>
+                    <p class="card-text" th:text="'Rating: ' + ${product.rating}"></p>
                     <form th:action="@{/guest-cart/add}" method="post" class="form-inline">
                         <input type="hidden" name="productId" th:value="${product.id}"/>
                         <div class="form-group mx-sm-3">
@@ -392,7 +394,7 @@
 <footer class="footer">
     <div class="social-icons mb-2">
         <a href="https://www.facebook.com/profile.php?id=100071017777140&ref=_ig_profile_ac" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.instagram.com/lanka_fresh_mart?igsh=MTFyZDQxM2NwaXc5dw==" title="Instagram"><i class="fab fa-instagram"></i></a>
         <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
         <a href="https://www.linkedin.com/in/pamindu-rashmitha-93980127b/" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
     </div>

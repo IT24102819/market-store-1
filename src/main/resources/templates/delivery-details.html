@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Delivery Details - Admin Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <style>
+        :root {
+            --primary: #249624;
+            --primary-dark: #2d7a2d;
+            --accent: #ffc107;
+            --danger: #d32f2f;
+            --bg: #f4f6f8;
+            --card-bg: #ffffff;
+            --text: #23272f;
+            --text-light: #ffffff;
+            --shadow: 0 4px 24px rgba(44,62,80,0.10);
+            --border-color: #eaeaea;
+        }
+        body {
+            background: var(--bg);
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
+        }
+        .dark-mode {
+            --bg: #181a20;
+            --card-bg: #23272f;
+            --text: #f4f6f8;
+            --border-color: #3a3f48;
+        }
+        .navbar {
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            padding: 0.75rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+            transition: background 0.3s;
+        }
+        .navbar-brand {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            letter-spacing: 1px;
+        }
+        .dark-mode .navbar-brand { color: var(--primary); }
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            color: var(--text);
+            margin-right: 18px;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .navbar-nav .nav-link:hover { color: var(--primary); }
+        .dark-toggle {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border-color);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-left: 12px;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        .dark-toggle:hover {
+            background: var(--primary);
+            color: var(--text-light);
+            border-color: var(--primary);
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 32px;
+            transition: background 0.3s;
+        }
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .dark-mode h2 { color: var(--primary); }
+        .details-card p {
+            font-size: 1rem;
+            margin: 10px 0;
+        }
+        .details-card strong {
+            color: var(--primary-dark);
+        }
+        .dark-mode .details-card strong {
+            color: var(--accent);
+        }
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            border-radius: 10px;
+            padding: 8px 18px;
+            font-weight: 600;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44,62,80,0.12);
+        }
+        .btn-danger {
+            border-radius: 10px;
+            background: var(--danger);
+            color: #fff;
+            font-weight: 500;
+            padding: 8px 18px;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .btn-danger:hover {
+            background: #b71c1c;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            border-radius: 12px;
+            background: var(--primary-dark);
+            color: #fff;
+            font-weight: 500;
+            padding: 10px 24px;
+            margin-top: 24px;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-secondary:hover {
+            background: var(--primary);
+            text-decoration: none;
+        }
+        .form-control {
+            border-radius: 10px;
+            font-size: 0.95rem;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            transition: border 0.2s;
+        }
+        .dark-mode .form-control {
+            background: #3a3f48;
+            border-color: #fff;
+            color: var(--text);
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="#"><i class="fa-solid fa-truck"></i> Delivery Management</a>
+    <div class="ml-auto d-flex align-items-center">
+        <a href="/admin/orders" class="btn btn-secondary btn-sm mr-2"><i class="fa-solid fa-arrow-left"></i> Back</a>
+        <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode"><i class="fa fa-moon"></i></button>
+    </div>
+</nav>
+
+<div class="container">
+    <h2><i class="fa-solid fa-file-invoice"></i> Delivery Details</h2>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}" role="alert"></div>
+    <div th:if="${success}" class="alert alert-success" th:text="${success}" role="alert"></div>
+
+    <div class="details-card">
+        <p><strong>Order ID:</strong> <span th:text="${delivery.order.id}"></span></p>
+        <p><strong>Tracking Number:</strong> <span th:text="${delivery.trackingNumber} ?: 'N/A'"></span></p>
+        <p><strong>Address:</strong> <span th:text="${delivery.address} ?: 'N/A'"></span></p>
+        <p><strong>Status:</strong> <span th:text="${delivery.status}"></span></p>
+        <p><strong>Estimated Delivery Date:</strong> <span th:text="${#temporals.format(delivery.estimatedDeliveryDate, 'yyyy-MM-dd')}"></span></p>
+    </div>
+
+    <form th:action="@{'/admin/delivery/' + ${delivery.id} + '/update'}" method="post" class="mt-4">
+        <div class="form-group">
+            <label for="newStatus"><i class="fa-solid fa-edit"></i> Update Status</label>
+            <select class="form-control" id="newStatus" name="newStatus" required>
+                <option value="PENDING" th:selected="${delivery.status == 'PENDING'}">PENDING</option>
+                <option value="IN_TRANSIT" th:selected="${delivery.status == 'IN_TRANSIT'}">IN_TRANSIT</option>
+                <option value="SHIPPED" th:selected="${delivery.status == 'SHIPPED'}">SHIPPED</option>
+                <option value="DELIVERED" th:selected="${delivery.status == 'DELIVERED'}">DELIVERED</option>
+                <option value="CANCELLED" th:selected="${delivery.status == 'CANCELLED'}">CANCELLED</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Update Status</button>
+    </form>
+
+    <form th:action="@{'/admin/delivery/' + ${delivery.id} + '/delete'}" method="post" class="mt-3">
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this delivery?')">
+            <i class="fa-solid fa-trash"></i> Delete Delivery
+        </button>
+    </form>
+</div>
+
+<script>
+    function toggleDarkMode() {
+        const isDarkMode = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', isDarkMode);
+        const icon = document.querySelector('.dark-toggle i');
+        icon.className = isDarkMode ? 'fa fa-sun' : 'fa fa-moon';
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            const icon = document.querySelector('.dark-toggle i');
+            if(icon) icon.className = 'fa fa-sun';
+        }
+    });
+</script>
+</body>
+</html>

@@ -15,7 +15,7 @@ public class Delivery {
     private Order order;
 
     @Column(nullable = false)
-    private String status = "PENDING"; // e.g., PENDING, SHIPPED, OUT_FOR_DELIVERY, DELIVERED, CANCELLED
+    private String status;
 
     private String trackingNumber;
 
