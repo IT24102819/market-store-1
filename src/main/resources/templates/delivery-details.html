@@ -188,7 +188,6 @@
             <label for="newStatus"><i class="fa-solid fa-edit"></i> Update Status</label>
             <select class="form-control" id="newStatus" name="newStatus" required>
                 <option value="PENDING" th:selected="${delivery.status == 'PENDING'}">PENDING</option>
-                <option value="IN_TRANSIT" th:selected="${delivery.status == 'IN_TRANSIT'}">IN_TRANSIT</option>
                 <option value="SHIPPED" th:selected="${delivery.status == 'SHIPPED'}">SHIPPED</option>
                 <option value="DELIVERED" th:selected="${delivery.status == 'DELIVERED'}">DELIVERED</option>
                 <option value="CANCELLED" th:selected="${delivery.status == 'CANCELLED'}">CANCELLED</option>
