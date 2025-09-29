@@ -3,7 +3,9 @@ package com.lankafreshmart.market_store.controller;
 import com.lankafreshmart.market_store.model.Order;
 import com.lankafreshmart.market_store.model.Delivery;
 import com.lankafreshmart.market_store.service.DeliveryService;
+import com.lankafreshmart.market_store.service.EmailService;
 import com.lankafreshmart.market_store.service.OrderService;
+import com.lankafreshmart.market_store.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -21,11 +23,28 @@ public class AdminController {
 
     private final OrderService orderService;
     private final DeliveryService deliveryService;
+    private final EmailService emailService;
+    private final UserService userService;
 
     @Autowired
-    public AdminController(OrderService orderService, DeliveryService deliveryService) {
+    public AdminController(OrderService orderService, DeliveryService deliveryService, EmailService emailService, UserService userService) {
         this.orderService = orderService;
         this.deliveryService = deliveryService;
+        this.emailService = emailService;
+        this.userService = userService;
+    }
+
+    @GetMapping("/dashboard")
+    public String showDashboard(Model model) {
+        model.addAttribute("newEmailCount", emailService.getNewEmailCount());
+        model.addAttribute("users", userService.getAllUsers());
+        return "admin-dashboard";
+    }
+
+    @GetMapping("/reset-email-count")
+    public String resetEmailCount() {
+        emailService.resetNewEmailCount();
+        return "redirect:/admin/dashboard";
     }
 
     @GetMapping("/orders")

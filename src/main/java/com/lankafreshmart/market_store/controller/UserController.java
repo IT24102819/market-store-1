@@ -83,11 +83,14 @@ public class UserController {
         return "redirect:/logout";
     }
 
+    /*
     @GetMapping("/admin/dashboard")
     public String showAdminDashboard(Model model) {
         model.addAttribute("users", userService.getAllUsers());
         return "admin-dashboard";
     }
+
+     */
 
     @PostMapping("/admin/delete-user")
     public String deleteUser(@RequestParam("username") String username, Model model) {

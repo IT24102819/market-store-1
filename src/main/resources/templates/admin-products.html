@@ -272,6 +272,24 @@
       h1 { font-size: 1.8rem; }
       .products-grid { grid-template-columns: 1fr; }
     }
+    .badge {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 10px;
+    }
+    .badge-danger {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    /* Notification badge */
+    .dark-toggle .badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 50%;
+    }
   </style>
   <script>
     function confirmDelete(name) {
@@ -305,12 +323,19 @@
     <ul class="navbar-nav ml-auto">
       <li class="nav-item"><a th:href="@{/admin/dashboard}" class="nav-link"><i class="fa-solid fa-users-cog"></i> Manage Users</a></li>
       <li class="nav-item"><a th:href="@{/admin/orders}" class="nav-link"><i class="fa-solid fa-box"></i> Manage Orders</a></li>
+      <li class="nav-item"><a th:href="@{/admin/reviews}" class="nav-link"><i class="fa fa-star"></i>Manage Reviews</a></li>
     </ul>
     <div class="d-flex align-items-center">
       <form th:action="@{/logout}" method="post" aria-label="Logout form" class="mr-2">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-        <button type="submit" class="logout-button"><i class="fa-solid fa-sign-out-alt"></i> Logout</button>
+        <button type="submit" class="logout-button"><i class="fa fa-sign-out-alt"></i> Logout</button>
       </form>
+      <a th:href="@{https://mailtrap.io/inboxes/4063256/messages(target='_blank')}"
+         class="dark-toggle mr-2"
+         th:onclick="'window.location.href=\'/admin/reset-email-count\'; return true;'"
+         title="View Mailtrap Sandbox">
+        <i class="fa fa-bell"></i>
+        <span th:if="${newEmailCount > 0}" class="badge badge-danger" th:text="${newEmailCount}"></span>
+      </a>
       <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode"><i class="fa fa-moon"></i></button>
     </div>
   </div>

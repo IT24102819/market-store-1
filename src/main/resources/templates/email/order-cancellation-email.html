@@ -13,7 +13,7 @@
 </head>
 <body>
 <div class="container">
-    <h1>Order Cancellation Notification</h1>
+    <h1>Order Cancellation</h1>
     <p th:text="'Dear ' + ${order.user.username} + ','"></p>
     <p>Your order <strong th:text="'#' + ${order.id}"></strong> has been cancelled.</p>
     <p th:if="${order.status == 'CANCELLED'}" th:text="'Status: ' + ${order.status}"></p>

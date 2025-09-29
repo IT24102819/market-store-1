@@ -292,7 +292,7 @@
                 <label for="search"><i class="fa fa-search"></i></label>
                 <input type="text" name="search" id="search" th:value="${search}" placeholder="Product name" class="form-control ml-2" style="width: 180px;">
             </div>
-            <button type="submit" class="btn btn-primary ml-2"><i class="fa fa-search"></i> Search</button>
+            <button type="submit" class="btn btn-primary ml-2"><i class="fa fa-search"></i></button>
             <a th:href="@{/products}" class="btn btn-secondary ml-2" th:unless="${search == null or search == ''}"><i class="fa fa-times"></i> Clear</a>
         </form>
         <form th:action="@{/products}" method="get" class="form-inline">

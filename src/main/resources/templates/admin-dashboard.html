@@ -28,6 +28,7 @@
       --text: #f4f6f8;
       --border-color: #3a3f48;
     }
+    /* Navbar */
     .navbar {
       background: var(--card-bg);
       box-shadow: var(--shadow);
@@ -35,15 +36,18 @@
       position: sticky;
       top: 0;
       z-index: 1020;
-      transition: background 0.3s;
     }
     .navbar-brand {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       font-weight: 700;
       color: var(--primary-dark);
-      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .dark-mode .navbar-brand { color: var(--primary); }
+    .navbar-brand i {
+      color: var(--primary);
+    }
     .navbar-nav .nav-link {
       font-weight: 500;
       color: var(--text);
@@ -51,9 +55,7 @@
       transition: color 0.2s;
       display: flex;
       align-items: center;
-    }
-    .navbar-nav .nav-link i {
-      margin-right: 6px;
+      gap: 6px;
     }
     .navbar-nav .nav-link:hover {
       color: var(--primary);
@@ -68,15 +70,26 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       margin-left: 12px;
       transition: background 0.2s, color 0.2s, border-color 0.2s;
+      position: relative;
     }
     .dark-toggle:hover {
       background: var(--primary);
       color: var(--text-light);
       border-color: var(--primary);
     }
+    /* Notification badge */
+    .dark-toggle .badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 50%;
+    }
+    /* Container */
     .container {
       max-width: 1100px;
       margin: 40px auto;
@@ -84,17 +97,20 @@
       border-radius: 18px;
       box-shadow: var(--shadow);
       padding: 36px;
-      transition: background 0.3s;
     }
     h1 {
-      font-size: 2.2rem;
+      font-size: 2rem;
       font-weight: 700;
       color: var(--primary-dark);
       margin-bottom: 32px;
       text-align: center;
-      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
     .dark-mode h1 { color: var(--primary); }
+    /* Table */
     .table-responsive {
       border-radius: 12px;
       overflow: hidden;
@@ -103,12 +119,10 @@
     }
     table {
       width: 100%;
-      margin-bottom: 0;
       background: var(--card-bg);
-      transition: background 0.3s;
     }
     th, td {
-      padding: 16px;
+      padding: 14px;
       text-align: left;
       vertical-align: middle;
       border-top: 1px solid var(--border-color);
@@ -117,29 +131,22 @@
       background: #eafbe7;
       color: var(--primary-dark);
       font-weight: 600;
-      font-size: 1.05rem;
+      font-size: 1rem;
       border-top: none;
-    }
-    .dark-mode th {
-      background: #294d29;
-      color: var(--accent);
     }
     tbody tr:hover {
       background: #f0fff0;
     }
-    .dark-mode tbody tr:hover {
-      background: #2c313a;
-    }
+    /* Buttons */
     .delete-button {
       background: #d32f2f;
       color: #fff;
       border: none;
-      border-radius: 10px;
-      padding: 8px 18px;
-      font-size: 0.95rem;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 0.9rem;
       font-weight: 500;
       transition: background 0.2s, transform 0.2s;
-      box-shadow: 0 2px 8px rgba(44,62,80,0.08);
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -152,25 +159,35 @@
       background: transparent;
       border: 1px solid var(--border-color);
       color: var(--text);
-      border-radius: 10px;
-      padding: 8px 18px;
+      border-radius: 8px;
+      padding: 6px 14px;
       font-weight: 500;
-      transition: background 0.2s, color 0.2s;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      transition: background 0.2s, color 0.2s;
     }
     .logout-button:hover {
       background: var(--primary-dark);
       color: var(--text-light);
       border-color: var(--primary-dark);
     }
+    /* Fix table text in dark mode */
+    .dark-mode table,
+    .dark-mode th,
+    .dark-mode td {
+      color: var(--text);
+      background-color: var(--card-bg);
+      border-color: var(--border-color);
+    }
+
+    /* Alerts */
     .success, .error {
       border-radius: 10px;
       padding: 12px;
       margin-bottom: 24px;
       text-align: center;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 500;
     }
     .success {
@@ -183,15 +200,11 @@
       color: #d32f2f;
       border: 1px solid #f5bcbc;
     }
-    @media (max-width: 992px) {
-    }
-    .logout-button {
-      margin-top: 10px;
-    }
+    /* Responsive */
     @media (max-width: 768px) {
-      .container { padding: 18px 6px; }
-      table { font-size: 0.95rem; }
-      th, td { padding: 8px 6px; }
+      .container { padding: 20px; }
+      table { font-size: 0.9rem; }
+      th, td { padding: 8px; }
       h1 { font-size: 1.3rem; }
     }
   </style>
@@ -213,45 +226,58 @@
       <li class="nav-item"><a th:href="@{/admin/orders}" class="nav-link"><i class="fa fa-shopping-cart"></i>Manage Orders</a></li>
       <li class="nav-item"><a th:href="@{/admin/reviews}" class="nav-link"><i class="fa fa-star"></i>Manage Reviews</a></li>
     </ul>
-    <form th:action="@{/logout}" method="post" aria-label="Logout form" style="display:inline;">
-      <button type="submit" class="logout-button"><i class="fa fa-sign-out-alt"></i> Logout</button>
-    </form>
-    <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode"><i class="fa fa-moon"></i></button>
+    <div class="d-flex align-items-center">
+      <form th:action="@{/logout}" method="post" aria-label="Logout form" class="mr-2">
+        <button type="submit" class="logout-button"><i class="fa fa-sign-out-alt"></i> Logout</button>
+      </form>
+      <a th:href="@{https://mailtrap.io/inboxes/4063256/messages(target='_blank')}"
+         class="dark-toggle mr-2"
+         th:onclick="'window.location.href=\'/admin/reset-email-count\'; return true;'"
+         title="View Mailtrap Sandbox">
+        <i class="fa fa-bell"></i>
+        <span th:if="${newEmailCount > 0}" class="badge badge-danger" th:text="${newEmailCount}"></span>
+      </a>
+      <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode"><i class="fa fa-moon"></i></button>
+    </div>
   </div>
 </nav>
+
 <div class="container">
   <h1><i class="fa fa-user-shield"></i> Admin Dashboard</h1>
-  <!-- Success or error messages -->
+
   <div th:if="${param.success}" class="success" th:text="${param.success}"></div>
   <div th:if="${error}" class="error" th:text="${error}"></div>
-  <!-- User table -->
-  <table role="grid" aria-label="User management table">
-    <thead>
-    <tr>
-      <th><i class="fa fa-user"></i> Username</th>
-      <th><i class="fa fa-envelope"></i> Email</th>
-      <th><i class="fa fa-id-badge"></i> Role</th>
-      <th><i class="fa fa-cogs"></i> Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="user : ${users}">
-      <td th:text="${user.username}"></td>
-      <td th:text="${user.email}"></td>
-      <td th:text="${user.role}"></td>
-      <td>
-        <form th:action="@{/admin/delete-user}" method="post"
-              th:attr="data-username=${user.username}"
-              onsubmit="return confirmDelete(this.getAttribute('data-username'));"
-              style="display:inline;">
-          <input type="hidden" name="username" th:value="${user.username}"/>
-          <button type="submit" class="delete-button"><i class="fa fa-trash"></i> Delete</button>
-        </form>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+
+  <div class="table-responsive">
+    <table role="grid" aria-label="User management table" class="table">
+      <thead>
+      <tr>
+        <th><i class="fa fa-user"></i> Username</th>
+        <th><i class="fa fa-envelope"></i> Email</th>
+        <th><i class="fa fa-id-badge"></i> Role</th>
+        <th><i class="fa fa-cogs"></i> Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="user : ${users}">
+        <td th:text="${user.username}"></td>
+        <td th:text="${user.email}"></td>
+        <td th:text="${user.role}"></td>
+        <td>
+          <form th:action="@{/admin/delete-user}" method="post"
+                th:attr="data-username=${user.username}"
+                onsubmit="return confirmDelete(this.getAttribute('data-username'));"
+                style="display:inline;">
+            <input type="hidden" name="username" th:value="${user.username}"/>
+            <button type="submit" class="delete-button"><i class="fa fa-trash"></i> Delete</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
+
 <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
 </body>
 </html>

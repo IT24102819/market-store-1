@@ -19,6 +19,7 @@ import jakarta.mail.internet.MimeMessage;
 public class EmailService {
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
+    private int newEmailCount = 0;
 
     @Value("${app.admin-email:admin@lankafreshmart.com}")
     private String adminEmail;
@@ -29,6 +30,14 @@ public class EmailService {
     public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
+    }
+
+    public int getNewEmailCount() {
+        return newEmailCount;
+    }
+
+    public void resetNewEmailCount() {
+        this.newEmailCount = 0;
     }
 
     public void sendLowStockEmail(Product product) throws MessagingException {
@@ -54,10 +63,13 @@ public class EmailService {
             String htmlContent = templateEngine.process("email/low-stock-email", context);
             helper.setText(htmlContent, true);
             mailSender.send(message);
+            this.newEmailCount++;  // Increment after send
+            System.out.println("Low stock email sent – new count: " + newEmailCount);
         } catch (TemplateInputException e) {
             System.err.println("Failed to process email template for product " + product.getName() + ": " + e.getMessage());
             helper.setText("Low Stock Alert: Product " + product.getName() + " has " + product.getStockQuantity() + " units left.", false);
             mailSender.send(message);
+            this.newEmailCount++;  // Increment even on fallback
         } catch (MailAuthenticationException e) {
             System.err.println("Failed to authenticate with SMTP server for product " + product.getName() + ": " + e.getMessage());
             throw e;
@@ -83,10 +95,13 @@ public class EmailService {
             String htmlContent = templateEngine.process("email/order-confirmation", context);
             helper.setText(htmlContent, true);
             mailSender.send(message);
+            this.newEmailCount++;  // Increment
+            System.out.println("Order confirmation email sent – new count: " + newEmailCount);
         } catch (TemplateInputException e) {
             System.err.println("Failed to process order confirmation email for order #" + order.getId() + ": " + e.getMessage());
             helper.setText("Order Confirmation: Order #" + order.getId() + " placed on " + order.getOrderDate() + " for LKR " + order.getTotalAmount() + ".", false);
             mailSender.send(message);
+            this.newEmailCount++;  // Increment
         } catch (MailAuthenticationException e) {
             System.err.println("Failed to authenticate with SMTP server for order #" + order.getId() + ": " + e.getMessage());
             throw e;
@@ -110,13 +125,14 @@ public class EmailService {
                 "<p>Order ID: " + delivery.getOrder().getId() + "</p>" +
                 "<p>" + statusMessage + "</p>", true);
         mailSender.send(message);
+        this.newEmailCount++;  // Increment
+        System.out.println("Delivery update email sent – new count: " + newEmailCount);
     }
 
     public void sendOrderCancellationEmail(String userEmail, Order order) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-        // Set both customer and admin as recipients
         helper.setTo(userEmail);
         helper.setTo(adminEmail);
         helper.setSubject("Order Cancellation Notification - Order #" + order.getId());
@@ -131,10 +147,13 @@ public class EmailService {
             String htmlContent = templateEngine.process("email/order-cancellation-email", context);
             helper.setText(htmlContent, true);
             mailSender.send(message);
+            this.newEmailCount++;  // Increment
+            System.out.println("Cancellation email sent – new count: " + newEmailCount);
         } catch (TemplateInputException e) {
             System.err.println("Failed to process order cancellation email for order #" + order.getId() + ": " + e.getMessage());
             helper.setText("Order Cancellation: Order #" + order.getId() + " has been cancelled. Contact " + adminEmail + " if needed.", false);
             mailSender.send(message);
+            this.newEmailCount++;  // Increment
         } catch (MailAuthenticationException e) {
             System.err.println("Failed to authenticate with SMTP server for order #" + order.getId() + ": " + e.getMessage());
             throw e;

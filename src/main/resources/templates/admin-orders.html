@@ -147,31 +147,23 @@
     .dark-mode tbody tr:hover {
       background: #2c313a;
     }
-    .btn-primary {
-      background: var(--primary);
-      border: none;
+    .badge {
+      font-size: 0.7rem;
+      padding: 2px 6px;
       border-radius: 10px;
-      padding: 6px 16px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      transition: all 0.2s;
-      box-shadow: 0 2px 8px rgba(44,62,80,0.07);
     }
-    .btn-primary:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(44,62,80,0.12);
+    .badge-danger {
+      background-color: #dc3545;
+      color: #fff;
     }
-    .form-control {
-      border-radius: 10px;
-      font-size: 0.95rem;
-      padding: 6px 10px;
-      background: #f8f8f8;
-      border: 1px solid #ddd;
-      transition: border 0.2s;
-      display: inline-block;
-      width: auto;
-      margin-right: 8px;
+    /* Notification badge */
+    .dark-toggle .badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 50%;
     }
     .dark-mode .form-control {
       background: #3a3f48;
@@ -246,6 +238,13 @@
       <form th:action="@{/logout}" method="post" aria-label="Logout form" class="mr-2">
         <button type="submit" class="logout-button"><i class="fa fa-sign-out-alt"></i> Logout</button>
       </form>
+      <a th:href="@{https://mailtrap.io/inboxes/4063256/messages(target='_blank')}"
+         class="dark-toggle mr-2"
+         th:onclick="'window.location.href=\'/admin/reset-email-count\'; return true;'"
+         title="View Mailtrap Sandbox">
+        <i class="fa fa-bell"></i>
+        <span th:if="${newEmailCount > 0}" class="badge badge-danger" th:text="${newEmailCount}"></span>
+      </a>
       <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode"><i class="fa fa-moon"></i></button>
     </div>
   </div>
