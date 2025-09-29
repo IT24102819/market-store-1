@@ -377,6 +377,9 @@
                             <label for="quantity-${product.id}" class="sr-only">Quantity</label>
                             <input type="number" name="quantity" id="quantity-${product.id}" value="1" min="1" th:max="${product.stockQuantity}" class="form-control" style="width: 80px;">
                         </div>
+                        <a th:href="@{/product-reviews-guest(productId=${product.id})}" class="btn btn-info btn-sm mt-2">
+                            <i class="fa fa-comments"></i> View Reviews
+                        </a>
                         <button type="submit" class="btn btn-primary" th:disabled="${product.stockQuantity == 0}">
                             <i class="fa fa-cart-plus"></i> Add to Cart
                         </button>

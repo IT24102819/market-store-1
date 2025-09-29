@@ -61,11 +61,9 @@ public class OrderService {
         order.setStatus("PLACED");
         order.setPaymentMethod(paymentMethod);
         // Set payment status based on payment method
-        if ("CASH_ON_DELIVERY".equals(paymentMethod)) {
+        if ("CASH_ON_DELIVERY,CASH_ON_DELIVERY".equals(paymentMethod)) {
             order.setPaymentStatus("COD/Pickup");
-        } else if ("PENDING".equals(paymentMethod)) {
-            order.setPaymentStatus("PENDING");
-        } else {
+        }else {
             order.setPaymentStatus("PROCESSED");
         }
         order.setDeliveryMethod(deliveryMethod);

@@ -25,9 +25,12 @@ public class Delivery {
     private String address;
 
     // Constructors
-    public Delivery() {}
+    public Delivery() {
+        this.status = "PENDING";
+    }
     public Delivery(Order order) {
         this.order = order;
+        this.status = "PENDING";
     }
 
     // Getters and setters (existing ones unchanged)

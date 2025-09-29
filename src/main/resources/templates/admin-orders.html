@@ -140,8 +140,8 @@
     .dark-mode td,
     .dark-mode tbody tr {
       color: var(--text);
-
-      tbody tr:hover {
+    }
+    tbody tr:hover {
       background: #f5fbe7;
     }
     .dark-mode tbody tr:hover {
@@ -238,7 +238,7 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item"><a th:href="@{/admin/dashboard}" class="nav-link"><i class="fa fa-user-shield"></i>Dashboard</a></li>
+      <li class="nav-item"><a th:href="@{/admin/dashboard}" class="nav-link"><i class="fa fa-user-shield"></i>Manage Users</a></li>
       <li class="nav-item"><a th:href="@{/admin/products}" class="nav-link"><i class="fa fa-box"></i>Manage Products</a></li>
       <li class="nav-item"><a th:href="@{/admin/reviews}" class="nav-link"><i class="fa fa-star"></i>Manage Reviews</a></li>
     </ul>
@@ -251,6 +251,8 @@
   </div>
 </nav>
 <div class="container">
+  <div th:if="${param.success}" class="alert alert-success" role="alert" th:text="${param.success}"></div>
+  <div th:if="${param.error}" class="alert alert-danger" role="alert" th:text="${param.error}"></div>
   <h1><i class="fa-solid fa-dolly"></i> Manage Orders</h1>
   <div class="table-responsive">
     <table class="table">
@@ -259,7 +261,6 @@
         <th>Order ID</th>
         <th>User</th>
         <th>Total</th>
-        <th>Order Status</th>
         <th>Payment Status</th>
         <th>Delivery Status</th>
         <th>Actions</th>
@@ -270,13 +271,12 @@
         <td th:text="${order.id}"></td>
         <td th:text="${order.user.username}"></td>
         <td th:text="'LKR ' + ${#numbers.formatDecimal(order.totalAmount, 1, 'COMMA', 2, 'POINT')}"></td>
-        <td th:text="${order.status}"></td>
         <td th:text="${order.getPaymentStatus()}"></td>
         <td>
-            <span class="status-badge"
-                  th:classappend="${order.delivery == null ? 'status-na' : 'status-' + #strings.toLowerCase(order.delivery.status)}"
-                  th:text="${order.delivery != null ? order.delivery.status : 'N/A'}">
-            </span>
+          <span class="status-badge"
+                th:classappend="${order.delivery == null ? 'status-na' : 'status-' + #strings.toLowerCase(order.delivery.status)}"
+                th:text="${order.delivery != null ? order.delivery.status : 'N/A'}">
+          </span>
         </td>
         <td>
           <form th:action="@{/admin/delivery/update}" method="post" th:if="${order.delivery != null}" class="form-inline">

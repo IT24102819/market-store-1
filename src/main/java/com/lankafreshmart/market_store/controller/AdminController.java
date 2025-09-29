@@ -29,9 +29,15 @@ public class AdminController {
     }
 
     @GetMapping("/orders")
-    public String listOrders(Model model) {
-        List<Order> orders = orderService.getAllOrders(); // Assuming this method exists
+    public String listOrders(Model model, @RequestParam(required = false) String success, @RequestParam(required = false) String error) {
+        List<Order> orders = orderService.getAllOrders();
         model.addAttribute("orders", orders);
+        if (success != null) {
+            model.addAttribute("success", success);
+        }
+        if (error != null) {
+            model.addAttribute("error", error);
+        }
         return "admin-orders";
     }
 

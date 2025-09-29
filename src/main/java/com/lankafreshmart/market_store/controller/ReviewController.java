@@ -44,8 +44,7 @@ public class ReviewController {
         return "review";
     }
 
-    @GetMapping("/product-reviews")
-    public String showProductReviews(@RequestParam Long productId, Model model) {
+    private String ProductReviews(@RequestParam Long productId, Model model, String viewName) {
         Product product = productService.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
         List<Review> reviews = reviewService.getReviewsByProduct(product);
@@ -56,7 +55,17 @@ public class ReviewController {
         model.addAttribute("product", product);
         model.addAttribute("reviews", reviews);
         model.addAttribute("averageRating", averageRating);
-        return "product-reviews";
+        return viewName;
+    }
+
+    @GetMapping("/product-reviews")
+    public String showProductReviews(@RequestParam Long productId, Model model) {
+        return ProductReviews(productId, model, "product-reviews");
+    }
+
+    @GetMapping("/product-reviews-guest")
+    public String showProductReviewsGuest(@RequestParam Long productId, Model model) {
+        return ProductReviews(productId, model, "product-reviews-guest");
     }
 
     @PostMapping("/review/update")
