@@ -239,7 +239,7 @@
         <a th:href="@{/order/history}" class="btn btn-secondary">
             <i class="fa fa-arrow-left"></i> Back to Order History
         </a>
-        <form th:action="@{/order/cancel}" method="post" th:if="${order.status == 'PENDING'}" style="display:inline;">
+        <form th:action="@{/order/cancel}" method="post" th:if="${order.status == 'PENDING' or order.status == 'PLACED'}" style="display:inline;">
             <input type="hidden" name="orderId" th:value="${order.id}"/>
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
             <a th:if="${order.delivery.status == 'PENDING'}" th:href="@{'/order/edit?orderId=' + ${order.id}}" class="btn btn-primary btn-sm">Update Order</a>

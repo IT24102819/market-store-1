@@ -92,7 +92,7 @@ public class OrderService {
     public void cancelOrder(Long orderId) throws IllegalStateException {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
-        if (!"PENDING".equals(order.getStatus())) {
+        if (!"PLACED".equals(order.getStatus())) {
             throw new IllegalStateException("Only PENDING orders can be cancelled");
         }
         // Revert stock quantities

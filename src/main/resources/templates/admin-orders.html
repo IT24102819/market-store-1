@@ -260,6 +260,7 @@
         <th>Order ID</th>
         <th>User</th>
         <th>Total</th>
+        <th>Order Status</th>
         <th>Payment Status</th>
         <th>Delivery Status</th>
         <th>Actions</th>
@@ -270,6 +271,7 @@
         <td th:text="${order.id}"></td>
         <td th:text="${order.user.username}"></td>
         <td th:text="'LKR ' + ${#numbers.formatDecimal(order.totalAmount, 1, 'COMMA', 2, 'POINT')}"></td>
+        <td th:text="${order.getStatus()}"></td>
         <td th:text="${order.getPaymentStatus()}"></td>
         <td>
           <span class="status-badge"
