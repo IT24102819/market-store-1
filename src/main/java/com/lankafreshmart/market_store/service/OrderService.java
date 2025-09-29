@@ -144,4 +144,21 @@ public class OrderService {
         deliveryRepository.save(delivery);
         orderRepository.save(order);
     }
+
+    @Transactional
+    public void updatePaymentStatusToRefunded(Long orderId) throws IllegalStateException {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
+        if (!"CANCELLED".equals(order.getStatus())) {
+            throw new IllegalStateException("Only CANCELLED orders can be refunded");
+        }
+        if (!"PROCESSED".equals(order.getPaymentStatus())) {
+            throw new IllegalStateException("Payment status must be PROCESSED to issue a refund");
+        }
+
+        order.setPaymentStatus("REFUNDED");
+        orderRepository.save(order);
+
+    }
 }

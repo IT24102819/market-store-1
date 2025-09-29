@@ -274,10 +274,10 @@
         <td th:text="${order.getStatus()}"></td>
         <td th:text="${order.getPaymentStatus()}"></td>
         <td>
-          <span class="status-badge"
-                th:classappend="${order.delivery == null ? 'status-na' : 'status-' + #strings.toLowerCase(order.delivery.status)}"
-                th:text="${order.delivery != null ? order.delivery.status : 'N/A'}">
-          </span>
+    <span class="status-badge"
+          th:classappend="${order.delivery == null ? 'status-na' : 'status-' + #strings.toLowerCase(order.delivery.status)}"
+          th:text="${order.delivery != null ? order.delivery.status : 'N/A'}">
+    </span>
         </td>
         <td>
           <form th:action="@{/admin/delivery/update}" method="post" th:if="${order.delivery != null}" class="form-inline">
@@ -285,6 +285,11 @@
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
             <a th:href="@{'/admin/delivery/' + ${order.delivery.id}}" th:if="${order.delivery != null}" class="btn btn-info btn-sm">View Delivery</a>
           </form>
+          <th:if test="${order.status == 'CANCELLED' and order.paymentStatus == 'PROCESSED'}">
+            <form th:action="@{/admin/orders/{orderId}/refund(orderId=${order.id})}" method="post" style="display:inline;">
+              <button type="submit" class="btn btn-warning">Refund</button>
+            </form>
+          </th:if>
         </td>
       </tr>
       </tbody>

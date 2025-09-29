@@ -102,4 +102,23 @@ public class AdminController {
             return "redirect:/admin/orders?error=Failed to delete delivery: " + e.getMessage();
         }
     }
+
+    @PostMapping("/orders/{orderId}/refund")
+    public String refundOrder(@PathVariable Long orderId, Model model) {
+        System.out.println("Attempting to refund order ID: " + orderId);
+        try {
+            orderService.updatePaymentStatusToRefunded(orderId);
+            System.out.println("Successfully refunded order ID: " + orderId);
+            return "redirect:/admin/orders?success=Order refunded successfully";
+        } catch (IllegalArgumentException e) {
+            System.out.println("Failed to refund: " + e.getMessage());
+            return "redirect:/admin/orders?error=Order not found";
+        } catch (IllegalStateException e) {
+            System.out.println("Invalid refund state: " + e.getMessage());
+            return "redirect:/admin/orders?error=" + URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            System.out.println("Unexpected error: " + e.getMessage());
+            return "redirect:/admin/orders?error=Unexpected error occurred";
+        }
+    }
 }
