@@ -210,7 +210,9 @@
     <input type="hidden" name="address" id="deliveryAddressHidden">
 
     <div class="action-buttons">
-      <button type="submit" class="btn btn-success"><i class="fa fa-check-circle"></i> Place Order</button>
+      <button type="submit" class="btn btn-success" id="placeOrderBtn" onclick="this.disabled=true; this.form.submit();">
+        <i class="fa fa-check-circle"></i> Place Order
+      </button>
       <a th:href="@{/cart}" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Back to Cart</a>
     </div>
   </form>

@@ -372,6 +372,13 @@
             <option value="Dairy">Dairy</option>
             <option value="Bakery">Bakery</option>
             <option value="Electronics">Electronics</option>
+            <option value="Snacks">Snacks</option>
+            <option value="Frozen">Frozen</option>
+            <option value="Cosmetics">Cosmetics</option>
+            <option value="Household">Household</option>
+            <option value="Party Items">Party Items</option>
+            <option value="Pet Care">Pet Care</option>
+            <option value="Stationary">Stationary</option>
           </select>
         </div>
       </div>
@@ -427,6 +434,13 @@
                 <option value="Dairy" th:selected="${product.category == 'Dairy'}">Dairy</option>
                 <option value="Bakery" th:selected="${product.category == 'Bakery'}">Bakery</option>
                 <option value="Electronics" th:selected="${product.category == 'Electronics'}">Electronics</option>
+                <option value="Snacks" th:selected="${product.category == 'Snacks'}">Snacks</option>
+                <option value="Frozen" th:selected="${product.category == 'Frozen'}">Frozen</option>
+                <option value="Cosmetics" th:selected="${product.category == 'Cosmetics'}">Cosmetics</option>
+                <option value="Household" th:selected="${product.category == 'Household'}">Household</option>
+                <option value="Party Items" th:selected="${product.category == 'Party Items'}">Party Items</option>
+                <option value="Pet Care" th:selected="${product.category == 'Pet Care'}">Pet Care</option>
+                <option value="Stationary" th:selected="${product.category == 'Stationary'}">Stationary</option>
               </select>
             </div>
             <div class="form-group">
@@ -457,13 +471,13 @@
   <nav aria-label="Product navigation">
     <ul class="pagination justify-content-center">
       <li th:class="${currentPage == 0 ? 'page-item disabled' : 'page-item'}">
-        <a th:href="@{/admin/products(page=${currentPage - 1}, size=10)}" class="page-link"><i class="fa-solid fa-angle-left"></i> Previous</a>
+        <a th:href="@{/admin/products(page=${currentPage - 1}, size=12)}" class="page-link"><i class="fa-solid fa-angle-left"></i> Previous</a>
       </li>
       <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:class="${currentPage == i ? 'page-item active' : 'page-item'}">
-        <a th:href="@{/admin/products(page=${i}, size=10)}" class="page-link" th:text="${i + 1}"></a>
+        <a th:href="@{/admin/products(page=${i}, size=12)}" class="page-link" th:text="${i + 1}"></a>
       </li>
       <li th:class="${currentPage == totalPages - 1 ? 'page-item disabled' : 'page-item'}">
-        <a th:href="@{/admin/products(page=${currentPage + 1}, size=10)}" class="page-link">Next <i class="fa-solid fa-angle-right"></i></a>
+        <a th:href="@{/admin/products(page=${currentPage + 1}, size=12)}" class="page-link">Next <i class="fa-solid fa-angle-right"></i></a>
       </li>
     </ul>
   </nav>

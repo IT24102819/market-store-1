@@ -113,7 +113,7 @@ public class OrderController {
         if (!order.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("Unauthorized access to order");
         }
-        if (!"PENDING".equals(order.getStatus())) {
+        if (!"PLACED".equals(order.getStatus())) {
             model.addAttribute("error", "Only PENDING orders can be updated.");
             return "redirect:/order/details?orderId=" + orderId;
         }
