@@ -280,6 +280,163 @@
             .container { margin-top: 80px; }
             .footer { padding: 24px 0 10px 0; }
         }
+        /* Navbar Dark Mode Fix */
+        .dark-mode .navbar {
+            background: var(--card-bg) !important;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dark-mode .navbar-brand,
+        .dark-mode .nav-link,
+        .dark-mode .navbar-nav .btn-info {
+            color: var(--text) !important;
+        }
+
+        .dark-mode .navbar-nav .btn-info {
+            background: var(--primary);
+            border: none;
+        }
+
+        .dark-mode .navbar-nav .btn-info:hover {
+            background: var(--primary-dark);
+        }
+        /* Product Card Buttons Layout */
+        .product-card .card-body form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .product-card .card-body form .form-group {
+            margin: 0;
+        }
+
+        .product-card .card-body input[type="number"] {
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.95rem;
+            height: 38px;
+        }
+
+        /* Buttons Styling */
+        .product-card .card-body .btn {
+            border-radius: 10px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .product-card .card-body .btn-info {
+            background: var(--accent);
+            border: none;
+            color: var(--primary-dark);
+        }
+
+        .product-card .card-body .btn-info:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .product-card .card-body .btn-primary {
+            background: var(--primary);
+            border: none;
+            color: var(--text-light);
+        }
+
+        .product-card .card-body .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Align messages under buttons */
+        .product-card .card-body .alert {
+            width: 100%;
+            margin-top: 10px;
+        }
+        /* Product Card */
+        .product-card {
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.25s, box-shadow 0.25s;
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 26px rgba(0,0,0,0.12);
+        }
+
+        /* Image */
+        .product-card .card-img-top {
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        .product-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+
+        /* Stock Badge */
+        .badge-stock {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent, #ffc107);
+            color: var(--primary-dark, #2d7a2d);
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Text */
+        .product-card .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-dark, #2d7a2d);
+        }
+        .product-card .card-text {
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+        }
+
+        /* Quantity Input */
+        .quantity-input {
+            width: 80px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.95rem;
+            height: 38px;
+        }
+
+        /* Buttons */
+        .product-card .btn {
+            border-radius: 10px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .product-card .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .product-card .btn-outline-info {
+            border: 1px solid #17a2b8;
+            color: #17a2b8;
+            background: transparent;
+        }
+        .product-card .btn-outline-info:hover {
+            background: #17a2b8;
+            color: #fff;
+        }
+
+        /* Alerts */
+        .product-card .alert {
+            border-radius: 10px;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+        }
+
     </style>
     <script>
         function toggleDarkMode() {
@@ -318,7 +475,7 @@
         <!-- Search Form -->
         <form th:action="@{/}" method="get" class="form-inline justify-content-center">
             <div class="form-group">
-                <input type="text" name="search" id="search" th:value="${search}" placeholder="Search products..." class="form-control mr-2" style="width: 300px;">
+                <label for="search"></label><input type="text" name="search" id="search" th:value="${search}" placeholder="Search products..." class="form-control mr-2" style="width: 300px;">
                 <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
             </div>
         </form>
@@ -353,43 +510,64 @@
     <div class="row">
         <div th:each="product : ${products}" class="col-md-4 col-sm-6 mb-4">
             <div class="card product-card shadow-sm">
+                <!-- Product Image -->
                 <img th:src="${product.imageUrl}" th:alt="${product.name}" class="card-img-top">
-                <div class="badge-stock" th:if="${product.stockQuantity <= 10}" th:text="'Low Stock: ' + ${product.stockQuantity}"></div>
-                <div class="card-body">
+
+                <!-- Low Stock Badge -->
+                <div class="badge-stock" th:if="${product.stockQuantity <= 10}"
+                     th:text="'Low Stock: ' + ${product.stockQuantity}">
+                </div>
+
+                <div class="card-body d-flex flex-column">
+                    <!-- Product Title -->
                     <h5 class="card-title">
-                        <span th:switch="${product.category}">
-                            <i th:case="'Fruit'" class="fa fa-apple-alt"></i>
-                            <i th:case="'Vegetable'" class="fa fa-carrot"></i>
-                            <i th:case="'Dairy'" class="fa fa-cheese"></i>
-                            <i th:case="'Bakery'" class="fa fa-bread-slice"></i>
-                            <i th:case="'Electronics'" class="fa fa-tv"></i>
-                            <i th:case="*" class="fa fa-box-open"></i>
-                        </span>
+                    <span th:switch="${product.category}">
+                        <i th:case="'Fruit'" class="fa fa-apple-alt"></i>
+                        <i th:case="'Vegetable'" class="fa fa-carrot"></i>
+                        <i th:case="'Dairy'" class="fa fa-cheese"></i>
+                        <i th:case="'Bakery'" class="fa fa-bread-slice"></i>
+                        <i th:case="'Electronics'" class="fa fa-tv"></i>
+                        <i th:case="*" class="fa fa-box-open"></i>
+                    </span>
                         <span th:text="${product.name}"></span>
                     </h5>
-                    <p class="card-text" th:text="'Price: ' + ${product.price} + ' LKR'"></p>
-                    <p class="card-text" th:text="'In Stock: ' + ${product.stockQuantity}"></p>
-                    <p class="card-text" th:text="'Description: ' + ${product.description}"></p>
-                    <p class="card-text" th:text="'Rating: ' + ${product.rating}"></p>
-                    <form th:action="@{/guest-cart/add}" method="post" class="form-inline">
+
+                    <!-- Product Info -->
+                    <p class="card-text"><strong>Price:</strong> <span th:text="${product.price} + ' LKR'"></span></p>
+                    <p class="card-text"><strong>In Stock:</strong> <span th:text="${product.stockQuantity}"></span></p>
+                    <p class="card-text text-muted" th:text="${product.description}"></p>
+                    <p class="card-text"><i class="fa fa-star text-warning"></i>
+                        <span th:text="${product.rating}"></span>
+                    </p>
+
+                    <!-- Action Section -->
+                    <form th:action="@{/guest-cart/add}" method="post" class="product-actions mt-auto">
                         <input type="hidden" name="productId" th:value="${product.id}"/>
-                        <div class="form-group mx-sm-3">
-                            <label for="quantity-${product.id}" class="sr-only">Quantity</label>
-                            <input type="number" name="quantity" id="quantity-${product.id}" value="1" min="1" th:max="${product.stockQuantity}" class="form-control" style="width: 80px;">
+
+                        <div class="d-flex align-items-center mb-3">
+                            <input type="number" name="quantity" id="quantity-${product.id}"
+                                   value="1" min="1" th:max="${product.stockQuantity}"
+                                   class="form-control quantity-input"/>
+                            <a th:href="@{/product-reviews-guest(productId=${product.id})}"
+                               class="btn btn-outline-info btn-sm ml-2">
+                                <i class="fa fa-comments"></i> Reviews
+                            </a>
                         </div>
-                        <a th:href="@{/product-reviews-guest(productId=${product.id})}" class="btn btn-info btn-sm mt-2">
-                            <i class="fa fa-comments"></i> View Reviews
-                        </a>
-                        <button type="submit" class="btn btn-primary" th:disabled="${product.stockQuantity == 0}">
+
+                        <button type="submit" class="btn btn-primary btn-block"
+                                th:disabled="${product.stockQuantity == 0}">
                             <i class="fa fa-cart-plus"></i> Add to Cart
                         </button>
                     </form>
+
+                    <!-- Messages -->
                     <div th:if="${message}" class="alert alert-success mt-2" th:text="${message}" th:remove="if"></div>
                     <div th:if="${error}" class="alert alert-danger mt-2" th:text="${error}" th:remove="if"></div>
                 </div>
             </div>
         </div>
     </div>
+
     <p th:if="${#lists.isEmpty(products)}" class="text-center">No products found.</p>
 </div>
 
