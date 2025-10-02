@@ -93,18 +93,73 @@
             transition: background 0.2s;
         }
         .hero {
-            background: linear-gradient(rgba(44, 62, 80, 0.5), rgba(44, 62, 80, 0.5)), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+            background: url('/images/landing-hero.png') center/cover no-repeat;
             color: #fff;
-            padding: 90px 0 40px 0;
+            padding: 70px 0 30px 0;
+            min-height: 320px;
             border-radius: 0 0 30px 30px;
             box-shadow: var(--shadow);
             margin-bottom: 30px;
             text-align: center;
             animation: fadeIn 1s;
+            position: relative;
+        }
+        .hero-content { position: relative; z-index: 1; }
+        /* Hero background transition layer */
+        .hero-transition {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: transparent center/cover no-repeat;
+            border-radius: 0 0 30px 30px;
+            opacity: 0;
+            transition: opacity 600ms ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .hero-transition.is-visible {
+            opacity: 1;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px);}
             to { opacity: 1; transform: translateY(0);}
+        }
+        /* Hero manual nav arrows */
+        .hero-nav {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: 2;
+        }
+        .hero-nav .arrow-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0,0,0,0.35);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            transition: background 0.2s, transform 0.2s;
+            pointer-events: auto;
+        }
+        .hero-nav .arrow-btn:hover {
+            background: rgba(0,0,0,0.5);
+            transform: translateY(-2px);
+        }
+        .dark-mode .hero-nav .arrow-btn {
+            background: rgba(255,255,255,0.15);
         }
         .hero h2 {
             font-size: 2.8rem;
@@ -141,18 +196,47 @@
             background: var(--primary);
             box-shadow: 0 4px 16px rgba(44,62,80,0.13);
         }
+        /* Search bar elevated wrapper */
+        .search-box {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 8px;
+            border-radius: 32px;
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+            backdrop-filter: saturate(120%) blur(2px);
+        }
+        .dark-mode .search-box {
+            background: rgba(35,39,47,0.92);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+        }
+        .search-box .form-control {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+        .search-box .btn-primary {
+            box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+        }
         .category-section {
             margin-top: 40px;
         }
+        .category-section.collapsed .row { display: none; }
         .category-section h3 {
             display: flex;
             align-items: center;
             font-size: 1.5rem;
+            cursor: pointer;
         }
         .category-section h3 .fa-th-large {
             margin-right: 10px;
             color: var(--primary);
         }
+        .category-section h3 .toggle-icon {
+            margin-left: auto;
+            transition: transform 0.2s ease;
+        }
+        .category-section.collapsed h3 .toggle-icon { transform: rotate(-90deg); }
         .category-card {
             cursor: pointer;
             margin: 10px 0;
@@ -279,6 +363,7 @@
             .card-img-top { height: 160px; }
             .container { margin-top: 80px; }
             .footer { padding: 24px 0 10px 0; }
+            .hero { min-height: 240px; padding: 56px 0 24px 0; }
         }
         /* Navbar Dark Mode Fix */
         .dark-mode .navbar {
@@ -470,20 +555,30 @@
 </nav>
 <div class="container">
     <div class="hero">
-        <h2>Welcome to Lanka Fresh Mart</h2>
-        <p>Discover the freshest products at the best prices!</p>
-        <!-- Search Form -->
-        <form th:action="@{/}" method="get" class="form-inline justify-content-center">
-            <div class="form-group">
-                <label for="search"></label><input type="text" name="search" id="search" th:value="${search}" placeholder="Search products..." class="form-control mr-2" style="width: 300px;">
-                <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
-            </div>
-        </form>
+        <div class="hero-transition" aria-hidden="true"></div>
+        <div class="hero-content">
+            <!-- Search Form -->
+            <form th:action="@{/}" method="get" class="form-inline justify-content-center">
+                <div class="form-group search-box">
+                    <label for="search"></label><input type="text" name="search" id="search" th:value="${search}" placeholder="Search products..." class="form-control mr-2" style="width: 300px;">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
+                </div>
+            </form>
+        </div>
+        <!-- Manual navigation arrows -->
+        <div class="hero-nav">
+            <button type="button" class="arrow-btn" id="heroPrev" aria-label="Previous slide">
+                <i class="fa fa-chevron-left"></i>
+            </button>
+            <button type="button" class="arrow-btn" id="heroNext" aria-label="Next slide">
+                <i class="fa fa-chevron-right"></i>
+            </button>
+        </div>
     </div>
 
     <!-- Category Section -->
-    <div class="category-section">
-        <h3 class="mb-3 text-success font-weight-bold"><i class="fa fa-th-large"></i> Browse by Category</h3>
+    <div class="category-section collapsed" id="categorySection">
+        <h3 class="mb-3 text-success font-weight-bold" id="categoryToggle"><i class="fa fa-th-large"></i> Browse by Category <i class="fa fa-chevron-down toggle-icon"></i></h3>
         <div class="row">
             <div th:each="cat : ${categories}" class="col-md-3 col-sm-6 mb-3">
                 <div class="card category-card shadow-sm" th:attr="data-category=${cat}" onclick="filterByCategory(this)">
@@ -602,6 +697,95 @@
         var category = element.getAttribute('data-category');
         window.location.href = '/' + '?category=' + encodeURIComponent(category);
     }
+
+    // Category section toggle
+    (function(){
+        document.addEventListener('DOMContentLoaded', function(){
+            var section = document.getElementById('categorySection');
+            var toggle = document.getElementById('categoryToggle');
+            if (!section || !toggle) return;
+            toggle.addEventListener('click', function(){
+                section.classList.toggle('collapsed');
+            });
+        });
+    })();
+
+    // Hero background rotator
+    (function () {
+        var heroImages = [
+            '/images/landing-hero.png',
+            '/images/hero-1.png',
+            '/images/hero-2.png',
+            '/images/hero-3.png'
+
+        ];
+
+        var currentIndex = 0;
+        var heroElement = null;
+        var intervalId = null;
+        var ROTATE_MS = 6000;
+
+        function setHeroBackground(index) {
+            if (!heroElement) return;
+            var gradient = '';
+
+            // Crossfade using transition layer
+            var transitionLayer = document.querySelector('.hero-transition');
+            if (transitionLayer) {
+                // Put next image on transition layer and fade it in
+                transitionLayer.style.backgroundImage = 'url("' + heroImages[index] + '")';
+                transitionLayer.classList.add('is-visible');
+
+                // After fade-in completes, set base and hide overlay
+                setTimeout(function () {
+                    heroElement.style.backgroundImage = 'url("' + heroImages[index] + '")';
+                    transitionLayer.classList.remove('is-visible');
+                }, 600);
+            } else {
+                // Fallback without animation
+                heroElement.style.backgroundImage = 'url("' + heroImages[index] + '")';
+            }
+        }
+
+        function rotateHeroBackground() {
+            currentIndex = (currentIndex + 1) % heroImages.length;
+            setHeroBackground(currentIndex);
+        }
+
+        function move(delta) {
+            var next = (currentIndex + delta + heroImages.length) % heroImages.length;
+            currentIndex = next;
+            setHeroBackground(currentIndex);
+            resetTimer();
+        }
+
+        function resetTimer() {
+            if (intervalId) clearInterval(intervalId);
+            intervalId = setInterval(rotateHeroBackground, ROTATE_MS);
+        }
+
+        // Preload images to avoid flicker
+        heroImages.forEach(function (src) {
+            var img = new Image();
+            img.src = src;
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            heroElement = document.querySelector('.hero');
+            if (!heroElement || heroImages.length <= 1) return;
+            // Ensure first image is applied from JS so subsequent swaps are smooth
+            setHeroBackground(currentIndex);
+            // Hook up manual controls
+            var prevBtn = document.getElementById('heroPrev');
+            var nextBtn = document.getElementById('heroNext');
+            if (prevBtn && nextBtn) {
+                prevBtn.addEventListener('click', function () { move(-1); });
+                nextBtn.addEventListener('click', function () { move(1); });
+            }
+            // Start auto-rotate
+            resetTimer();
+        });
+    })();
 </script>
 <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
