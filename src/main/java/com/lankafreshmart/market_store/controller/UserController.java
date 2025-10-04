@@ -3,14 +3,13 @@ package com.lankafreshmart.market_store.controller;
 import com.lankafreshmart.market_store.model.User;
 import com.lankafreshmart.market_store.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class UserController {
@@ -102,5 +101,38 @@ public class UserController {
             model.addAttribute("users", userService.getAllUsers());
             return "admin-dashboard";
         }
+    }
+
+    @PostMapping("/profile/request-role")
+    public String requestRole(@AuthenticationPrincipal User user, Model model) {
+        try {
+            userService.submitRoleRequest(user.getId());
+            model.addAttribute("success", "Role request submitted successfully!");
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        model.addAttribute("user", user);
+        return "profile";
+    }
+
+    @GetMapping("/admin/requests")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String showRequests(Model model) {
+        model.addAttribute("requests", userService.getPendingRequests());
+        return "admin-requests";
+    }
+
+    @PostMapping("/admin/process-request/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String processRequest(@PathVariable Long id, @RequestParam String action, Model model) {
+        System.out.println("Processing request for id: " + id + " with action: " + action);
+        try {
+            userService.processRoleRequest(id, action);
+            model.addAttribute("success", "Request " + action.toLowerCase() + "d successfully!");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        model.addAttribute("requests", userService.getPendingRequests());
+        return "admin-requests";
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 public class SecurityConfig {
@@ -40,9 +41,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/register","/privacy", "/login", "/products","/product-reviews-guest","/guest-cart/add","/guest-cart/view", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/register", "/privacy", "/login", "/products", "/product-reviews-guest", "/guest-cart/add", "/guest-cart/view", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/profile", "/profile/request-role", "/delete-account", "/cart", "/cart/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/profile", "/delete-account", "/cart", "/cart/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
@@ -56,6 +57,13 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
+                )
+                .csrf((csrf) -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
+                .sessionManagement((session) -> session
+                        .maximumSessions(1) // Prevent multiple logins
+                        .expiredUrl("/login?expired")
                 );
         return http.build();
     }

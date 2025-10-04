@@ -2,6 +2,8 @@ package com.lankafreshmart.market_store.controller;
 
 import com.lankafreshmart.market_store.model.Order;
 import com.lankafreshmart.market_store.model.Delivery;
+import com.lankafreshmart.market_store.model.User;
+import com.lankafreshmart.market_store.repository.UserRepository;
 import com.lankafreshmart.market_store.service.DeliveryService;
 import com.lankafreshmart.market_store.service.EmailService;
 import com.lankafreshmart.market_store.service.OrderService;
@@ -25,13 +27,15 @@ public class AdminController {
     private final DeliveryService deliveryService;
     private final EmailService emailService;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @Autowired
-    public AdminController(OrderService orderService, DeliveryService deliveryService, EmailService emailService, UserService userService) {
+    public AdminController(OrderService orderService, DeliveryService deliveryService, EmailService emailService, UserService userService, UserRepository userRepository) {
         this.orderService = orderService;
         this.deliveryService = deliveryService;
         this.emailService = emailService;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/dashboard")
@@ -120,5 +124,16 @@ public class AdminController {
             System.out.println("Unexpected error: " + e.getMessage());
             return "redirect:/admin/orders?error=Unexpected error occurred";
         }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/admin/promote/{userId}")
+    public String promoteUserToAdmin(@PathVariable Long userId, Model model) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setRole("ADMIN");
+        userRepository.save(user);
+        model.addAttribute("success", "User promoted to admin successfully!");
+        return "redirect:/admin/users";
     }
 }
