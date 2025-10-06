@@ -119,4 +119,8 @@ public class UserService {
         System.out.println("Pending requests: " + requests.stream().map(r -> r.getId()).collect(Collectors.toList()));
         return requests;
     }
+
+    public long getRegisteredUsersCount() {
+        return userRepository.count();
+    }
 }

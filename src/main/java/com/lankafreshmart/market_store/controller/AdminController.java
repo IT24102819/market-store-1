@@ -4,10 +4,7 @@ import com.lankafreshmart.market_store.model.Order;
 import com.lankafreshmart.market_store.model.Delivery;
 import com.lankafreshmart.market_store.model.User;
 import com.lankafreshmart.market_store.repository.UserRepository;
-import com.lankafreshmart.market_store.service.DeliveryService;
-import com.lankafreshmart.market_store.service.EmailService;
-import com.lankafreshmart.market_store.service.OrderService;
-import com.lankafreshmart.market_store.service.UserService;
+import com.lankafreshmart.market_store.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -16,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -28,20 +26,37 @@ public class AdminController {
     private final EmailService emailService;
     private final UserService userService;
     private final UserRepository userRepository;
+    private final SaleService saleService;
+    private final ProductService productService;
 
     @Autowired
-    public AdminController(OrderService orderService, DeliveryService deliveryService, EmailService emailService, UserService userService, UserRepository userRepository) {
+    public AdminController(OrderService orderService, DeliveryService deliveryService, EmailService emailService, UserService userService, UserRepository userRepository, SaleService saleService,
+                           ProductService productService) {
         this.orderService = orderService;
         this.deliveryService = deliveryService;
         this.emailService = emailService;
         this.userService = userService;
         this.userRepository = userRepository;
+        this.saleService = saleService;
+        this.productService = productService;
     }
 
     @GetMapping("/dashboard")
     public String showDashboard(Model model) {
         model.addAttribute("newEmailCount", emailService.getNewEmailCount());
         model.addAttribute("users", userService.getAllUsers());
+        LocalDateTime start = LocalDateTime.now().minusDays(30);
+        LocalDateTime end = LocalDateTime.now();
+        model.addAttribute("totalSales", saleService.getTotalSales(start, end));
+        model.addAttribute("fastMovingCount", saleService.getFastMovingItems(start, end).size());
+        model.addAttribute("slowMovingCount", saleService.getSlowMovingItems(start, end).size());
+        model.addAttribute("customerCount", userService.getRegisteredUsersCount());
+        model.addAttribute("productCount", productService.getListedProductsCount());
+        model.addAttribute("completedDeliveries", deliveryService.getCompletedDeliveriesCount());
+        model.addAttribute("pendingDeliveries", deliveryService.getPendingDeliveriesCount());
+        model.addAttribute("cancelledDeliveries", deliveryService.getCancelledDeliveriesCount());
+        model.addAttribute("shippedDeliveries", deliveryService.getShippedDeliveriesCount());
+        model.addAttribute("neverSoldItems", productService.getNeverSoldItemsCount());
         return "admin-dashboard";
     }
 

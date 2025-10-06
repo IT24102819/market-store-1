@@ -2,8 +2,10 @@ package com.lankafreshmart.market_store.service;
 
 import com.lankafreshmart.market_store.model.Delivery;
 import com.lankafreshmart.market_store.model.Order;
+import com.lankafreshmart.market_store.model.Sale;
 import com.lankafreshmart.market_store.repository.DeliveryRepository;
 import com.lankafreshmart.market_store.repository.OrderRepository;
+import jakarta.mail.AuthenticationFailedException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.mail.MessagingException;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Random;
 
@@ -19,12 +23,14 @@ public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final EmailService emailService;
     private final OrderRepository orderRepository;
+    private final SaleService saleService;
 
     @Autowired
-    public DeliveryService(DeliveryRepository deliveryRepository, EmailService emailService,OrderRepository orderRepository) {
+    public DeliveryService(DeliveryRepository deliveryRepository, EmailService emailService,OrderRepository orderRepository, SaleService saleService) {
         this.deliveryRepository = deliveryRepository;
         this.emailService = emailService;
         this.orderRepository = orderRepository;
+        this.saleService = saleService;
     }
 
     private String generateTrackingNumber() {
@@ -65,17 +71,24 @@ public class DeliveryService {
 
         deliveryRepository.save(delivery);
         deliveryRepository.flush();
-        entityManager.refresh(delivery);
-        entityManager.getEntityManagerFactory().getCache().evict(Delivery.class, deliveryId); // Evict specific ID
-        System.out.println("Save, flush, refresh, and cache evict attempted for delivery ID: " + deliveryId + ", Refreshed status: " + delivery.getStatus());
+
+        // Automatically create a Sale when status is DELIVERED
+        if ("DELIVERED".equals(newStatus)) {
+            System.out.println("Creating sale for delivery ID: " + deliveryId);
+            Order order = delivery.getOrder();
+            BigDecimal saleAmount = BigDecimal.valueOf(order.getTotalAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+            Sale sale = new Sale(order, saleAmount); // Use BigDecimal for amount
+            saleService.createSale(sale); // Inject SaleService
+            System.out.println("Sale created with ID: " + sale.getId() + " and amount: " + saleAmount);
+        }
 
         try {
             System.out.println("Attempting to send email for delivery ID: " + deliveryId);
             emailService.sendDeliveryUpdateEmail(delivery.getOrder().getUser().getEmail(), delivery);
             System.out.println("Email sent successfully for delivery ID: " + deliveryId);
         } catch (MessagingException e) {
+            e.printStackTrace();
             System.err.println("Email sending failed for delivery ID: " + deliveryId + ": " + e.getMessage());
-            throw new IllegalStateException("Failed to send email notification: " + e.getMessage(), e);
         }
     }
 
@@ -103,4 +116,19 @@ public class DeliveryService {
         System.out.println("Deletion attempted for delivery ID: " + deliveryId);
     }
 
+    public long getCompletedDeliveriesCount() {
+        return deliveryRepository.countByStatus("DELIVERED");
+    }
+
+    public long getPendingDeliveriesCount() {
+        return deliveryRepository.countByStatus("PENDING");
+    }
+
+    public long getShippedDeliveriesCount() {
+        return deliveryRepository.countByStatus("SHIPPED");
+    }
+
+    public long getCancelledDeliveriesCount() {
+        return deliveryRepository.countByStatus("CANCELLED");
+    }
 }

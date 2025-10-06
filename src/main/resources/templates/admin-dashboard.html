@@ -200,6 +200,85 @@
       color: #d32f2f;
       border: 1px solid #f5bcbc;
     }
+    /* Metrics Sections */
+    .metrics-section {
+      margin-top: 36px;
+      margin-bottom: 18px;
+    }
+    .metrics-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-left: 5px solid var(--primary);
+      padding-left: 12px;
+      background: #f7fff7;
+      border-radius: 6px;
+    }
+    .dark-mode .metrics-title {
+      color: var(--primary);
+      background: #1e2a1e;
+      border-left-color: var(--accent);
+    }
+    .metrics-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-bottom: 18px;
+    }
+    .metric-card {
+      flex: 1 1 220px;
+      min-width: 220px;
+      background: var(--card-bg);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 22px 18px 16px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 0;
+      border: 1px solid var(--border-color);
+      transition: box-shadow 0.2s, transform 0.2s;
+      position: relative;
+    }
+    .metric-card .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: black;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .metric-card .card-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: black;
+      margin-bottom: 0;
+    }
+    .metric-card i {
+      font-size: 1.2rem;
+      color: var(--accent);
+    }
+    .metric-card.bg-primary { background: #eafbe7; color: var(--primary-dark);}
+    .metric-card.bg-success { background: #e7fbe7; color: #249624;}
+    .metric-card.bg-warning { background: #fffbe7; color: #bfa600;}
+    .metric-card.bg-info { background: #e7f6fb; color: #2496b6;}
+    .metric-card.bg-secondary { background: #f0f0f0; color: #555;}
+    .metric-card.bg-danger { background: #ffeaea; color: #d32f2f;}
+    .dark-mode .metric-card.bg-primary { background: #233c23; color: var(--primary);}
+    .dark-mode .metric-card.bg-success { background: #233c23; color: #5efc82;}
+    .dark-mode .metric-card.bg-warning { background: #3a3a23; color: #ffe066;}
+    .dark-mode .metric-card.bg-info { background: #23343c; color: #5ec6fc;}
+    .dark-mode .metric-card.bg-secondary { background: #23272f; color: #bbb;}
+    .dark-mode .metric-card.bg-danger { background: #3c2323; color: #ff6b6b;}
+    @media (max-width: 900px) {
+      .metrics-row { flex-direction: column; gap: 12px; }
+      .metric-card { min-width: 0; width: 100%; }
+    }
     /* Responsive */
     @media (max-width: 768px) {
       .container { padding: 20px; }
@@ -226,6 +305,7 @@
       <li class="nav-item"><a th:href="@{/admin/orders}" class="nav-link"><i class="fa fa-shopping-cart"></i>Manage Orders</a></li>
       <li class="nav-item"><a th:href="@{/admin/reviews}" class="nav-link"><i class="fa fa-star"></i>Manage Reviews</a></li>
       <li class="nav-item"><a th:href="@{/admin/requests}" class="nav-link"><i class="fa fa-user"></i>Role Requests</a></li>
+      <li class="nav-item"><a th:href="@{/admin/sales}" class="nav-link"><i class="fa fa-user"></i>Manage Sales</a></li>
     </ul>
     <div class="d-flex align-items-center">
       <form th:action="@{/logout}" method="post" aria-label="Logout form" class="mr-2">
@@ -245,7 +325,6 @@
 
 <div class="container">
   <h1><i class="fa fa-user-shield"></i> Admin Dashboard</h1>
-
   <div th:if="${param.success}" class="success" th:text="${param.success}"></div>
   <div th:if="${error}" class="error" th:text="${error}"></div>
 
@@ -276,6 +355,74 @@
       </tr>
       </tbody>
     </table>
+  </div>
+
+  <!-- Sales Metrics Section -->
+  <div class="metrics-section">
+    <div class="metrics-title"><i class="fa fa-chart-line"></i> Sales Metrics</div>
+    <div class="metrics-row">
+      <div class="metric-card bg-primary">
+        <div class="card-title"><i class="fa fa-dollar-sign"></i> Total Sales</div>
+        <div class="card-text" th:text="${totalSales != null ? totalSales : 0} + ' LKR'">0 LKR</div>
+      </div>
+      <div class="metric-card bg-success">
+        <div class="card-title"><i class="fa fa-tachometer-alt"></i> Fast Moving Items</div>
+        <div class="card-text" th:text="${fastMovingCount}">0</div>
+      </div>
+      <div class="metric-card bg-warning">
+        <div class="card-title"><i class="fa fa-exclamation-triangle"></i> Slow Moving Items</div>
+        <div class="card-text" th:text="${slowMovingCount}">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customer Metrics Section -->
+  <div class="metrics-section">
+    <div class="metrics-title"><i class="fa fa-users"></i> Customer Metrics</div>
+    <div class="metrics-row">
+      <div class="metric-card bg-info">
+        <div class="card-title"><i class="fa fa-users"></i> Customers Registered</div>
+        <div class="card-text" th:text="${customerCount}">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Metrics Section -->
+  <div class="metrics-section">
+    <div class="metrics-title"><i class="fa fa-boxes"></i> Product Metrics</div>
+    <div class="metrics-row">
+      <div class="metric-card bg-secondary">
+        <div class="card-title"><i class="fa fa-boxes"></i> Products Listed</div>
+        <div class="card-text" th:text="${productCount}">0</div>
+      </div>
+      <div class="metric-card bg-secondary">
+        <div class="card-title"><i class="fa fa-ban"></i> Never Sold Items</div>
+        <div class="card-text" th:text="${neverSoldItems}">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delivery Metrics Section -->
+  <div class="metrics-section">
+    <div class="metrics-title"><i class="fa fa-truck"></i> Delivery Metrics</div>
+    <div class="metrics-row">
+      <div class="metric-card bg-success">
+        <div class="card-title"><i class="fa fa-check-circle"></i> Completed Deliveries</div>
+        <div class="card-text" th:text="${completedDeliveries}">0</div>
+      </div>
+      <div class="metric-card bg-warning">
+        <div class="card-title"><i class="fa fa-clock"></i> Pending Deliveries</div>
+        <div class="card-text" th:text="${pendingDeliveries}">0</div>
+      </div>
+      <div class="metric-card bg-info">
+        <div class="card-title"><i class="fa fa-shipping-fast"></i> Shipped Deliveries</div>
+        <div class="card-text" th:text="${shippedDeliveries}">0</div>
+      </div>
+      <div class="metric-card bg-danger">
+        <div class="card-title"><i class="fa fa-times-circle"></i> Cancelled Deliveries</div>
+        <div class="card-text" th:text="${cancelledDeliveries}">0</div>
+      </div>
+    </div>
   </div>
 </div>
 

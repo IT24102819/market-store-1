@@ -141,4 +141,12 @@ public class ProductService {
                 category != null ? category : ""
         );
     }
+
+    public long getListedProductsCount() {
+        return productRepository.count();
+    }
+
+    public long getNeverSoldItemsCount() {
+        return productRepository.countNeverSoldItems();
+    }
 }
