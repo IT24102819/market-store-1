@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Simple Chatbot Test</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <style>
+        body {
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        /* Simple chatbot styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .chatbot-toggle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #249624;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chatbot-toggle:hover {
+            background: #2d7a2d;
+            transform: scale(1.1);
+        }
+        
+        .chatbot-window {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            width: 350px;
+            height: 400px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .chatbot-window.open {
+            display: flex;
+        }
+        
+        .chatbot-header {
+            background: #249624;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chatbot-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        
+        .chatbot-message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .chatbot-message.user {
+            background: #249624;
+            color: white;
+            margin-left: auto;
+        }
+        
+        .chatbot-message.bot {
+            background: white;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chatbot-input-container {
+            padding: 15px 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chatbot-input {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            padding: 10px 15px;
+            outline: none;
+        }
+        
+        .chatbot-send {
+            background: #249624;
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simple Chatbot Test</h1>
+        <p>You should see a green chat button in the bottom-right corner.</p>
+        <p>If you don't see it, check the browser console for errors.</p>
+    </div>
+
+    <!-- Simple Chatbot HTML -->
+    <div class="chatbot-container">
+        <button class="chatbot-toggle" id="chatbotToggle">
+            <i class="fa fa-comments"></i>
+        </button>
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <h3><i class="fa fa-robot"></i> Shopping Assistant</h3>
+                <button class="chatbot-close" id="chatbotClose">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="chatbot-message bot">
+                    <i class="fa fa-robot"></i> Hello! I'm your shopping assistant. How can I help you today?
+                </div>
+            </div>
+            <div class="chatbot-input-container">
+                <input type="text" class="chatbot-input" id="chatbotInput" placeholder="Type your message...">
+                <button class="chatbot-send" id="chatbotSend">
+                    <i class="fa fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log('🤖 Simple chatbot test starting...');
+        
+        const toggle = document.getElementById('chatbotToggle');
+        const close = document.getElementById('chatbotClose');
+        const input = document.getElementById('chatbotInput');
+        const send = document.getElementById('chatbotSend');
+        const window = document.getElementById('chatbotWindow');
+        
+        console.log('🔍 Elements found:', {
+            toggle: !!toggle,
+            close: !!close,
+            input: !!input,
+            send: !!send,
+            window: !!window
+        });
+        
+        if (toggle) {
+            toggle.addEventListener('click', () => {
+                console.log('🔄 Toggle clicked');
+                window.classList.toggle('open');
+            });
+        }
+        
+        if (close) {
+            close.addEventListener('click', () => {
+                console.log('❌ Close clicked');
+                window.classList.remove('open');
+            });
+        }
+        
+        if (send) {
+            send.addEventListener('click', () => {
+                console.log('📤 Send clicked');
+                const message = input.value;
+                if (message) {
+                    // Add user message
+                    const messagesContainer = document.getElementById('chatbotMessages');
+                    const userMessage = document.createElement('div');
+                    userMessage.className = 'chatbot-message user';
+                    userMessage.innerHTML = `<i class="fa fa-user"></i> ${message}`;
+                    messagesContainer.appendChild(userMessage);
+                    
+                    // Add bot response
+                    const botMessage = document.createElement('div');
+                    botMessage.className = 'chatbot-message bot';
+                    botMessage.innerHTML = `<i class="fa fa-robot"></i> Thanks for your message: "${message}"`;
+                    messagesContainer.appendChild(botMessage);
+                    
+                    input.value = '';
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }
+            });
+        }
+        
+        if (input) {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    send.click();
+                }
+            });
+        }
+        
+        console.log('✅ Simple chatbot test initialized');
+    </script>
+</body>
+</html>

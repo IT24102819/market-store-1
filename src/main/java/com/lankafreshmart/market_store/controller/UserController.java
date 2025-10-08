@@ -3,6 +3,7 @@ package com.lankafreshmart.market_store.controller;
 import com.lankafreshmart.market_store.model.User;
 import com.lankafreshmart.market_store.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
+    @Value("${admin.secret.code:ADMIN2025}")
+    private String adminSecretCode;
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -26,7 +30,10 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@Valid @ModelAttribute User user, BindingResult result, Model model) {
+    public String registerUser(
+            @Valid @ModelAttribute User user,
+            BindingResult result,
+            Model model) {
         if (!user.isAgreedToTerms()) {
             model.addAttribute("error", "You must agree to the Privacy Policy to register.");
             return "register";
@@ -34,12 +41,49 @@ public class UserController {
         if (result.hasErrors()) {
             return "register";
         }
+
+        user.setRole("USER");
         try {
-            userService.register(user);
+            userService.register(user, null);
             return "redirect:/login";
         } catch (Exception e) {
             model.addAttribute("error", "Registration failed: " + e.getMessage());
             return "register";
+        }
+    }
+
+    @GetMapping("/admin-register")
+    public String showAdminRegisterForm(Model model) {
+        model.addAttribute("user", new User());
+        return "admin-register";
+    }
+
+    @PostMapping("/admin-register")
+    public String registerAdmin(@Valid @ModelAttribute User user, BindingResult result, @RequestParam String secretCode,
+            Model model) {
+        if (!user.isAgreedToTerms()) {
+            model.addAttribute("error", "You must agree to the Privacy Policy to register.");
+            return "admin-register";
+        }
+        if (result.hasErrors()) {
+            return "admin-register";
+        }
+        if (secretCode == null || secretCode.trim().isEmpty()) {
+            model.addAttribute("error", "Admin secret code is required.");
+            return "admin-register";
+        }
+        if (!adminSecretCode.equals(secretCode)) {
+            model.addAttribute("error", "Invalid admin secret code!Cannot Register as Admin.");
+            return "admin-register";
+        }
+
+        user.setRole("ADMIN");
+        try {
+            userService.register(user, secretCode);
+            return "redirect:/login";
+        } catch (Exception e) {
+            model.addAttribute("error", "Registration failed: " + e.getMessage());
+            return "admin-register";
         }
     }
 
@@ -82,15 +126,6 @@ public class UserController {
         return "redirect:/logout";
     }
 
-    /*
-    @GetMapping("/admin/dashboard")
-    public String showAdminDashboard(Model model) {
-        model.addAttribute("users", userService.getAllUsers());
-        return "admin-dashboard";
-    }
-
-     */
-
     @PostMapping("/admin/delete-user")
     public String deleteUser(@RequestParam("username") String username, Model model) {
         try {
@@ -101,38 +136,5 @@ public class UserController {
             model.addAttribute("users", userService.getAllUsers());
             return "admin-dashboard";
         }
-    }
-
-    @PostMapping("/profile/request-role")
-    public String requestRole(@AuthenticationPrincipal User user, Model model) {
-        try {
-            userService.submitRoleRequest(user.getId());
-            model.addAttribute("success", "Role request submitted successfully!");
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
-        }
-        model.addAttribute("user", user);
-        return "profile";
-    }
-
-    @GetMapping("/admin/requests")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String showRequests(Model model) {
-        model.addAttribute("requests", userService.getPendingRequests());
-        return "admin-requests";
-    }
-
-    @PostMapping("/admin/process-request/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String processRequest(@PathVariable Long id, @RequestParam String action, Model model) {
-        System.out.println("Processing request for id: " + id + " with action: " + action);
-        try {
-            userService.processRoleRequest(id, action);
-            model.addAttribute("success", "Request " + action.toLowerCase() + "d successfully!");
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            model.addAttribute("error", e.getMessage());
-        }
-        model.addAttribute("requests", userService.getPendingRequests());
-        return "admin-requests";
     }
 }

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Register as Admin - Lanka Fresh Mart</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <style>
+    :root {
+      --primary-green: #2f9e44;
+      --primary-green-dark: #1e7d32;
+      --accent-orange: #ff8c42;
+      --bg-light: #f9fafb;
+      --text-dark: #2d3748;
+      --error-red: #e53e3e;
+    }
+
+    body {
+      background: linear-gradient(135deg, #e9fdf1, #ffffff);
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background: white;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      padding: 0.8rem 2rem;
+    }
+    .navbar-brand {
+      font-weight: bold;
+      color: var(--primary-green);
+      font-size: 1.3rem;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: auto;
+      margin-top: 60px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 40px 36px;
+      backdrop-filter: blur(8px);
+      animation: fadeIn 0.7s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 28px;
+      color: var(--primary-green);
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 1.8rem;
+    }
+    .form-group input:not([type="checkbox"]) {
+      border-radius: 12px;
+      padding: 14px 16px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+      background: #f9fafb;
+      width: 100%;
+      transition: all 0.25s ease;
+    }
+    .form-group label {
+      position: absolute;
+      top: 50%;
+      left: 16px;
+      transform: translateY(-50%);
+      background: white;
+      padding: 0 6px;
+      color: #6b7280;
+      transition: 0.25s ease;
+      pointer-events: none;
+    }
+    .form-group input:not([type="checkbox"]):focus,
+    .form-group input:not([type="checkbox"]):not(:placeholder-shown) {
+      border-color: var(--primary-green);
+      box-shadow: 0 0 0 3px rgba(47,158,68,0.25);
+      outline: none;
+    }
+    .form-group input:not([type="checkbox"]):focus + label,
+    .form-group input:not([type="checkbox"]):not(:placeholder-shown) + label {
+      top: -8px;
+      font-size: 0.8rem;
+      color: var(--primary-green);
+    }
+
+    .form-group.checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .form-group.checkbox-group input[type="checkbox"] {
+      margin: 0 10px 0 0;
+      width: auto;
+    }
+    .form-group.checkbox-group label {
+      position: static;
+      transform: none;
+      font-size: 1rem;
+      color: var(--text-dark);
+      margin: 0;
+      display: inline;
+    }
+
+    .privacy-link {
+      font-size: 0.95rem;
+      margin-bottom: 1.8rem;
+      display: block;
+    }
+    .privacy-link a {
+      color: var(--accent-orange);
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.25s ease;
+    }
+    .privacy-link a:hover {
+      text-decoration: underline;
+      color: #ff6a00;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #6b7280;
+    }
+    .password-toggle:hover {
+      color: var(--primary-green);
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      background: linear-gradient(90deg, var(--primary-green), var(--primary-green-dark));
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-top: 16px;
+      transition: all 0.25s ease-in-out;
+      position: relative;
+      overflow: hidden;
+    }
+    button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(47,158,68,0.25);
+    }
+
+    button[type="submit"]::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      top: 50%;
+      left: 50%;
+      background: rgba(255,255,255,0.5);
+      border-radius: 100%;
+      transform: translate(-50%, -50%);
+      transition: width 0.4s ease, height 0.4s ease;
+    }
+    button[type="submit"]:active::after {
+      width: 200%;
+      height: 500%;
+    }
+
+    .error, .success {
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 18px;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+    .error {
+      background: #ffeaea;
+      color: var(--error-red);
+    }
+    .success {
+      background: #eafbe7;
+      color: var(--primary-green);
+    }
+
+    p {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 1rem;
+    }
+    a {
+      color: var(--accent-orange);
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    a:hover {
+      text-decoration: underline;
+      color: #ff6a00;
+    }
+
+    @media (max-width: 576px) {
+      .container {
+        margin: 30px 15px;
+        padding: 28px 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a class="navbar-brand" href="/">Lanka Fresh Mart</a>
+</nav>
+
+<div class="container">
+  <h1>Register as Admin</h1>
+
+  <div th:if="${error}" class="error" th:text="${error}"></div>
+  <div th:if="${success}" class="success" th:text="${success}"></div>
+
+  <form th:action="@{/admin-register}" th:object="${user}" method="post" aria-label="Admin Registration form" novalidate>
+    <div class="form-group">
+      <input type="text" th:field="*{username}" id="username" required placeholder=" " minlength="4" maxlength="10" aria-required="true"/>
+      <label for="username"><i class="fa fa-user mr-2"></i> Username</label>
+      <div th:if="${#fields.hasErrors('username')}" class="error" th:errors="*{username}"></div>
+    </div>
+    <div class="form-group">
+      <input type="password" th:field="*{password}" id="password" required placeholder=" " aria-required="true"/>
+      <label for="password"><i class="fa fa-lock mr-2"></i> Password (min 8 chars, 1 special char)</label>
+      <i class="fa fa-eye password-toggle" id="togglePassword"></i>
+      <div th:if="${#fields.hasErrors('password')}" class="error" th:errors="*{password}"></div>
+    </div>
+    <div class="form-group">
+      <input type="email" th:field="*{email}" id="email" required placeholder=" " aria-required="true"/>
+      <label for="email"><i class="fa fa-envelope mr-2"></i> Email</label>
+      <div th:if="${#fields.hasErrors('email')}" class="error" th:errors="*{email}"></div>
+    </div>
+    <div class="form-group">
+      <input type="text" id="secretCode" name="secretCode" required placeholder=" " aria-required="true"/>
+      <label for="secretCode"><i class="fa fa-shield-alt mr-2"></i> Admin Secret Code</label>
+      <div th:if="${error}" class="error" th:text="${error}"></div>
+    </div>
+    <div class="form-group checkbox-group">
+      <input type="checkbox" th:field="*{agreedToTerms}" id="agreedToTerms" required aria-required="true"/>
+      <label for="agreedToTerms">I agree to the Privacy Policy and terms of use.</label>
+      <div th:if="${#fields.hasErrors('agreedToTerms')}" class="error" th:errors="*{agreedToTerms}"></div>
+    </div>
+    <div class="privacy-link">
+      <a th:href="@{/privacy}">View Privacy Policy</a>
+    </div>
+    <button type="submit"><i class="fa fa-user-shield mr-2"></i> Register as Admin</button>
+  </form>
+
+  <p>Back to regular registration? <a th:href="@{/register}" href="/register">Register here</a></p>
+</div>
+
+<script>
+  const togglePassword = document.getElementById("togglePassword");
+  const passwordField = document.getElementById("password");
+
+  togglePassword.addEventListener("click", () => {
+    const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+    passwordField.setAttribute("type", type);
+    togglePassword.classList.toggle("fa-eye-slash");
+  });
+</script>
+</body>
+</html>

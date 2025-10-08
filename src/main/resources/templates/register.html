@@ -249,7 +249,6 @@
 <div class="container">
     <h1>Create Your Account</h1>
 
-    <!-- Error or success messages -->
     <div th:if="${error}" class="error" th:text="${error}"></div>
     <div th:if="${success}" class="success" th:text="${success}"></div>
 
@@ -282,10 +281,10 @@
     </form>
 
     <p>Already have an account? <a th:href="@{/login}" href="/login">Login here</a></p>
+    <p>Register as an admin? <a th:href="@{/admin-register}" href="/admin-register">Register</a></p>
 </div>
 
 <script>
-    // Toggle password visibility
     const togglePassword = document.getElementById("togglePassword");
     const passwordField = document.getElementById("password");
 

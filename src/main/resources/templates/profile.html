@@ -188,9 +188,6 @@
         </div>
         <button type="submit"><i class="fa fa-save"></i> Update Profile</button>
     </form>
-    <form th:action="@{/profile/request-role}" method="post" th:if="${user.role != 'ADMIN'}">
-        <button type="submit" class="btn btn-primary">Request Admin Role</button>
-    </form>
     <p th:if="${success}" class="text-success" th:text="${success}"></p>
     <p th:if="${error}" class="text-danger" th:text="${error}"></p>
     <form th:action="@{/logout}" method="post" aria-label="Logout form">
