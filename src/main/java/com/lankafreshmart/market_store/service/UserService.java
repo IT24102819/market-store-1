@@ -2,6 +2,9 @@ package com.lankafreshmart.market_store.service;
 
 import com.lankafreshmart.market_store.model.User;
 import com.lankafreshmart.market_store.repository.UserRepository;
+import com.lankafreshmart.market_store.strategy.ValidationStrategy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,20 +16,30 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final ValidationStrategy userValidationStrategy;
+    private final ValidationStrategy adminValidationStrategy;
 
     @Value("${admin.secret.code:ADMIN2025}")
     private String adminSecretCode;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    @Autowired
+    public UserService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            @Qualifier("userValidationStrategy") ValidationStrategy userValidationStrategy,
+            @Qualifier("adminValidationStrategy") ValidationStrategy adminValidationStrategy) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userValidationStrategy = userValidationStrategy;
+        this.adminValidationStrategy = adminValidationStrategy;
     }
 
     public void register(User user, String secretCode) {
-        if (!user.isAgreedToTerms()) {
-            throw new IllegalStateException("User must agree to terms.");
-        }
+
+        // set the relevant strategy based on secret code
+        ValidationStrategy strategy = (secretCode != null && !secretCode.isEmpty()) ? adminValidationStrategy : userValidationStrategy;
+        strategy.validate(user, secretCode);
+
 
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new IllegalStateException("Username already taken.");
@@ -34,16 +47,9 @@ public class UserService {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new IllegalStateException("Email already registered.");
         }
-        if (user.getUsername().matches("\\d+")) {
-            throw new IllegalArgumentException("Username should not contain only numbers");
-        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        String role = "USER";
-
-        if (adminSecretCode.equals(secretCode)) {
-            role = "ADMIN";
-        }
+        String role = (secretCode != null && secretCode.equals(adminSecretCode)) ? "ADMIN" : "USER";
         user.setRole(role);
         userRepository.save(user);
     }
