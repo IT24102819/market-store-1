@@ -24,16 +24,18 @@ public class OrderService {
     private final EmailService emailService;
     private final DeliveryService deliveryService;
     private final DeliveryRepository deliveryRepository;
+    private final SaleService saleService;
 
     @Autowired
     public OrderService(OrderRepository orderRepository, ProductRepository productRepository,
-                        ProductService productService, EmailService emailService, DeliveryService deliveryService, DeliveryRepository deliveryRepository) {
+                        ProductService productService, EmailService emailService, DeliveryService deliveryService, DeliveryRepository deliveryRepository, SaleService saleService) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.productService = productService;
         this.emailService = emailService;
         this.deliveryService = deliveryService;
         this.deliveryRepository = deliveryRepository;
+        this.saleService = saleService;
     }
 
     @Transactional
@@ -72,11 +74,16 @@ public class OrderService {
         // Create delivery with address
         Delivery delivery = deliveryService.createDelivery(order, address);  // Pass address
         delivery.setStatus("PENDING");
-        delivery.setEstimatedDeliveryDate(LocalDateTime.now().plusDays(3)); // Example: 3 days for delivery
+        delivery.setEstimatedDeliveryDate(LocalDateTime.now().plusDays(3)); //  3 days for delivery
         deliveryRepository.save(delivery);
 
         order.setDelivery(delivery);
         orderRepository.save(order);
+
+        //create a sale when an order is placed
+        BigDecimal saleAmount = BigDecimal.valueOf(order.getTotalAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+        Sale sale = new Sale(order, saleAmount);
+        saleService.createSale(sale);
 
         // Send confirmation email
         try {

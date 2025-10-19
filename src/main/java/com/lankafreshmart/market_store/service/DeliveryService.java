@@ -72,16 +72,6 @@ public class DeliveryService {
         deliveryRepository.save(delivery);
         deliveryRepository.flush();
 
-        // Automatically create a Sale when status is DELIVERED
-        if ("DELIVERED".equals(newStatus)) {
-            System.out.println("Creating sale for delivery ID: " + deliveryId);
-            Order order = delivery.getOrder();
-            BigDecimal saleAmount = BigDecimal.valueOf(order.getTotalAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
-            Sale sale = new Sale(order, saleAmount); // Use BigDecimal for amount
-            saleService.createSale(sale); // Inject SaleService
-            System.out.println("Sale created with ID: " + sale.getId() + " and amount: " + saleAmount);
-        }
-
         try {
             System.out.println("Attempting to send email for delivery ID: " + deliveryId);
             emailService.sendDeliveryUpdateEmail(delivery.getOrder().getUser().getEmail(), delivery);
