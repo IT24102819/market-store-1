@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Sales Reports</title>
+  <title>Sales Reports - Lanka Fresh Mart</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
   <style>
@@ -28,7 +28,6 @@
       --text: #f4f6f8;
       --border-color: #3a3f48;
     }
-    /* Navbar */
     .navbar {
       background: var(--card-bg);
       box-shadow: var(--shadow);
@@ -80,7 +79,6 @@
       color: var(--text-light);
       border-color: var(--primary);
     }
-    /* Notification badge */
     .dark-toggle .badge {
       position: absolute;
       top: 4px;
@@ -89,7 +87,6 @@
       padding: 2px 6px;
       border-radius: 50%;
     }
-    /* Container */
     .container {
       max-width: 1100px;
       margin: 40px auto;
@@ -110,7 +107,6 @@
       gap: 10px;
     }
     .dark-mode h1 { color: var(--primary); }
-    /* Section Header */
     .section-header {
       display: flex;
       align-items: center;
@@ -121,10 +117,7 @@
       margin-bottom: 18px;
       color: var(--primary-dark);
     }
-    .dark-mode .section-header {
-      color: var(--primary);
-    }
-    /* Report Card */
+    .dark-mode .section-header { color: var(--primary); }
     .report-card {
       background: var(--card-bg);
       border-radius: 14px;
@@ -137,7 +130,6 @@
     .report-card:hover {
       box-shadow: 0 6px 32px rgba(44,62,80,0.13);
     }
-    /* Total Sales */
     .total-sales {
       display: flex;
       align-items: center;
@@ -156,7 +148,6 @@
       background: #233c23;
       color: var(--primary);
     }
-    /* Export Button */
     .export-btn {
       background: var(--accent);
       color: #23272f;
@@ -176,7 +167,6 @@
       color: #181a20;
       transform: translateY(-2px) scale(1.03);
     }
-    /* Table */
     .table-responsive {
       border-radius: 12px;
       overflow: hidden;
@@ -208,15 +198,16 @@
       background: #eafbe7;
     }
     tbody tr:hover {
-      background: #f0fff0;
-    }
-    .table tbody tr:hover {
       background: #f7fff7;
     }
-    .dark-mode .table tbody tr:hover {
+    .dark-mode tbody tr:hover {
       background: #1e2a1e;
     }
-    /* Buttons */
+    .dark-mode table, .dark-mode th, .dark-mode td {
+      color: var(--text);
+      background-color: var(--card-bg);
+      border-color: var(--border-color);
+    }
     .delete-button {
       background: #d32f2f;
       color: #fff;
@@ -251,13 +242,61 @@
       color: var(--text-light);
       border-color: var(--primary-dark);
     }
-    /* Fix table text in dark mode */
-    .dark-mode table,
-    .dark-mode th,
-    .dark-mode td {
-      color: var(--text);
-      background-color: var(--card-bg);
-      border-color: var(--border-color);
+    .chart-container {
+      position: relative;
+      height: 400px;
+      width: 100%;
+      margin: 20px 0;
+    }
+    canvas {
+      display: block;
+      max-width: 100%;
+      width: 100% !important;
+      height: 400px !important;
+    }
+    .chart-card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 28px;
+      border: 1px solid var(--border-color);
+      transition: box-shadow 0.2s;
+    }
+    .chart-card:hover {
+      box-shadow: 0 6px 32px rgba(44,62,80,0.13);
+    }
+    .chart-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .dark-mode .chart-title {
+      color: var(--primary);
+    }
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-bottom: 32px;
+    }
+    .chart-full-width {
+      grid-column: 1 / -1;
+    }
+    @media (max-width: 768px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+      .chart-container {
+        height: 300px;
+      }
+      canvas {
+        height: 300px !important;
+      }
     }
     @media (max-width: 700px) {
       .container {
@@ -273,6 +312,26 @@
       .section-header {
         font-size: 1.1rem;
       }
+      .chart-card {
+        padding: 16px;
+      }
+    }
+    .form-row {
+      display: flex;
+      gap: 10px;
+    }
+    .form-control {
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+    }
+    .btn-primary {
+      background: var(--primary);
+      border: none;
+      padding: 8px 16px;
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
     }
   </style>
 </head>
@@ -307,6 +366,60 @@
     <span>Total Sales (Last 30 Days):</span>
     <span th:text="${totalSales} + ' LKR'">0 LKR</span>
   </div>
+
+  <!-- Date Range Picker -->
+  <div class="report-card">
+    <div class="section-header"><i class="fa fa-calendar"></i> Select Date Range</div>
+    <form th:action="@{/admin/sales/reports}" method="get">
+      <div class="form-row">
+        <div class="form-group col-md-5">
+          <label for="startDate">Start Date</label>
+          <input type="datetime-local" class="form-control" id="startDate" name="startDate">
+        </div>
+        <div class="form-group col-md-5">
+          <label for="endDate">End Date</label>
+          <input type="datetime-local" class="form-control" id="endDate" name="endDate">
+        </div>
+        <div class="form-group col-md-2">
+          <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Filter</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">
+        <i class="fa fa-chart-line"></i>
+        Daily Sales Trend
+      </div>
+      <div class="chart-container">
+        <canvas id="dailySalesChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">
+        <i class="fa fa-chart-pie"></i>
+        Product Performance
+      </div>
+      <div class="chart-container">
+        <canvas id="productPerformanceChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card chart-full-width">
+      <div class="chart-title">
+        <i class="fa fa-chart-bar"></i>
+        Monthly Sales Trend
+      </div>
+      <div class="chart-container">
+        <canvas id="monthlySalesChart"></canvas>
+      </div>
+    </div>
+  </div>
+
   <div class="report-card">
     <div class="section-header"><i class="fa fa-bolt"></i> Fast Moving Items</div>
     <div class="table-responsive">
@@ -321,6 +434,9 @@
         <tr th:each="item : ${fastMoving}">
           <td th:text="${item[0]}"></td>
           <td th:text="${item[1]}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(fastMoving)}">
+          <td colspan="2">No fast-moving items</td>
         </tr>
         </tbody>
       </table>
@@ -341,6 +457,9 @@
           <td th:text="${item[0]}"></td>
           <td th:text="${item[1]}"></td>
         </tr>
+        <tr th:if="${#lists.isEmpty(slowMoving)}">
+          <td colspan="2">No slow-moving items</td>
+        </tr>
         </tbody>
       </table>
     </div>
@@ -349,5 +468,270 @@
     <i class="fa fa-file-csv"></i> Export CSV
   </a>
 </div>
+
+<script th:inline="javascript">
+  // Debug: Log raw model attributes
+  const dailySalesDataRaw = /*[[${dailySalesData}]]*/ '[]';
+  const productPerfDataRaw = /*[[${productPerformanceData}]]*/ '[]';
+  const monthlySalesDataRaw = /*[[${monthlySalesTrend}]]*/ '[]';
+  console.log('Raw Model Attributes:', {
+    dailySalesData: dailySalesDataRaw,
+    productPerformanceData: productPerfDataRaw,
+    monthlySalesTrend: monthlySalesDataRaw
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script th:inline="javascript">
+  // Dark mode toggle
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    const colors = getChartColors();
+    if (dailySalesChart) {
+      dailySalesChart.options.scales.y.ticks.color = colors.text;
+      dailySalesChart.options.scales.x.ticks.color = colors.text;
+      dailySalesChart.options.scales.y.grid.color = colors.border;
+      dailySalesChart.options.scales.x.grid.color = colors.border;
+      dailySalesChart.options.plugins.legend.labels.color = colors.text;
+      dailySalesChart.data.datasets[0].borderColor = colors.primary;
+      dailySalesChart.data.datasets[0].backgroundColor = colors.primary + '20';
+      dailySalesChart.data.datasets[0].pointBackgroundColor = colors.primary;
+      dailySalesChart.update();
+    }
+    if (productPerfChart) {
+      productPerfChart.options.plugins.legend.labels.color = colors.text;
+      productPerfChart.data.datasets[0].borderColor = colors.background;
+      productPerfChart.update();
+    }
+    if (monthlySalesChart) {
+      monthlySalesChart.options.scales.y.ticks.color = colors.text;
+      monthlySalesChart.options.scales.x.ticks.color = colors.text;
+      monthlySalesChart.options.scales.y.grid.color = colors.border;
+      monthlySalesChart.options.scales.x.grid.color = colors.border;
+      monthlySalesChart.options.plugins.legend.labels.color = colors.text;
+      monthlySalesChart.data.datasets[0].backgroundColor = colors.primary + '80';
+      monthlySalesChart.data.datasets[0].borderColor = colors.primary;
+      monthlySalesChart.update();
+    }
+  }
+
+  // Load dark mode preference
+  if (localStorage.getItem('darkMode') === 'true') {
+    document.body.classList.add('dark-mode');
+  }
+
+  // Chart.js configuration
+  Chart.defaults.font.family = "'Segoe UI', 'Roboto', Arial, sans-serif";
+  Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--text');
+
+  function getChartColors() {
+    const isDark = document.body.classList.contains('dark-mode');
+    return {
+      primary: isDark ? '#4CAF50' : '#249624',
+      secondary: isDark ? '#81C784' : '#66BB6A',
+      accent: '#FFC107',
+      background: isDark ? '#23272f' : '#ffffff',
+      text: isDark ? '#f4f6f8' : '#23272f',
+      border: isDark ? '#3a3f48' : '#eaeaea'
+    };
+  }
+
+  // Daily Sales Chart
+  let dailySalesChart;
+  try {
+    console.log('Daily Sales Data from server:', dailySalesDataRaw);
+    let dailySalesData = [];
+    try {
+      dailySalesData = JSON.parse(dailySalesDataRaw || '[]');
+      dailySalesData = dailySalesData.map(item => {
+        if (Array.isArray(item) && item.length >= 2) {
+          return [item[0], parseFloat(item[1])];
+        }
+        console.warn('Invalid daily sales item:', item);
+        return null;
+      }).filter(item => item !== null);
+    } catch (e) {
+      console.error('Error parsing daily sales data:', e);
+    }
+    console.log('Processed Daily Sales Data:', dailySalesData);
+
+    const dailySalesCtx = document.getElementById('dailySalesChart');
+    if (!dailySalesCtx) {
+      console.error('Daily Sales Chart canvas not found!');
+    } else {
+      dailySalesChart = new Chart(dailySalesCtx.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: dailySalesData.length > 0 ? dailySalesData.map(item => new Date(item[0]).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })) : ['No Data'],
+          datasets: [{
+            label: 'Daily Sales (LKR)',
+            data: dailySalesData.length > 0 ? dailySalesData.map(item => item[1]) : [0],
+            borderColor: getChartColors().primary,
+            backgroundColor: getChartColors().primary + '20',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: getChartColors().primary,
+            pointBorderColor: getChartColors().background,
+            pointBorderWidth: 2,
+            pointRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true, labels: { color: getChartColors().text, font: { size: 12 } } },
+            tooltip: { callbacks: { label: context => `LKR ${context.parsed.y.toLocaleString()}` } }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: { color: getChartColors().border, drawBorder: false },
+              ticks: {
+                color: getChartColors().text,
+                callback: value => 'LKR ' + value.toLocaleString()
+              }
+            },
+            x: {
+              grid: { color: getChartColors().border, drawBorder: false },
+              ticks: { color: getChartColors().text }
+            }
+          }
+        }
+      });
+      console.log('Daily Sales Chart initialized');
+    }
+  } catch (e) {
+    console.error('Error initializing dailySalesChart:', e);
+  }
+
+  // Product Performance Chart
+  let productPerfChart;
+  try {
+    console.log('Product Performance Data from server:', productPerfDataRaw);
+    let productPerfData = [];
+    try {
+      productPerfData = JSON.parse(productPerfDataRaw || '[]');
+      productPerfData = productPerfData.map(item => {
+        if (Array.isArray(item) && item.length >= 3) {
+          return [item[0], parseFloat(item[1]), parseFloat(item[2])];
+        }
+        console.warn('Invalid product performance item:', item);
+        return null;
+      }).filter(item => item !== null);
+    } catch (e) {
+      console.error('Error parsing product performance data:', e);
+    }
+    console.log('Processed Product Performance Data:', productPerfData);
+
+    const productPerfCtx = document.getElementById('productPerformanceChart');
+    if (!productPerfCtx) {
+      console.error('Product Performance Chart canvas not found!');
+    } else {
+      productPerfChart = new Chart(productPerfCtx.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: productPerfData.length > 0 ? productPerfData.map(item => item[0]) : ['No Data'],
+          datasets: [{
+            data: productPerfData.length > 0 ? productPerfData.map(item => item[2]) : [1],
+            backgroundColor: [
+              getChartColors().primary,
+              getChartColors().secondary,
+              getChartColors().accent,
+              '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'
+            ],
+            borderWidth: 2,
+            borderColor: getChartColors().background
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'bottom',
+              labels: { color: getChartColors().text, font: { size: 11 }, padding: 15 }
+            },
+            tooltip: { callbacks: { label: context => `${context.label}: LKR ${context.parsed.toLocaleString()}` } }
+          }
+        }
+      });
+      console.log('Product Performance Chart initialized');
+    }
+  } catch (e) {
+    console.error('Error initializing productPerfChart:', e);
+  }
+
+  // Monthly Sales Chart
+  let monthlySalesChart;
+  try {
+    console.log('Monthly Sales Data from server:', monthlySalesDataRaw);
+    let monthlySalesData = [];
+    try {
+      monthlySalesData = JSON.parse(monthlySalesDataRaw || '[]');
+      monthlySalesData = monthlySalesData.map(item => {
+        if (Array.isArray(item) && item.length >= 3) {
+          return [parseInt(item[0]), parseInt(item[1]), parseFloat(item[2])];
+        }
+        console.warn('Invalid monthly sales item:', item);
+        return null;
+      }).filter(item => item !== null);
+    } catch (e) {
+      console.error('Error parsing monthly sales data:', e);
+    }
+    console.log('Processed Monthly Sales Data:', monthlySalesData);
+
+    const monthlySalesCtx = document.getElementById('monthlySalesChart');
+    if (!monthlySalesCtx) {
+      console.error('Monthly Sales Chart canvas not found!');
+    } else {
+      monthlySalesChart = new Chart(monthlySalesCtx.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: monthlySalesData.length > 0 ? monthlySalesData.map(item => {
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return monthNames[item[1] - 1] + ' ' + item[0];
+          }) : ['No Data'],
+          datasets: [{
+            label: 'Monthly Sales (LKR)',
+            data: monthlySalesData.length > 0 ? monthlySalesData.map(item => item[2]) : [0],
+            backgroundColor: getChartColors().primary + '80',
+            borderColor: getChartColors().primary,
+            borderWidth: 2,
+            borderRadius: 6,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true, labels: { color: getChartColors().text, font: { size: 12 } } },
+            tooltip: { callbacks: { label: context => `LKR ${context.parsed.y.toLocaleString()}` } }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: { color: getChartColors().border, drawBorder: false },
+              ticks: {
+                color: getChartColors().text,
+                callback: value => 'LKR ' + value.toLocaleString()
+              }
+            },
+            x: {
+              grid: { color: getChartColors().border, drawBorder: false },
+              ticks: { color: getChartColors().text }
+            }
+          }
+        }
+      });
+      console.log('Monthly Sales Chart initialized');
+    }
+  } catch (e) {
+    console.error('Error initializing monthlySalesChart:', e);
+  }
+</script>
 </body>
 </html>

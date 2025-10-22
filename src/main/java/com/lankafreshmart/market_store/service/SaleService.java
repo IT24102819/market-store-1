@@ -41,18 +41,41 @@ public class SaleService {
 
     public BigDecimal getTotalSales(LocalDateTime start, LocalDateTime end) {
         BigDecimal total = saleRepository.getTotalSales(start, end);
+        System.out.println("Total Sales: " + total);
         return total != null ? total : BigDecimal.ZERO;
     }
 
     public List<Object[]> getFastMovingItems(LocalDateTime start, LocalDateTime end) {
-        return saleRepository.getFastMovingItemsThreshold(start, end);
+        List<Object[]> fastMoving = saleRepository.getFastMovingItemsThreshold(start, end);
+        System.out.println("Fast Moving: " + fastMoving);
+        return fastMoving;
     }
 
     public List<Object[]> getSlowMovingItems(LocalDateTime start, LocalDateTime end) {
-        return saleRepository.getSlowMovingItemsThreshold(start, end, thresholds.getSlowMoving());
+        List<Object[]> slowMoving = saleRepository.getSlowMovingItemsThreshold(start, end, 30);
+        System.out.println("Slow Moving: " + slowMoving);
+        return slowMoving;
     }
 
     public List<Sale> getSalesInRange(LocalDateTime start, LocalDateTime end) {
         return saleRepository.findBySaleDateBetween(start, end);
+    }
+
+    public List<Object[]> getDailySales(LocalDateTime start, LocalDateTime end) {
+        List<Object[]> dailySales = saleRepository.findDailySales(start, end);
+        System.out.println("Daily Sales: " + dailySales);
+        return dailySales;
+    }
+
+    public List<Object[]> getProductPerformance(LocalDateTime start, LocalDateTime end) {
+        List<Object[]> productPerformance = saleRepository.findProductPerformance(start, end);
+        System.out.println("Product Performance: " + productPerformance);
+        return productPerformance;
+    }
+
+    public List<Object[]> getMonthlySales(LocalDateTime start, LocalDateTime end) {
+        List<Object[]> monthlySales = saleRepository.findMonthlySales(start, end);
+        System.out.println("Monthly Sales: " + monthlySales);
+        return monthlySales;
     }
 }

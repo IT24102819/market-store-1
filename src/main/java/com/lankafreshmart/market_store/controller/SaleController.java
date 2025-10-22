@@ -1,5 +1,7 @@
 package com.lankafreshmart.market_store.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lankafreshmart.market_store.model.Sale;
 import com.lankafreshmart.market_store.repository.SaleRepository;
 import com.lankafreshmart.market_store.service.SaleService;
@@ -19,10 +21,12 @@ import java.util.List;
 public class SaleController {
     private final SaleService saleService;
     private final SaleRepository saleRepository;
+    private final ObjectMapper objectMapper;
 
-    public SaleController(SaleService saleService, SaleRepository saleRepository) {
+    public SaleController(SaleService saleService, SaleRepository saleRepository, ObjectMapper objectMapper) {
         this.saleService = saleService;
         this.saleRepository = saleRepository;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping
@@ -60,12 +64,50 @@ public class SaleController {
     }
 
     @GetMapping("/reports")
-    public String showReports(Model model) {
-        LocalDateTime start = LocalDateTime.now().minusDays(30); // Last 30 days
-        LocalDateTime end = LocalDateTime.now();
-        model.addAttribute("totalSales", saleService.getTotalSales(start, end));
-        model.addAttribute("fastMoving", saleService.getFastMovingItems(start, end));
-        model.addAttribute("slowMoving", saleService.getSlowMovingItems(start, end));
+    public String showReports(
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            Model model) {
+        LocalDateTime start = startDate != null ? LocalDateTime.parse(startDate) : LocalDateTime.now().minusDays(30);
+        LocalDateTime end = endDate != null ? LocalDateTime.parse(endDate) : LocalDateTime.now();
+
+        try {
+            // Fetch total sales and convert to double
+            BigDecimal totalSalesBigDecimal = saleService.getTotalSales(start, end);
+            double totalSales = totalSalesBigDecimal != null ? totalSalesBigDecimal.doubleValue() : 0.0;
+
+            // Fetch chart and table data
+            List<Object[]> fastMoving = saleService.getFastMovingItems(start, end);
+            List<Object[]> slowMoving = saleService.getSlowMovingItems(start, end);
+            List<Object[]> dailySales = saleService.getDailySales(start, end);
+            List<Object[]> productPerformance = saleService.getProductPerformance(start, end);
+            List<Object[]> monthlySales = saleService.getMonthlySales(start, end);
+
+            // Serialize to JSON
+            String dailySalesJson = objectMapper.writeValueAsString(dailySales);
+            String productPerformanceJson = objectMapper.writeValueAsString(productPerformance);
+            String monthlySalesJson = objectMapper.writeValueAsString(monthlySales);
+
+            // Debug logs
+            System.out.println("Total Sales: " + totalSales);
+            System.out.println("Fast Moving: " + fastMoving);
+            System.out.println("Slow Moving: " + slowMoving);
+            System.out.println("Daily Sales JSON: " + dailySalesJson);
+            System.out.println("Product Performance JSON: " + productPerformanceJson);
+            System.out.println("Monthly Sales JSON: " + monthlySalesJson);
+
+            // Add to model
+            model.addAttribute("totalSales", totalSales);
+            model.addAttribute("fastMoving", fastMoving);
+            model.addAttribute("slowMoving", slowMoving);
+            model.addAttribute("dailySalesData", dailySalesJson);
+            model.addAttribute("productPerformanceData", productPerformanceJson);
+            model.addAttribute("monthlySalesTrend", monthlySalesJson);
+
+        } catch (JsonProcessingException e) {
+            System.err.println("Error serializing data: " + e.getMessage());
+        }
+
         return "sales-reports";
     }
 
@@ -90,7 +132,7 @@ public class SaleController {
                     writer.writeNext(new String[]{
                             String.valueOf(sale.getId()),
                             String.valueOf(sale.getOrder().getId()),
-                            sale.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString(),
+                            sale.getAmount().setScale(2, java.math.RoundingMode.HALF_UP).toString(),
                             sale.getSaleDate().format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                             saleRepository.getFastMovingItemsThreshold(start, end).stream()
                                     .filter(item -> item[0] != null && item[1] != null)
