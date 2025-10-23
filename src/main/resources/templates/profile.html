@@ -99,7 +99,7 @@
             font-size: 1.1rem;
             padding: 10px;
         }
-        button[type="submit"], .logout-button, .delete-button {
+        button[type="submit"], .logout-button {
             width: 100%;
             background: var(--primary-dark);
             color: var(--text-light);
@@ -115,15 +115,16 @@
             justify-content: center;
             gap: 8px;
         }
+        form .delete-button[type="submit"] {
+            background: #d32f2f !important;
+        }
+
+        form .delete-button[type="submit"]:hover {
+            background: #b71c1c !important;
+        }
+
         button[type="submit"]:hover, .logout-button:hover {
             background: var(--primary);
-        }
-        .delete-button {
-            background: #d32f2f;
-            margin-top: 18px;
-        }
-        .delete-button:hover {
-            background: #b71c1c;
         }
         .success, .error {
             border-radius: 10px;
@@ -166,13 +167,13 @@
         </ul>
     </div>
 </nav>
-<!-- Add top margin to container to avoid overlap with fixed navbar -->
+
 <div class="container" style="margin-top:120px;">
     <h1><i class="fa fa-user"></i> Your Profile</h1>
-    <!-- Success or error messages -->
+
     <div th:if="${param.success}" class="success" th:text="${param.success}"></div>
     <div th:if="${error}" class="error" th:text="${error}"></div>
-    <!-- Profile update form -->
+
     <form th:action="@{/profile}" th:object="${user}" method="post" aria-label="Profile update form">
         <div class="form-group">
             <label for="username"><i class="fa fa-user"></i> Username</label>
@@ -188,6 +189,12 @@
         </div>
         <button type="submit"><i class="fa fa-save"></i> Update Profile</button>
     </form>
+
+    <form th:action="@{/delete-account}" method="post" onsubmit="return confirmDelete()">
+        <button type="submit" class="delete-button"><i class="fa fa-trash"></i> Delete Account</button>
+    </form>
+
+
     <p th:if="${success}" class="text-success" th:text="${success}"></p>
     <p th:if="${error}" class="text-danger" th:text="${error}"></p>
     <form th:action="@{/logout}" method="post" aria-label="Logout form">

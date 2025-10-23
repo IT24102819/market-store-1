@@ -105,7 +105,7 @@ public class UserController {
     public String deleteAccount() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         userService.deleteAccount(username);
-        return "redirect:/logout";
+        return "redirect:/login";
     }
 
     @PostMapping("/admin/delete-user")
