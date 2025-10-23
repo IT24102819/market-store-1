@@ -3,22 +3,218 @@
 <head>
   <title>Edit Sale</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #249624;
+      --primary-dark: #2d7a2d;
+      --accent: #ffc107;
+      --bg: #f4f6f8;
+      --card-bg: #ffffff;
+      --text: #23272f;
+      --text-light: #ffffff;
+      --shadow: 0 4px 24px rgba(44,62,80,0.10);
+      --border-color: #eaeaea;
+    }
+    body {
+      background: var(--bg);
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+    .dark-mode {
+      --bg: #181a20;
+      --card-bg: #23272f;
+      --text: #f4f6f8;
+      --border-color: #3a3f48;
+    }
+    /* Navbar */
+    .navbar {
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+      padding: 0.75rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1020;
+    }
+    .navbar-brand {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .navbar-brand i {
+      color: var(--primary);
+    }
+    .navbar-nav .nav-link {
+      font-weight: 500;
+      color: var(--text);
+      margin-right: 18px;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .navbar-nav .nav-link:hover {
+      color: var(--primary);
+    }
+    .dark-toggle {
+      background: transparent;
+      color: var(--text);
+      border-radius: 50%;
+      border: 1px solid var(--border-color);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      margin-left: 12px;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      position: relative;
+    }
+    .dark-toggle:hover {
+      background: var(--primary);
+      color: var(--text-light);
+      border-color: var(--primary);
+    }
+    /* Notification badge */
+    .dark-toggle .badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 50%;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      background: var(--card-bg);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 36px;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 32px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .dark-mode h1 { color: var(--primary); }
+    table {
+      width: 100%;
+      background: var(--card-bg);
+    }
+    th, td {
+      padding: 14px;
+      text-align: left;
+      vertical-align: middle;
+      border-top: 1px solid var(--border-color);
+    }
+    th {
+      background: #eafbe7;
+      color: var(--primary-dark);
+      font-weight: 600;
+      font-size: 1rem;
+      border-top: none;
+    }
+    tbody tr:hover {
+      background: #f0fff0;
+    }
+    .logout-button {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .logout-button:hover {
+      background: var(--primary-dark);
+      color: var(--text-light);
+      border-color: var(--primary-dark);
+    }
+
+    .dark-mode table,
+    .dark-mode th,
+    .dark-mode td {
+      color: var(--text);
+      background-color: var(--card-bg);
+      border-color: var(--border-color);
+    }
+
+    .update-btn{
+      background: #249624;
+    }
+    .back-btn{
+      background: #0891b2;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container { padding: 20px; }
+      table { font-size: 0.9rem; }
+      th, td { padding: 8px; }
+      h1 { font-size: 1.3rem; }
+    }
+  </style>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg">
+  <a class="navbar-brand" href="#"><i class="fa fa-leaf"></i> Lanka Fresh Mart</a>
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item"><a th:href="@{/admin/products}" class="nav-link"><i class="fa fa-box"></i>Manage Products</a></li>
+      <li class="nav-item"><a th:href="@{/admin/orders}" class="nav-link"><i class="fa fa-shopping-cart"></i>Manage Orders</a></li>
+      <li class="nav-item"><a th:href="@{/admin/reviews}" class="nav-link"><i class="fa fa-star"></i>Manage Reviews</a></li>
+    </ul>
+    <div class="d-flex align-items-center">
+      <form th:action="@{/logout}" method="post" aria-label="Logout form" class="mr-2">
+        <button type="submit" class="logout-button"><i class="fa fa-sign-out-alt"></i> Logout</button>
+      </form>
+      <a th:href="@{https://mailtrap.io/inboxes/4063256/messages(target='_blank')}"
+         class="dark-toggle mr-2"
+         th:onclick="'window.location.href=\'/admin/reset-email-count\'; return true;'"
+         title="View Mailtrap Sandbox">
+        <i class="fa fa-bell"></i>
+        <span th:if="${newEmailCount > 0}" class="badge badge-danger" th:text="${newEmailCount}"></span>
+      </a>
+      <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode"><i class="fa fa-moon"></i></button>
+    </div>
+  </div>
+</nav>
 <div class="container mt-4">
   <h2>Edit Sale</h2>
-  <form th:action="@{/admin/sales/update/}+${sale.id}" th:object="${sale}" method="post">
+  <form th:action="@{/admin/sales/update/{id}(id=${sale.id})}" th:object="${sale}" method="post">
     <div class="form-group">
       <label>Amount</label>
-      <input type="number" th:field="*{amount}" class="form-control" step="0.01" required>
+      <label>
+        <input type="number" th:field="*{amount}" class="form-control" step="0.01" required>
+      </label>
     </div>
     <div class="form-group">
       <label>Sale Date</label>
-      <input type="datetime-local" th:field="*{saleDate}" class="form-control" required>
+      <label>
+        <input type="datetime-local" th:field="*{saleDate}" class="form-control" required>
+      </label>
     </div>
-    <button type="submit" class="btn btn-primary">Update</button>
+    <button type="submit" class="btn update-btn">Update</button>
+    <a href="/admin/sales" class="btn back-btn">Back</a>
   </form>
-  <a href="/admin/sales" class="btn btn-secondary mt-2">Back</a>
 </div>
 </body>
 </html>
