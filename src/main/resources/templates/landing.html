@@ -521,6 +521,95 @@
             font-size: 0.9rem;
             padding: 8px 12px;
         }
+
+        #chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end; /* Align to the right */
+        }
+
+        /* The Chat Window */
+        #chat-box {
+            width: 320px; /* Width is now set here */
+            background: white;
+            border: 1px solid #eaeaea;
+            border-radius: 15px;
+            display: none; /* Hidden by default */
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+            margin-bottom: 15px; /* Space between box and button */
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* The Circular Toggle Button */
+        #chat-toggle {
+            background: #249624;
+            color: white;
+            border: none;
+            width: 60px;  /* Fixed width */
+            height: 60px; /* Fixed height */
+            border-radius: 50%; /* Makes it a perfect circle */
+            cursor: pointer;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 14px rgba(36, 150, 36, 0.4);
+            transition: transform 0.2s, background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #chat-toggle:hover {
+            transform: scale(1.1); /* Slight zoom effect */
+            background: #1e7d32;
+        }
+
+        /* Chat Messages Area */
+        #chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+            font-size: 0.95rem;
+            background: #f9fafb;
+        }
+
+        /* Input Area */
+        #chat-input-area {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #eee;
+            background: white;
+        }
+
+        #chat-input {
+            flex: 1;
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        #chat-send {
+            background: #249624;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin-left: 8px;
+            cursor: pointer;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        #chat-send:hover { background: #1e7d32; }
+
+        .msg-user { text-align: right; margin: 8px 0; color: #1e7d32; font-weight: 500; }
+        .msg-bot { text-align: left; margin: 8px 0; color: #333; background: #eafbe7; padding: 8px 12px; border-radius: 12px 12px 12px 0; display: inline-block; max-width: 90%; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
     <script>
         function toggleDarkMode() {
@@ -689,6 +778,86 @@
         &copy; 2024 Lanka Fresh Mart. All rights reserved.
     </div>
 </footer>
+
+<div id="chat-widget">
+    <div id="chat-box">
+        <div style="background: #249624; color: white; padding: 12px 15px; font-weight: bold; border-radius: 15px 15px 0 0; display: flex; align-items: center; gap: 8px;">
+            <i class="fa fa-robot"></i> Lanka Fresh Support
+        </div>
+
+        <div id="chat-messages"></div>
+
+        <div id="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Type your question..." />
+            <button id="chat-send"><i class="fa fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <button id="chat-toggle" onclick="toggleChat()" title="Chat with us">
+        <i class="fa fa-comments"></i>
+    </button>
+</div>
+
+<script th:inline="javascript">
+    /* Using #authentication is safer for Spring Security */
+    /* If user is anonymous/not logged in, this returns null or 'anonymousUser' */
+    const currentUserEmail = /*[[${#authentication != null and #authorization.expression('isAuthenticated()') ? #authentication.name : ''}]]*/ '';
+
+    function toggleChat() {
+        const box = document.getElementById('chat-box');
+        box.style.display = box.style.display === 'none' || box.style.display === '' ? 'block' : 'none';
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('chat-input');
+        const text = input.value;
+        if (!text) return;
+
+        const msgs = document.getElementById('chat-messages');
+        msgs.innerHTML += `<div class="msg-user" style="text-align: right; color: #249624; margin: 5px 0;">You: ${text}</div>`;
+        input.value = '';
+
+        if (!currentUserEmail) {
+            msgs.innerHTML += `<div class="msg-bot" style="text-align: left; color: #333; margin: 5px 0;">Bot: Please login to check your orders.</div>`;
+            return;
+        }
+
+        msgs.innerHTML += `<div class="msg-bot" style="text-align: left; color: #333; margin: 5px 0;">Bot: Typing...</div>`;
+
+        // Your n8n URL
+        const n8nUrl = 'https://pamindu.app.n8n.cloud/webhook/chat';
+
+        try {
+            const response = await fetch(n8nUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: text,
+                    userEmail: currentUserEmail
+                })
+            });
+            const data = await response.json();
+
+            // Remove "Typing..."
+            if(msgs.lastChild.textContent === "Bot: Typing...") {
+                msgs.lastChild.remove();
+            }
+
+            msgs.innerHTML += `<div class="msg-bot" style="text-align: left; color: #333; margin: 5px 0;">Bot: ${data.reply}</div>`;
+            msgs.scrollTop = msgs.scrollHeight;
+
+        } catch (error) {
+            msgs.innerHTML += `<div class="msg-bot" style="color: red;">Error connecting to bot.</div>`;
+            console.error(error);
+        }
+    }
+
+    // Ensure the button exists before adding the listener to avoid null pointer errors in console
+    const sendBtn = document.getElementById('chat-send');
+    if(sendBtn) {
+        sendBtn.addEventListener('click', sendMessage);
+    }
+</script>
 
 <!-- JavaScript for Category Filtering -->
 <script th:inline="javascript">
